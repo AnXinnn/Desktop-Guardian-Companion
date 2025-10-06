@@ -42,6 +42,8 @@
 </template>
 
 <script>
+import LunarCalendar from 'lunar-calendar';
+
 export default {
   data() {
     return {
@@ -54,18 +56,19 @@ export default {
       weather: "未知",
       temperature: "0",
       apps: [
-        { name: '电话', icon: '/static/mgc/电话.png' },
-        { name: '微信', icon: '/static/mgc/微信.png' },
-        { name: '抖音', icon: '/static/mgc/抖音.png' },
-        { name: '支付宝', icon: '/static/mgc/支付宝.png' },
-        { name: '相机', icon: '/static/mgc/相机.png' },
-        { name: '客服', icon: '/static/mgc/客服 (2).png' }
+        { name: '电话', icon: '/static/mgc/telephone.png' },
+        { name: '微信', icon: '/static/mgc/WeChat.png' },
+        { name: '抖音', icon: '/static/mgc/tiktok.png' },
+        { name: '支付宝', icon: '/static/mgc/Alipay.png' },
+        { name: '相机', icon: '/static/mgc/Camera.png' },
+        { name: '客服', icon: '/static/mgc/kefu.png' },
+        { name: '个人中心', icon: '/static/mgc/geren.png' }
       ],
       dockApps: [
-        { name: '电话', icon: '/static/mgc/电话.png' },
-        { name: '信息', icon: '/static/mgc/信息.png' },
-        { name: '微信', icon: '/static/mgc/微信.png' },
-        { name: '抖音', icon: '/static/mgc/抖音.png' }
+        { name: '电话', icon: '/static/mgc/telephone.png' },
+        { name: '信息', icon: '/static/mgc/Information.png' },
+        { name: '微信', icon: '/static/mgc/WeChat.png' },
+        { name: '抖音', icon: '/static/mgc/tiktok.png' }
       ]
     }
   },
@@ -76,7 +79,12 @@ export default {
     let _this = this;
 			uni.getLocation({
 				type: 'wgs84', //中国定位格式
+				geocode: true, // 启用地理编码提高精度
+				isHighAccuracy: true, // 启用高精度模式
+				timeout: 10000, // 10秒超时
+				maximumAge: 30000, // 30秒内缓存位置
 				success: function(res) {
+					// 定位成功处理
 					// console.log('当前位置的经度：' + res.longitude);
 					// console.log('当前位置的纬度：' + res.latitude);
 					let long = res.longitude; //经度
@@ -107,8 +115,22 @@ export default {
 					});
 				},
 				fail: (err) => {
-					console.error('定位失败', err);
-					this.city = "定位失败";
+					console.error('定位失败，尝试重新获取', err);
+					// 失败后3秒重试一次
+					setTimeout(() => {
+						uni.getLocation({
+							type: 'wgs84',
+							geocode: true,
+							isHighAccuracy: true,
+							success: function(res) {
+								_this.processLocation(res);
+							},
+							fail: (err) => {
+								console.error('重试定位失败', err);
+								_this.city = "定位失败";
+							}
+						});
+					}, 3000);
 				}
 			});
 
@@ -131,7 +153,16 @@ export default {
       
       this.currentDate = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`;
       
-      // 农历计算可以后续添加
+      // 计算农历日期
+      this.lunarDate = this.getLunarDate(now);
+    },
+    getLunarDate(solarDate) {
+      const lunar = LunarCalendar.solarToLunar(
+        solarDate.getFullYear(),
+        solarDate.getMonth() + 1,
+        solarDate.getDate()
+      );
+      return `农历${lunar.month}月${lunar.day}`;
     }
   },
 }
@@ -142,7 +173,8 @@ export default {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #e6f2ff;
+  background: url('/static/mgc/background.jpg') no-repeat center center;
+  background-size: cover;
 }
 
 .top-section {
@@ -182,18 +214,19 @@ export default {
 
 .location {
   font-size: 28rpx;
-  color: #ccc;
+  color: white;
 }
 
 .time {
   font-size: 80rpx;
   color: white;
-  margin-right: 20rpx;
+  margin-right: 10rpx;
 }
 
 .am-pm {
   font-size: 36rpx;
   color: white;
+  margin-left: -5rpx;
 }
 
 .date {
@@ -204,7 +237,7 @@ export default {
 
 .lunar-date {
   font-size: 28rpx;
-  color: #ccc;
+  color: white;
 }
 
 .middle-section {
@@ -242,19 +275,18 @@ export default {
 .dock {
   display: flex;
   justify-content: center;
-  background-color: rgba(255,255,255,0.9);
   padding: 20rpx 0;
   width: 100%;
   border-radius: 40rpx 40rpx 0 0;
 }
 
 .dock-item {
-  margin: 0 20rpx;
+  margin: 0 20rpx;  
 }
 
 .dock-icon {
-  width: 80rpx;
-  height: 80rpx;
+  width: 130rpx;
+  height: 130rpx;
   display: block;
 }
 

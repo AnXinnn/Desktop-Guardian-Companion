@@ -1,88 +1,60 @@
 <template>
-  <view class="login-container">
-    <view class="logo">
-      <image src="/static/logo.png"></image>
-    </view>
-    
-    <view class="form-container">
-      <view class="input-group">
-        <text class="label">用户名</text>
-        <input class="input" type="text" placeholder="请输入用户名" v-model="username">
-      </view>
-      
-      <view class="input-group">
-        <text class="label">密码</text>
-        <input class="input" type="password" placeholder="请输入密码" v-model="password">
-      </view>
-      
-      <button class="login-btn" @click="handleLogin">登录</button>
-    </view>
-  </view>
+	<view>
+		<button class="avater-wrapper" open-type="chooseAvatar" @chooseavatar="onChooseAvatar">
+			<image class="avater" :src="avatarUrl"></image>
+		</button>
+		<input @change="inp" type="text" class="weui-input" placeholder="请输入昵称" />
+		<button @click="ok">确定</button>
+	</view>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      username: '',
-      password: ''
-    }
-  },
-  methods: {
-    handleLogin() {
-      // 登录逻辑
-      uni.navigateTo({
-        url: '/pages/index/index'
-      })
-    }
-  }
-}
+	export default {
+		data() {
+			return {
+				avatarUrl: "",
+				nikeNames: ""
+			}
+		},
+		methods: {
+			onChooseAvatar(e) {
+				this.avatarUrl = e.detail.avatarUrl;
+			},
+			inp(e) {
+				this.nikeNames = e.detail.value;
+			},
+			ok() {
+				uni.setStorageSync("users", {
+					a: this.avatarUrl,
+					name: this.nikeNames
+				});
+				uni.navigateBack();
+			}
+		}
+	}
 </script>
 
 <style>
-.login-container {
-  padding: 40rpx;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
+	.avater-wrapper {
+		background: none;
+		padding: 0;
+		margin: 0;
+		line-height: 0;
+	}
 
-.logo-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 80rpx;
-}
+	.avater {
+		width: 150rpx;
+		height: 150rpx;
+		border-radius: 50%;
+		display: block;
+	}
 
-.logo {
-  width: 200rpx;
-  height: 200rpx;
-}
-
-.input-group {
-  margin-bottom: 40rpx;
-}
-
-.label {
-  display: block;
-  margin-bottom: 10rpx;
-  font-size: 28rpx;
-  color: #666;
-}
-
-.input {
-  border: 1rpx solid #ddd;
-  padding: 20rpx;
-  border-radius: 8rpx;
-  font-size: 28rpx;
-}
-
-.login-btn {
-  background-color: #007aff;
-  color: white;
-  padding: 20rpx;
-  border-radius: 8rpx;
-  text-align: center;
-  margin-top: 40rpx;
-}
+	.weui-input {
+		width: 80%;
+		padding: 20rpx;
+		border: 1px solid #eee;
+		border-radius: 8rpx;
+		margin: 40rpx auto;
+		display: block;
+	}
 </style>

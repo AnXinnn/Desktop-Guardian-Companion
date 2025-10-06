@@ -2,8 +2,29 @@
 	"pages": [
 		{
 			"path": "pages/index/index",
+			"style": {	
+			}
+		},
+		{
+			"path": "pages/login/login",
+			"style": {	
+			}
+		},
+		{
+			"path": "pages/my/my",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+			}
+		},
+		{
+			"path": "pages/customer-service/customer-service",
+			"style": {
+				
+			}
+		},
+		{
+			"path": "pages/chat/chat",
+			"style": {
+				
 			}
 		}
 	],

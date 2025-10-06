@@ -22,7 +22,7 @@
     <!-- Middle Section (1/2) -->
     <view class="middle-section">
       <view class="app-grid">
-        <view class="app-item" v-for="app in apps" :key="app.name">
+        <view class="app-item" v-for="app in apps" :key="app.name" @click="app.name === '个人中心' ? navigateToMy() : null">
           <image class="app-icon" :src="app.icon" @error="handleImageError(app)"></image>
           <text class="app-name">{{ app.name }}</text>
         </view>
@@ -61,7 +61,6 @@ export default {
         { name: '抖音', icon: '/static/mgc/tiktok.png' },
         { name: '支付宝', icon: '/static/mgc/Alipay.png' },
         { name: '相机', icon: '/static/mgc/Camera.png' },
-        { name: '客服', icon: '/static/mgc/kefu.png' },
         { name: '个人中心', icon: '/static/mgc/geren.png' }
       ],
       dockApps: [
@@ -136,6 +135,11 @@ export default {
 
 		},
   methods: {
+    navigateToMy() {
+      uni.navigateTo({
+        url: '/pages/my/my'
+      });
+    },
     handleImageError(app) {
       console.error('图片加载失败:', app.icon);
       // 可以在这里添加默认图片或错误处理逻辑

@@ -1,74 +1,82 @@
 <template>
-  <view class="my-page">
-    <view class="header">
-      <image class="avatar" src="/static/mgc/Guard.png"></image>
-      <text class="username">用户名</text>
-    </view>
-    
-    <view class="menu-list">
-      <view class="menu-item" v-for="item in menus" :key="item.name">
-        <image class="menu-icon" :src="item.icon"></image>
-        <text class="menu-text">{{item.name}}</text>
-      </view>
-    </view>
-  </view>
+	<view class="headerBox">
+		<image class="avatarImg" :src="users.a ? users.a : '/static/geren.png'"></image>
+		<button v-if="!users.name" class="loginbtn" @click="gologin">去登陆</button>
+		<view v-else class="user-name">
+			{{ users.name }}
+		</view>
+		<image class="customer-service" src="/static/mgc/kefu.png" @click="goCustomerService"></image>
+	</view>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      menus: [
-        { name: '我的收藏', icon: '/static/mgc/Add.png' },
-        { name: '设置', icon: '/static/mgc/Information.png' },
-        { name: '关于我们', icon: '/static/mgc/Alipay.png' }
-      ]
-    }
-  }
-}
+	export default {
+		data() {
+			return {
+				users: {
+					a: "",
+					name: ""
+				}
+			}
+		},
+		onShow() {
+			const storedUsers = uni.getStorageSync("users")
+			if (storedUsers && typeof storedUsers === 'object') {
+				this.users = storedUsers
+			}
+		},
+	methods: {
+			gologin() {
+				uni.navigateTo({
+					url: '/pages/login/login',
+				});
+			},
+			goCustomerService() {
+				uni.navigateTo({
+					url: '/pages/customer-service/customer-service'
+				});
+			}
+		}
+	}
 </script>
 
 <style>
-.my-page {
-  padding: 30rpx;
-}
+	.headerBox {
+		width: 100%;
+		height: 200px;
+		background-color: #eee;
+		margin: auto;
+		display: flex;
+		align-items: center;
+		position: relative;
+	}
 
-.header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 40rpx;
-}
+	.avatarImg {
+		width: 90px;
+		height: 90px;
+		margin-right: 20px;
+		margin-left: 20px;
+		border-radius: 50%;
+	}
 
-.avatar {
-  width: 120rpx;
-  height: 120rpx;
-  border-radius: 50%;
-  margin-right: 30rpx;
-}
+	.loginbtn {
+		margin-left: 0;
+		padding: 8px 20px;
+		background-color: #007AFF;
+		color: white;
+		border-radius: 20px;
+	}
 
-.username {
-  font-size: 36rpx;
-  font-weight: bold;
-}
-
-.menu-list {
-  border-top: 1rpx solid #eee;
-}
-
-.menu-item {
-  display: flex;
-  align-items: center;
-  padding: 30rpx 0;
-  border-bottom: 1rpx solid #eee;
-}
-
-.menu-icon {
-  width: 50rpx;
-  height: 50rpx;
-  margin-right: 30rpx;
-}
-
-.menu-text {
-  font-size: 32rpx;
-}
+	.user-name {
+		font-size: 18px;
+		font-weight: bold;
+	}
+	
+	.customer-service {
+		position: absolute;
+		right: 20px;
+		top: 20px;
+		width: 40px;
+		height: 40px;
+	}
 </style>

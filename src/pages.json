@@ -2,30 +2,50 @@
 	"pages": [
 		{
 			"path": "pages/index/index",
-			"style": {	
-			}
+			"style": {}
 		},
 		{
 			"path": "pages/login/login",
-			"style": {	
+			"style": {
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/my/my",
-			"style": {
-			}
+			"style": {}
+		},
+		{
+			"path": "pages/desk/force",
+			"style": {}
+		},
+		{
+			"path": "pages/desk/lock",
+			"style": {}
+		},
+		{
+			"path": "pages/desk/stable",
+			"style": {}
 		},
 		{
 			"path": "pages/customer-service/customer-service",
-			"style": {
-				
-			}
+			"style": {}
 		},
 		{
 			"path": "pages/chat/chat",
-			"style": {
-				
-			}
+			"style": {}
+		}
+	],
+	"subPackages": [
+		{
+			"root": "pages",
+			"pages": [
+				{
+					"path": "add-contact/add-contact",
+					"style": {
+						"navigationStyle": "custom"
+					}
+				}
+			]
 		}
 	],
 	"globalStyle": {

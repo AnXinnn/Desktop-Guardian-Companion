@@ -74,7 +74,9 @@
 				});
 			},
 			goBack() {
-				uni.navigateBack();
+				uni.redirectTo({
+					url: '/pages/index/index?page=2'
+				});
 			},
 			onToggle(key, e){
 				this.settings[key] = e.detail.value

@@ -160,11 +160,15 @@ export default {
       ]
     }
   },
-  onLoad() {
+  onLoad(options) {
     const sys = uni.getSystemInfoSync();
     this.statusBarHeight = sys.statusBarHeight || 0;
     this.updateTime();
     setInterval(this.updateTime, 1000);
+    
+    if (options.page) {
+      this.currentPage = parseInt(options.page) || 0;
+    }
     
     let _this = this;
 			uni.getLocation({

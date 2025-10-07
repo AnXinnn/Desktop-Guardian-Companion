@@ -2,36 +2,36 @@
 	<view class="page">
     <view class="top">
       <image class="back" src="/static/mgc/fanhui.png" @click="onCancel"></image>
-      <view class="left"><text class="title">½Ì³Ì</text></view>
-      <button class="import-btn" @click="importFromContacts">Í¨Ñ¶Â¼</button>
+      <view class="left"><text class="title">æ•™ç¨‹</text></view>
+      <button class="import-btn" @click="importFromContacts">é€šè®¯å½•</button>
     </view>
 
 		<view class="avatar-wrap">
 			<image class="avatar" :src="avatar || '/static/mgc/geren.png'" @click="pickAvatar"></image>
-			<text class="add-photo">Ìí¼ÓÕÕÆ¬</text>
+			<text class="add-photo">æ·»åŠ ç…§ç‰‡</text>
 		</view>
 
 		<view class="form">
       <view class="label required">
-        <text>*Ãû×Ö</text>
+        <text>*å§“å</text>
       </view>
-			<input class="input" placeholder="ÇëÊäÈëÃû×Ö" v-model.trim="name" />
+			<input class="input" placeholder="è¯·è¾“å…¥å§“å" v-model.trim="name" />
 
       <view class="label">
-        <text>Î¢ÐÅ±¸×¢</text>
+        <text>å¾®ä¿¡å¤‡æ³¨</text>
       </view>
-			<input class="input" placeholder="ÇëÊäÈëÁªÏµÈËµÄÎ¢ÐÅ±¸×¢" v-model.trim="wxNote" />
-			<text class="hint">*ÐèÒªÓëÎ¢ÐÅÀïÃæµÄ±¸×¢Ò»ÖÂ£¡</text>
+			<input class="input" placeholder="è¯·è¾“å…¥å¾®ä¿¡å¤‡æ³¨" v-model.trim="wxNote" />
+			<text class="hint">*å¾®ä¿¡å¤‡æ³¨å¯ä¸å¡«</text>
 
       <view class="label required">
-        <text>*ÊÖ»úºÅÂë</text>
+        <text>*æ‰‹æœºå·</text>
       </view>
-			<input class="input" type="number" placeholder="ÇëÊäÈëÁªÏµÈËµÄÊÖ»úºÅÂë" v-model.trim="mobile" />
+			<input class="input" type="number" placeholder="è¯·è¾“å…¥æ‰‹æœºå·" v-model.trim="mobile" />
 		</view>
 
 		<view class="actions">
-			<button class="btn cancel" @click="onCancel">È¡Ïû</button>
-			<button class="btn save" @click="onSave">±£´æ</button>
+			<button class="btn cancel" @click="onCancel">å–æ¶ˆ</button>
+			<button class="btn save" @click="onSave">ä¿å­˜</button>
 		</view>
 	</view>
 </template>
@@ -46,16 +46,18 @@ export default {
 			uni.chooseImage({ count: 1, success: (res)=> { this.avatar = res.tempFilePaths[0] } })
 		},
 		importFromContacts(){
-			uni.showToast({ title: '´ÓÍ¨Ñ¶Â¼µ¼Èë', icon: 'none' })
+			uni.showToast({ title: 'ï¿½ï¿½Í¨Ñ¶Â¼ï¿½ï¿½ï¿½ï¿½', icon: 'none' })
 		},
 		onCancel(){
-			uni.switchTab({ url: '/pages/index/index' })
+			uni.redirectTo({
+				url: '/pages/index/index?page=0'
+			})
 		},
 		onSave(){
-			if(!this.name){ return uni.showToast({ title:'ÇëÊäÈëÃû×Ö', icon:'none' }) }
-			if(!/^1\d{10}$/.test(this.mobile)){ return uni.showToast({ title:'ÇëÊäÈëÓÐÐ§ÊÖ»úºÅ', icon:'none' }) }
-			// Ä£Äâ±£´æ
-			uni.showToast({ title:'ÒÑ±£´æ', icon:'success' })
+			if(!this.name){ return uni.showToast({ title:'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½', icon:'none' }) }
+			if(!/^1\d{10}$/.test(this.mobile)){ return uni.showToast({ title:'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½Ö»ï¿½ï¿½ï¿½', icon:'none' }) }
+			// Ä£ï¿½â±£ï¿½ï¿½
+			uni.showToast({ title:'ï¿½Ñ±ï¿½ï¿½ï¿½', icon:'success' })
 			setTimeout(()=> uni.switchTab({ url: '/pages/index/index' }), 500)
 		}
 	}

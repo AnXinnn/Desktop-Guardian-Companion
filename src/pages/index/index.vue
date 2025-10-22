@@ -264,15 +264,29 @@ export default {
       this.lunarDate = this.getLunarDate(now);
     },
     getLunarDate(solarDate) {
-      const lunar = LunarCalendar.solarToLunar(
-        solarDate.getFullYear(),
-        solarDate.getMonth() + 1,
-        solarDate.getDate()
-      );
-      // 使用中文农历显示（例如：农历八月初九），并提供本地兜底格式化
-      const monthCn = lunar && (lunar.IMonthCn || lunar.monthCn || lunar.cMonth || `${lunar.month}月`);
-      const dayCn = lunar && (lunar.IDayCn || lunar.dayCn || lunar.cDay || `${lunar.day}`);
-      return `农历${monthCn}${dayCn}`;
+      try {
+        if (!LunarCalendar || typeof LunarCalendar.solarToLunar !== 'function') {
+          return '农历未知';
+        }
+        const lunar = LunarCalendar.solarToLunar(
+          solarDate.getFullYear(),
+          solarDate.getMonth() + 1,
+          solarDate.getDate()
+        );
+
+        if (!lunar || lunar.error) return '农历未知';
+
+        // 优先使用库提供的可读名称字段（lunarMonthName / lunarDayName），
+        // 否则回退到数值字段（lunarMonth / lunarDay）或通用字段。
+        const monthCn = lunar.lunarMonthName || lunar.monthCn || (lunar.lunarMonth ? `${lunar.lunarMonth}月` : '');
+        const dayCn = lunar.lunarDayName || lunar.dayCn || (lunar.lunarDay ? `${lunar.lunarDay}` : '');
+
+        if (!monthCn && !dayCn) return '农历未知';
+        return `农历${monthCn}${dayCn}`;
+      } catch (e) {
+        console.error('计算农历失败：', e);
+        return '农历未知';
+      }
     },
     openGuardian() {
       // 这里可以跳转到守护设置页

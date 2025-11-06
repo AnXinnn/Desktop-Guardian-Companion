@@ -48,6 +48,11 @@
               <view class="card" @click="addShortcut">
                 <text class="plus">＋</text>
               </view>
+              <!-- 联系人卡片 -->
+              <view class="card" v-for="contact in contacts" :key="contact.name" @click="showContactModal(contact)">
+                <image class="card-icon" :src="contact.icon" @error="handleImageError({icon: contact.icon})"></image>
+                <text class="card-title">{{ contact.wxNote || contact.name }}</text>
+              </view>
             </view>
           </view>
         </view>
@@ -100,6 +105,117 @@
         </view>
       </view>
     </view>
+
+    <!-- 联系人详情弹窗 -->
+    <view class="contact-modal" v-if="currentContact" @click.self="closeContactModal">
+      <view class="contact-modal-content" @click.stop>
+        <!-- 顶部操作栏 -->
+        <view class="modal-header">
+          <text class="modal-icon edit-icon" @click="editContact">{{ isEditMode ? '取消' : '✏️' }}</text>
+          <text class="modal-icon close-icon" @click="closeContactModal">✕</text>
+        </view>
+        
+        <!-- 详情模式 -->
+        <view v-if="!isEditMode">
+          <!-- 头像和姓名 -->
+          <view class="contact-avatar-section">
+            <image class="contact-avatar" :src="currentContact.icon || '/static/mgc/geren.png'"></image>
+            <text class="contact-name">{{ currentContact.name }}</text>
+          </view>
+
+          <!-- 操作按钮 -->
+          <view class="contact-actions">
+            <!-- 微信视频 -->
+            <view class="action-btn wechat-video" @click="makeVideoCall">
+              <view class="vip-badge">VIP</view>
+              <view class="action-content">
+                <image class="action-icon" src="/static/mgc/Camera.png"></image>
+                <view class="action-text-wrap">
+                  <text class="action-text">微信视频</text>
+                  <text class="action-sub">{{ currentContact.wxNote || currentContact.name }}</text>
+                </view>
+              </view>
+            </view>
+            
+            <!-- 微信语音 -->
+            <view class="action-btn wechat-voice" @click="makeVoiceCall">
+              <view class="vip-badge">VIP</view>
+              <view class="action-content">
+                <image class="action-icon" src="/static/mgc/telephone.png"></image>
+                <view class="action-text-wrap">
+                  <text class="action-text">微信语音</text>
+                  <text class="action-sub">{{ currentContact.wxNote || currentContact.name }}</text>
+                </view>
+              </view>
+            </view>
+            
+            <!-- 手机电话 -->
+            <view class="action-btn phone-call" @click="makePhoneCall">
+              <view class="action-content">
+                <image class="action-icon" src="/static/mgc/telephone.png"></image>
+                <view class="action-text-wrap">
+                  <text class="action-text">手机电话</text>
+                  <text class="action-sub phone-number">{{ currentContact.mobile }}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+
+          <!-- 底部操作 -->
+          <view class="modal-footer">
+            <text class="footer-action delete-contact" @click="showDeleteConfirm">删除联系人</text>
+            <text class="footer-action repair-contact" @click="repairContact">一键修复</text>
+          </view>
+        </view>
+
+        <!-- 编辑模式 -->
+        <view v-else class="edit-mode">
+          <scroll-view scroll-y class="edit-scroll">
+            <!-- 头像编辑 -->
+            <view class="edit-avatar-section">
+              <image class="edit-avatar" :src="editForm.icon || '/static/mgc/geren.png'" @click="pickEditAvatar"></image>
+              <text class="edit-avatar-hint">点击更换头像</text>
+            </view>
+
+            <!-- 编辑表单 -->
+            <view class="edit-form">
+              <view class="edit-item">
+                <text class="edit-label required">*名字</text>
+                <input class="edit-input" placeholder="请输入名字" v-model.trim="editForm.name" />
+              </view>
+
+              <view class="edit-item">
+                <text class="edit-label">微信备注</text>
+                <input class="edit-input" placeholder="请输入联系人的微信备注" v-model.trim="editForm.wxNote" />
+                <text class="edit-hint">*需要与微信里面的备注一致！</text>
+              </view>
+
+              <view class="edit-item">
+                <text class="edit-label required">*手机号码</text>
+                <input class="edit-input" type="number" placeholder="请输入联系人的手机号码" v-model.trim="editForm.mobile" />
+              </view>
+            </view>
+
+            <!-- 保存按钮 -->
+            <view class="edit-actions">
+              <button class="edit-save-btn" @click="saveEditContact">保存</button>
+            </view>
+          </scroll-view>
+        </view>
+      </view>
+      
+      <!-- 确认删除提示框 -->
+      <view class="delete-confirm-modal" v-if="showDeleteConfirmFlag" @click.stop>
+        <view class="delete-confirm-content">
+          <text class="delete-confirm-title">确认删除</text>
+          <text class="delete-confirm-text">确定要删除联系人"{{ currentContact.name }}"吗？</text>
+          <view class="delete-confirm-buttons">
+            <button class="delete-btn cancel-btn" @click="cancelDelete">否</button>
+            <button class="delete-btn confirm-btn" @click="confirmDelete">是</button>
+          </view>
+        </view>
+      </view>
+    </view>
   </view>
 </template>
 
@@ -120,7 +236,20 @@ export default {
       weather: "未知",
       temperature: "0",
       userCode: '5090922',
+      contacts: [],
+      currentContact: null,
+      showDeleteConfirmFlag: false,
+      isEditMode: false,
+      editForm: {
+        name: '',
+        wxNote: '',
+        mobile: '',
+        icon: ''
+      },
+      originalContact: null, // 保存原始联系人信息，用于取消编辑时恢复
       appsPage: [
+        { name: '用药提醒', icon: '/static/mgc/Guard.png', type: 'medicine' },
+        { name: '在线问诊', icon: '/static/mgc/kefu.png', type: 'consultation' },
         { name: '通讯录', icon: '/static/mgc/WeChat.png' },
         { name: '短信', icon: '/static/mgc/Information.png' },
         { name: '付款码', icon: '/static/mgc/Alipay.png' },
@@ -165,6 +294,10 @@ export default {
     this.statusBarHeight = sys.statusBarHeight || 0;
     this.updateTime();
     setInterval(this.updateTime, 1000);
+    
+    // 初始化时清空联系人列表，确保没有多余的联系人卡片
+    // 联系人列表只在从添加联系人页面返回时（onShow）才会更新
+    this.contacts = [];
     
     if (options.page) {
       this.currentPage = parseInt(options.page) || 0;
@@ -227,6 +360,18 @@ export default {
 			});
 
 		},
+  onShow() {
+    // 只在页面显示时刷新联系人列表（从添加联系人页面返回时）
+    // 这样确保只有通过保存新联系人后才会显示新模块
+    this.contacts = uni.getStorageSync('contacts') || [];
+    
+    // 处理返回页面逻辑
+    const returnPage = uni.getStorageSync('returnToPage');
+    if (returnPage !== undefined) {
+      this.currentPage = returnPage;
+      uni.removeStorageSync('returnToPage');
+    }
+  },
   methods: {
     onSwiperChange(e) {
       this.currentPage = e.detail.current || 0;
@@ -236,7 +381,29 @@ export default {
         this.navigateToMy();
         return;
       }
-      uni.showToast({ title: app.name, icon: 'none' });
+      
+      // 处理医疗功能
+      if (app.type === 'medicine') {
+        uni.navigateTo({ url: '/pages/medicine/medicine-reminder' });
+        return;
+      }
+      if (app.type === 'consultation') {
+        uni.navigateTo({ url: '/pages/medicine/online-consultation' });
+        return;
+      }
+      
+      // 其他应用处理
+      if (app.packageName) {
+        // #ifdef APP-PLUS
+        if (plus && plus.runtime) {
+          plus.runtime.launchApplication({ pname: app.packageName }, (e) => {
+            uni.showToast({ title: '打开失败: ' + e.message, icon: 'none' });
+          });
+        }
+        // #endif
+      } else {
+        uni.showToast({ title: app.name, icon: 'none' });
+      }
     },
     navigateToMy() {
       uni.navigateTo({
@@ -289,8 +456,8 @@ export default {
       }
     },
     openGuardian() {
-      // 这里可以跳转到守护设置页
-      uni.showToast({ title: '桌面守护', icon: 'none' });
+      // 跳转到桌面守护页面
+      uni.navigateTo({ url: '/pages/guardian/guardian' });
     },
     openRemoteHelp() {
       // 复制用户码，或进入远程协助页
@@ -302,6 +469,441 @@ export default {
     },
     addShortcut() {
       uni.navigateTo({ url: '/pages/add-contact/add-contact' });
+    },
+    showContactModal(contact) {
+      this.currentContact = contact;
+      this.isEditMode = false;
+      // 深拷贝联系人信息到编辑表单
+      this.editForm = {
+        name: contact.name || '',
+        wxNote: contact.wxNote || '',
+        mobile: contact.mobile || '',
+        icon: contact.icon || ''
+      };
+      this.originalContact = JSON.parse(JSON.stringify(contact));
+    },
+    closeContactModal() {
+      this.currentContact = null;
+      this.showDeleteConfirmFlag = false;
+      this.isEditMode = false;
+      this.editForm = {
+        name: '',
+        wxNote: '',
+        mobile: '',
+        icon: ''
+      };
+      this.originalContact = null;
+    },
+    editContact() {
+      if (this.isEditMode) {
+        // 取消编辑，恢复原始数据
+        this.isEditMode = false;
+        if (this.originalContact) {
+          this.currentContact = JSON.parse(JSON.stringify(this.originalContact));
+        }
+      } else {
+        // 进入编辑模式
+        this.isEditMode = true;
+        // 初始化编辑表单
+        this.editForm = {
+          name: this.currentContact.name || '',
+          wxNote: this.currentContact.wxNote || '',
+          mobile: this.currentContact.mobile || '',
+          icon: this.currentContact.icon || ''
+        };
+      }
+    },
+    pickEditAvatar() {
+      uni.chooseImage({
+        count: 1,
+        success: (res) => {
+          this.editForm.icon = res.tempFilePaths[0];
+        }
+      });
+    },
+    saveEditContact() {
+      // 验证输入
+      if (!this.editForm.name || !this.editForm.name.trim()) {
+        uni.showToast({ title: '请输入名字', icon: 'none' });
+        return;
+      }
+      if (!this.editForm.mobile || !/^1\d{10}$/.test(this.editForm.mobile)) {
+        uni.showToast({ title: '请输入有效手机号', icon: 'none' });
+        return;
+      }
+
+      // 更新本地存储中的联系人
+      let contacts = uni.getStorageSync('contacts') || [];
+      
+      // 找到要更新的联系人（通过原始信息匹配）
+      const index = contacts.findIndex(c => {
+        if (this.originalContact.mobile && c.mobile) {
+          return c.name === this.originalContact.name && 
+                 c.mobile === this.originalContact.mobile;
+        }
+        return c.name === this.originalContact.name;
+      });
+
+      if (index !== -1) {
+        // 更新联系人信息
+        contacts[index] = {
+          name: this.editForm.name.trim(),
+          wxNote: this.editForm.wxNote.trim() || this.editForm.name.trim(),
+          mobile: this.editForm.mobile.trim(),
+          icon: this.editForm.icon || '/static/mgc/geren.png'
+        };
+        
+        uni.setStorageSync('contacts', contacts);
+        
+        // 更新当前页面的联系人列表
+        this.contacts = contacts;
+        
+        // 更新当前显示的联系人
+        this.currentContact = contacts[index];
+        this.originalContact = JSON.parse(JSON.stringify(contacts[index]));
+        
+        // 退出编辑模式
+        this.isEditMode = false;
+        
+        // 显示保存成功提示
+        uni.showToast({ 
+          title: '保存成功', 
+          icon: 'success',
+          duration: 2000
+        });
+      } else {
+        uni.showToast({ 
+          title: '保存失败，未找到联系人', 
+          icon: 'none',
+          duration: 2000
+        });
+      }
+    },
+    makeVideoCall() {
+      if (!this.currentContact) {
+        return;
+      }
+      
+      // 获取微信备注或名字
+      const wxName = this.currentContact.wxNote || this.currentContact.name;
+      
+      // 设置免提和音量（Android）
+      this.setSpeakerphoneAndVolume();
+      
+      // 启动自动化流程
+      this.startWeChatAutomation(wxName, 'video');
+    },
+    makeVoiceCall() {
+      if (!this.currentContact) {
+        return;
+      }
+      
+      // 获取微信备注或名字
+      const wxName = this.currentContact.wxNote || this.currentContact.name;
+      
+      // 设置免提和音量（Android）
+      this.setSpeakerphoneAndVolume();
+      
+      // 启动自动化流程
+      this.startWeChatAutomation(wxName, 'voice');
+    },
+    // 启动微信自动化流程
+    startWeChatAutomation(wxName, callType) {
+      // #ifdef APP-PLUS
+      if (plus && plus.runtime) {
+        uni.showLoading({ title: '正在打开微信...' });
+        
+        // 第一步：打开微信应用
+        plus.runtime.launchApplication({
+          pname: 'com.tencent.mm',
+          action: 'android.intent.action.VIEW'
+        }, (e) => {
+          if (e && e.code === 0) {
+            uni.hideLoading();
+            uni.showToast({ title: '微信未安装', icon: 'none' });
+            return;
+          }
+          
+          // 延迟等待微信完全启动
+          setTimeout(() => {
+            uni.hideLoading();
+            // 第二步：尝试打开聊天窗口
+            this.openWeChatChat(wxName, callType);
+          }, 2000);
+        });
+      }
+      // #endif
+      
+      // #ifdef H5
+      uni.showToast({ 
+        title: '请手动打开微信，搜索"' + wxName + '"并拨打' + (callType === 'video' ? '视频' : '语音') + '通话', 
+        icon: 'none',
+        duration: 3000
+      });
+      // #endif
+    },
+    // 打开微信聊天窗口并执行自动化操作
+    openWeChatChat(wxName, callType) {
+      // #ifdef APP-PLUS
+      if (plus && plus.runtime) {
+        // 先尝试使用URL Scheme打开聊天窗口
+        const url = `weixin://dl/chat?username=${encodeURIComponent(wxName)}`;
+        plus.runtime.openURL(url, (err) => {
+          // URL Scheme打开后，延迟执行自动化点击
+          setTimeout(() => {
+            this.performAutomationClick(callType);
+          }, 2000);
+        });
+      }
+      // #endif
+    },
+    // 执行自动化点击操作
+    performAutomationClick(callType) {
+      // #ifdef APP-PLUS
+      if (plus && plus.android) {
+        try {
+          const main = plus.android.runtimeMainActivity();
+          const AccessibilityManager = plus.android.importClass('android.view.accessibility.AccessibilityManager');
+          const AccessibilityNodeInfo = plus.android.importClass('android.view.accessibility.AccessibilityNodeInfo');
+          const AccessibilityEvent = plus.android.importClass('android.view.accessibility.AccessibilityEvent');
+          const Context = plus.android.importClass('android.content.Context');
+          const DisplayMetrics = plus.android.importClass('android.util.DisplayMetrics');
+          const WindowManager = plus.android.importClass('android.view.WindowManager');
+          
+          // 获取屏幕尺寸
+          const windowManager = main.getSystemService(Context.WINDOW_SERVICE);
+          const display = windowManager.getDefaultDisplay();
+          const metrics = new DisplayMetrics();
+          display.getMetrics(metrics);
+          const screenWidth = metrics.widthPixels;
+          const screenHeight = metrics.heightPixels;
+          
+          // 检查是否有辅助功能权限
+          const accessibilityManager = main.getSystemService(Context.ACCESSIBILITY_SERVICE);
+          const isEnabled = accessibilityManager.isEnabled();
+          
+          if (!isEnabled) {
+            // 没有辅助功能权限，提示用户手动点击
+            uni.showToast({ 
+              title: '请在设置中开启辅助功能权限以使用自动化功能', 
+              icon: 'none',
+              duration: 3000
+            });
+            
+            // 尝试使用模拟点击（需要root或系统权限）
+            this.trySimulateClick(screenWidth, screenHeight, callType);
+            return;
+          }
+          
+          // 使用辅助功能服务进行自动化（需要配置AccessibilityService）
+          // 这里我们先尝试使用坐标点击作为备选方案
+          this.trySimulateClick(screenWidth, screenHeight, callType);
+          
+        } catch (e) {
+          console.log('自动化点击失败:', e);
+          uni.showToast({ 
+            title: '自动化操作失败，请手动点击' + (callType === 'video' ? '视频' : '语音') + '按钮', 
+            icon: 'none',
+            duration: 3000
+          });
+        }
+      }
+      // #endif
+    },
+    // 尝试模拟点击（使用adb命令或Gesture）
+    trySimulateClick(screenWidth, screenHeight, callType) {
+      // #ifdef APP-PLUS
+      try {
+        const main = plus.android.runtimeMainActivity();
+        const Runtime = plus.android.importClass('java.lang.Runtime');
+        const Process = plus.android.importClass('java.lang.Process');
+        
+        // 计算点击坐标
+        // 微信界面中，视频/语音按钮通常在输入框右侧
+        // 视频按钮：屏幕宽度约85%，高度约92%
+        // 语音按钮：屏幕宽度约75%，高度约92%
+        let clickX, clickY;
+        
+        if (callType === 'video') {
+          clickX = Math.floor(screenWidth * 0.85);
+          clickY = Math.floor(screenHeight * 0.92);
+        } else {
+          clickX = Math.floor(screenWidth * 0.75);
+          clickY = Math.floor(screenHeight * 0.92);
+        }
+        
+        // 方法1：尝试使用adb命令执行点击（需要root或adb调试）
+        try {
+          const runtime = Runtime.getRuntime();
+          // 使用input tap命令
+          const cmd = `input tap ${clickX} ${clickY}`;
+          const process = runtime.exec(cmd);
+          process.waitFor();
+          
+          uni.showToast({ 
+            title: '正在拨打' + (callType === 'video' ? '视频' : '语音') + '通话...', 
+            icon: 'none',
+            duration: 2000
+          });
+          
+          // 确保免提和音量已设置
+          setTimeout(() => {
+            this.setSpeakerphoneAndVolume();
+          }, 500);
+          
+          return;
+        } catch (e) {
+          console.log('adb命令执行失败:', e);
+        }
+        
+        // 方法2：如果adb失败，使用Gesture执行点击
+        try {
+          const GestureDetector = plus.android.importClass('android.view.GestureDetector');
+          const Gesture = plus.android.importClass('android.gesture.Gesture');
+          const GestureStroke = plus.android.importClass('android.gesture.GestureStroke');
+          const Path = plus.android.importClass('android.graphics.Path');
+          
+          // 创建点击手势
+          const path = new Path();
+          path.moveTo(clickX, clickY);
+          path.lineTo(clickX, clickY);
+          
+          const stroke = new GestureStroke(path);
+          const gesture = new Gesture();
+          gesture.addStroke(stroke);
+          
+          // 注意：Gesture需要特定的权限和实现方式
+          // 这里作为备选方案提示用户
+          uni.showToast({ 
+            title: '请手动点击微信中的' + (callType === 'video' ? '视频' : '语音') + '按钮', 
+            icon: 'none',
+            duration: 3000
+          });
+        } catch (e2) {
+          console.log('Gesture执行失败:', e2);
+          // 最终提示用户手动操作
+          uni.showToast({ 
+            title: '请手动点击微信中的' + (callType === 'video' ? '视频' : '语音') + '按钮', 
+            icon: 'none',
+            duration: 3000
+          });
+        }
+      } catch (e) {
+        console.log('模拟点击失败:', e);
+        uni.showToast({ 
+          title: '请手动点击微信中的' + (callType === 'video' ? '视频' : '语音') + '按钮', 
+          icon: 'none',
+          duration: 3000
+        });
+      }
+      // #endif
+    },
+    // 设置免提和音量（Android原生API）
+    setSpeakerphoneAndVolume() {
+      // #ifdef APP-PLUS
+      if (plus && plus.android) {
+        try {
+          const main = plus.android.runtimeMainActivity();
+          const AudioManager = plus.android.importClass('android.media.AudioManager');
+          const Context = plus.android.importClass('android.content.Context');
+          
+          const audioManager = main.getSystemService(Context.AUDIO_SERVICE);
+          
+          // 打开免提（扬声器）
+          audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
+          audioManager.setSpeakerphoneOn(true);
+          
+          // 设置通话音量最大
+          const maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL);
+          audioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL, maxVolume, 0);
+          
+          // 设置媒体音量最大（用于视频通话）
+          const maxMediaVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+          audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxMediaVolume, 0);
+          
+          console.log('免提和音量设置成功');
+        } catch (e) {
+          console.log('设置免提和音量失败:', e);
+          // 如果原生API失败，尝试使用uni-app的API
+          try {
+            if (plus.device) {
+              plus.device.setVolume(1.0);
+            }
+          } catch (e2) {
+            console.log('使用uni-app API设置音量也失败:', e2);
+          }
+        }
+      }
+      // #endif
+    },
+    makePhoneCall() {
+      if (this.currentContact && this.currentContact.mobile) {
+        uni.makePhoneCall({
+          phoneNumber: this.currentContact.mobile,
+          fail: (err) => {
+            uni.showToast({ title: '拨号失败', icon: 'none' });
+          }
+        });
+      }
+    },
+    showDeleteConfirm() {
+      this.showDeleteConfirmFlag = true;
+    },
+    cancelDelete() {
+      this.showDeleteConfirmFlag = false;
+    },
+    confirmDelete() {
+      if (!this.currentContact) {
+        return;
+      }
+      
+      // 从本地存储中删除联系人
+      let contacts = uni.getStorageSync('contacts') || [];
+      
+      // 使用更可靠的删除方式：通过名字和手机号匹配（防止同名）
+      const beforeLength = contacts.length;
+      contacts = contacts.filter(c => {
+        // 如果手机号存在，则同时匹配名字和手机号
+        if (this.currentContact.mobile && c.mobile) {
+          return !(c.name === this.currentContact.name && 
+                  c.mobile === this.currentContact.mobile);
+        }
+        // 否则只匹配名字
+        return c.name !== this.currentContact.name;
+      });
+      
+      // 检查是否真的删除了
+      if (contacts.length < beforeLength) {
+        uni.setStorageSync('contacts', contacts);
+        
+        // 更新当前页面的联系人列表
+        this.contacts = contacts;
+        
+        // 关闭确认删除弹窗
+        this.showDeleteConfirmFlag = false;
+        
+        // 关闭联系人详情弹窗
+        this.closeContactModal();
+        
+        // 显示删除成功提示
+        uni.showToast({ 
+          title: '删除成功', 
+          icon: 'success',
+          duration: 2000
+        });
+      } else {
+        // 如果没找到要删除的联系人，也关闭弹窗
+        this.showDeleteConfirmFlag = false;
+        this.closeContactModal();
+        uni.showToast({ 
+          title: '删除失败，未找到联系人', 
+          icon: 'none',
+          duration: 2000
+        });
+      }
+    },
+    repairContact() {
+      uni.showToast({ title: '一键修复', icon: 'none' });
     }
   },
 }
@@ -557,5 +1159,341 @@ export default {
   color: #333;
   margin-top: 10rpx;
   text-align: center;
+}
+
+/* 联系人详情弹窗 */
+.contact-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.contact-modal-content {
+  background: #fff;
+  border-radius: 32rpx;
+  width: 680rpx;
+  max-height: 90vh;
+  padding: 60rpx 40rpx 40rpx;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-header {
+  position: absolute;
+  top: 30rpx;
+  left: 30rpx;
+  right: 30rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-icon {
+  font-size: 48rpx;
+  cursor: pointer;
+  user-select: none;
+}
+
+.edit-icon {
+  color: #ff9800;
+  font-weight: 700;
+}
+
+.close-icon {
+  color: #000;
+  font-weight: 700;
+}
+
+.contact-avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 40rpx;
+  margin-bottom: 60rpx;
+}
+
+.contact-avatar {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 100rpx;
+  background: #ffe6c7;
+  margin-bottom: 24rpx;
+}
+
+.contact-name {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #222;
+}
+
+.contact-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  margin-bottom: 60rpx;
+}
+
+.action-btn {
+  position: relative;
+  min-height: 160rpx;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  padding: 24rpx 32rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.wechat-video {
+  background: #07c160;
+}
+
+.wechat-voice {
+  background: #ff9800;
+}
+
+.phone-call {
+  background: #007aff;
+}
+
+.vip-badge {
+  position: absolute;
+  left: 32rpx;
+  top: 24rpx;
+  background: #ffd700;
+  color: #222;
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.action-content {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  margin-left: 80rpx;
+}
+
+.action-btn:not(.wechat-video):not(.wechat-voice) .action-content {
+  margin-left: 0;
+}
+
+.action-icon {
+  width: 80rpx;
+  height: 80rpx;
+  margin-right: 24rpx;
+}
+
+.action-text-wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.action-text {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.4;
+}
+
+.action-sub {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.9);
+  margin-top: 8rpx;
+  line-height: 1.3;
+}
+
+.phone-number {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 40rpx;
+  border-top: 1rpx solid #eee;
+}
+
+.footer-action {
+  font-size: 32rpx;
+  color: #999;
+}
+
+.delete-contact {
+  color: #ff3b30;
+}
+
+.repair-contact {
+  color: #007aff;
+}
+
+/* 确认删除弹窗 */
+.delete-confirm-modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.delete-confirm-content {
+  background: #fff;
+  border-radius: 24rpx;
+  width: 560rpx;
+  padding: 60rpx 40rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.delete-confirm-title {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 30rpx;
+}
+
+.delete-confirm-text {
+  font-size: 32rpx;
+  color: #666;
+  text-align: center;
+  margin-bottom: 60rpx;
+  line-height: 1.6;
+}
+
+.delete-confirm-buttons {
+  display: flex;
+  width: 100%;
+  gap: 24rpx;
+}
+
+.delete-btn {
+  flex: 1;
+  height: 88rpx;
+  border-radius: 12rpx;
+  font-size: 32rpx;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cancel-btn {
+  background: #f5f5f5;
+  color: #666;
+}
+
+.confirm-btn {
+  background: #ff3b30;
+  color: #fff;
+}
+
+/* 编辑模式样式 */
+.edit-mode {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-top: 20rpx;
+}
+
+.edit-scroll {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.edit-avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 40rpx;
+  margin-bottom: 40rpx;
+}
+
+.edit-avatar {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 100rpx;
+  background: #ffe6c7;
+  margin-bottom: 16rpx;
+}
+
+.edit-avatar-hint {
+  font-size: 28rpx;
+  color: #1ebd5a;
+  font-weight: 700;
+}
+
+.edit-form {
+  padding: 0 40rpx;
+}
+
+.edit-item {
+  margin-bottom: 40rpx;
+}
+
+.edit-label {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 16rpx;
+}
+
+.edit-label.required {
+  color: #000;
+}
+
+.edit-input {
+  width: 100%;
+  height: 88rpx;
+  background: #f2f7fb;
+  border-radius: 12rpx;
+  padding: 0 24rpx;
+  font-size: 32rpx;
+  box-sizing: border-box;
+}
+
+.edit-hint {
+  display: block;
+  color: #ff3b30;
+  font-size: 28rpx;
+  margin-top: 12rpx;
+}
+
+.edit-actions {
+  padding: 40rpx;
+  margin-top: 40rpx;
+}
+
+.edit-save-btn {
+  width: 100%;
+  height: 96rpx;
+  background: #1ebd5a;
+  color: #fff;
+  border-radius: 12rpx;
+  font-size: 36rpx;
+  font-weight: 700;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

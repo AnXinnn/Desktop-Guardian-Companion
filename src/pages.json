@@ -35,6 +35,18 @@
 		{
 			"path": "pages/chat/chat",
 			"style": {}
+		},
+		{
+			"path": "pages/guardian/guardian",
+			"style": {}
+		},
+		{
+			"path": "pages/medicine/medicine-reminder",
+			"style": {}
+		},
+		{
+			"path": "pages/medicine/online-consultation",
+			"style": {}
 		}
 	],
 	"subPackages": [

@@ -5,4 +5,12 @@ export default defineConfig({
   plugins: [
     uni(),
   ],
+  server: {
+    fs: {
+      strict: false
+    }
+  },
+  build: {
+    charset: 'utf8'
+  }
 })

@@ -1,93 +1,196 @@
 <template>
-	<view class="page">
+  <view class="page">
     <view class="top">
-      <image class="back" src="/static/mgc/fanhui.png" @click="onCancel"></image>
-      <view class="left"><text class="title">æ•™ç¨‹</text></view>
-      <button class="import-btn" @click="importFromContacts">é€šè®¯å½•</button>
+      <button class="import-btn" @click="importFromContacts">Í¨Ñ¶Â¼</button>
     </view>
 
-		<view class="avatar-wrap">
-			<image class="avatar" :src="avatar || '/static/mgc/geren.png'" @click="pickAvatar"></image>
-			<text class="add-photo">æ·»åŠ ç…§ç‰‡</text>
-		</view>
+    <view class="avatar-wrap">
+      <image class="avatar" :src="avatar || '/static/mgc/geren.png'" @click="pickAvatar"></image>
+      <text class="add-photo">Ìí¼ÓÕÕÆ¬</text>
+    </view>
 
-		<view class="form">
+    <view class="form">
       <view class="label required">
-        <text>*å§“å</text>
+        <text>*Ãû×Ö</text>
       </view>
-			<input class="input" placeholder="è¯·è¾“å…¥å§“å" v-model.trim="name" />
+      <input class="input" placeholder="ÇëÊäÈëÃû×Ö" v-model.trim="name" />
 
       <view class="label">
-        <text>å¾®ä¿¡å¤‡æ³¨</text>
+        <text>Î¢ĞÅ±¸×¢</text>
       </view>
-			<input class="input" placeholder="è¯·è¾“å…¥å¾®ä¿¡å¤‡æ³¨" v-model.trim="wxNote" />
-			<text class="hint">*å¾®ä¿¡å¤‡æ³¨å¯ä¸å¡«</text>
+      <input class="input" placeholder="ÇëÊäÈëÁªÏµÈËµÄÎ¢ĞÅ±¸×¢" v-model.trim="wxNote" />
+      <text class="hint">*ĞèÒªÓëÎ¢ĞÅÀïÃæµÄ±¸×¢Ò»ÖÂ£¡</text>
 
       <view class="label required">
-        <text>*æ‰‹æœºå·</text>
+        <text>*ÊÖ»úºÅÂë</text>
       </view>
-			<input class="input" type="number" placeholder="è¯·è¾“å…¥æ‰‹æœºå·" v-model.trim="mobile" />
-		</view>
+      <input class="input" type="number" placeholder="ÇëÊäÈëÁªÏµÈËµÄÊÖ»úºÅÂë" v-model.trim="mobile" />
+    </view>
 
-		<view class="actions">
-			<button class="btn cancel" @click="onCancel">å–æ¶ˆ</button>
-			<button class="btn save" @click="onSave">ä¿å­˜</button>
-		</view>
-	</view>
+    <view class="actions">
+      <button class="btn cancel" @click="onCancel">È¡Ïû</button>
+      <button class="btn save" @click="onSave">±£´æ</button>
+    </view>
+  </view>
 </template>
 
 <script>
 export default {
-	data(){
-		return { avatar: '', name: '', wxNote: '', mobile: '' }
-	},
-	methods:{
-		pickAvatar(){
-			uni.chooseImage({ count: 1, success: (res)=> { this.avatar = res.tempFilePaths[0] } })
-		},
-		importFromContacts(){
-			uni.showToast({ title: 'ï¿½ï¿½Í¨Ñ¶Â¼ï¿½ï¿½ï¿½ï¿½', icon: 'none' })
-		},
-		onCancel(){
-			uni.redirectTo({
-				url: '/pages/index/index?page=0'
-			})
-		},
-		onSave(){
-			if(!this.name){ return uni.showToast({ title:'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½', icon:'none' }) }
-			if(!/^1\d{10}$/.test(this.mobile)){ return uni.showToast({ title:'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ§ï¿½Ö»ï¿½ï¿½ï¿½', icon:'none' }) }
-			// Ä£ï¿½â±£ï¿½ï¿½
-			uni.showToast({ title:'ï¿½Ñ±ï¿½ï¿½ï¿½', icon:'success' })
-			setTimeout(()=> uni.switchTab({ url: '/pages/index/index' }), 500)
-		}
-	}
+  data() {
+    return { 
+      avatar: '', 
+      name: '', 
+      wxNote: '', 
+      mobile: '' 
+    }
+  },
+  methods: {
+    pickAvatar() {
+      uni.chooseImage({ 
+        count: 1, 
+        success: (res) => { 
+          this.avatar = res.tempFilePaths[0] 
+        } 
+      })
+    },
+    importFromContacts() {
+      uni.showToast({ title: '´ÓÍ¨Ñ¶Â¼µ¼Èë', icon: 'none' })
+    },
+    onCancel() {
+      uni.navigateBack()
+    },
+    onSave() {
+      if (!this.name) { 
+        return uni.showToast({ title: 'ÇëÊäÈëÃû×Ö', icon: 'none' }) 
+      }
+      if (!/^1\d{10}$/.test(this.mobile)) { 
+        return uni.showToast({ title: 'ÇëÊäÈëÓĞĞ§ÊÖ»úºÅ', icon: 'none' }) 
+      }
+
+      // ±£´æµ½±¾µØ´æ´¢£¬°üº¬ËùÓĞ×Ö¶Î
+      let contacts = uni.getStorageSync('contacts') || [];
+      contacts.push({
+        name: this.name,
+        wxNote: this.wxNote || this.name, // Î¢ĞÅ±¸×¢£¬Èç¹ûÃ»ÓĞÔòÊ¹ÓÃÃû×Ö
+        mobile: this.mobile,
+        icon: this.avatar || '/static/mgc/geren.png'
+      });
+      uni.setStorageSync('contacts', contacts);
+
+      uni.showToast({ title: 'ÒÑ±£´æ', icon: 'success' })
+      setTimeout(() => {
+        uni.navigateBack()
+      }, 500)
+    }
+  }
 }
 </script>
 
 <style>
 @charset "utf-8";
-.page{ padding: 16px; background:#fff; min-height:100vh; }
-.top{ display:flex; justify-content:space-between; align-items:center; }
-.back{ width:28px; height:28px; }
-.left{ display:flex; align-items:center; }
-.play{ width:28px; height:28px; }
-.title{ margin-left:8px; color:#ff7a00; font-size:22px; font-weight:700; }
-.import-btn{ background:#1ebd5a; color:#fff; padding:8px 16px; border-radius:28px; font-size:18px; }
 
-.avatar-wrap{ margin-top:24px; display:flex; flex-direction:column; align-items:center; }
-.avatar{ width:160px; height:160px; border-radius:80px; background:#ffe6c7; }
-.add-photo{ margin-top:10px; color:#1ebd5a; font-size:22px; font-weight:700; }
+.page {
+  padding: 16px;
+  background: #fff;
+  min-height: 100vh;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+  font-size: 16px;
+}
 
-.form{ margin-top:24px; }
-.label{ display:flex; align-items:center; margin:12px 0 8px; font-size:22px; font-weight:700; }
-.label.required text{ color:#000; }
-.sound{ width:30px; height:30px; margin-left:10px; }
-.input{ height:88rpx; background:#f2f7fb; border-radius:12px; padding:0 16px; font-size:18px; }
-.hint{ color:#ff3b30; font-size:16px; margin-top:8px; display:block; }
+.top {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
 
-.actions{ display:flex; justify-content:space-between; margin-top:28px; }
-.btn{ width:45%; height:96rpx; border-radius:12px; font-size:22px; }
-.cancel{ background:#eee; }
-.save{ background:#1ebd5a; color:#fff; }
+.import-btn {
+  background: #1ebd5a;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 28px;
+  font-size: 18px;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+  border: none;
+}
+
+.avatar-wrap {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.avatar {
+  width: 160px;
+  height: 160px;
+  border-radius: 80px;
+  background: #ffe6c7;
+}
+
+.add-photo {
+  margin-top: 10px;
+  color: #1ebd5a;
+  font-size: 22px;
+  font-weight: 700;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+}
+
+.form {
+  margin-top: 24px;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  margin: 12px 0 8px;
+  font-size: 22px;
+  font-weight: 700;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+}
+
+.label.required text {
+  color: #000;
+}
+
+.input {
+  height: 88rpx;
+  background: #f2f7fb;
+  border-radius: 12px;
+  padding: 0 16px;
+  font-size: 18px;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+}
+
+.hint {
+  color: #ff3b30;
+  font-size: 16px;
+  margin-top: 8px;
+  display: block;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 28px;
+}
+
+.btn {
+  width: 45%;
+  height: 96rpx;
+  border-radius: 12px;
+  font-size: 22px;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+  border: none;
+}
+
+.cancel {
+  background: #eee;
+  color: #333;
+}
+
+.save {
+  background: #1ebd5a;
+  color: #fff;
+}
 </style>
-

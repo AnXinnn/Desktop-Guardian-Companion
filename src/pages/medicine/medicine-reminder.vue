@@ -2,12 +2,12 @@
   <view class="medicine-page">
     <view class="header">
       <image class="back-btn" src="/static/mgc/fanhui.png" @click="goBack"></image>
-      <text class="header-title">ÓÃÒ©ÌáĞÑ</text>
+      <text class="header-title">ç”¨è¯æé†’</text>
     </view>
 
     <scroll-view scroll-y class="content">
       <view class="add-btn-wrap">
-        <button class="add-btn" @click="addMedicine">+ Ìí¼ÓÓÃÒ©ÌáĞÑ</button>
+        <button class="add-btn" @click="addMedicine">+ æ·»åŠ ç”¨è¯æé†’</button>
       </view>
 
       <view class="medicine-list">
@@ -23,8 +23,8 @@
           ></image>
           <view class="medicine-info">
             <view class="medicine-name">{{ medicine.name }}</view>
-            <view class="medicine-desc">{{ medicine.dailyDosage || 'Ã¿ÈÕÓÃÁ¿Î´ÉèÖÃ' }}</view>
-            <view class="medicine-time">ÏÂ´ÎÌáĞÑ£º{{ medicine.nextTime }}</view>
+            <view class="medicine-desc">{{ medicine.dailyDosage || 'æ¯æ—¥ç”¨é‡æœªè®¾ç½®' }}</view>
+            <view class="medicine-time">ä¸‹æ¬¡æé†’ï¼š{{ medicine.nextTime }}</view>
           </view>
           <view class="medicine-actions">
             <image class="action-icon" src="/static/mgc/Information.png" @click="editMedicine(medicine, index)"></image>
@@ -33,24 +33,24 @@
         </view>
 
         <view v-if="medicineList.length === 0" class="empty-tip">
-          <text>ÔİÎŞÓÃÒ©ÌáĞÑ</text>
-          <text class="empty-hint">µã»÷ÉÏ·½°´Å¥Ìí¼ÓÓÃÒ©ÌáĞÑ</text>
+          <text>æš‚æ— ç”¨è¯æé†’</text>
+          <text class="empty-hint">ç‚¹å‡»ä¸Šæ–¹æŒ‰é’®æ·»åŠ ç”¨è¯æé†’</text>
         </view>
       </view>
     </scroll-view>
 
-    <!-- Ìí¼Ó/±à¼­ÓÃÒ©ÌáĞÑµ¯´° -->
+    <!-- æ·»åŠ /ç¼–è¾‘ç”¨è¯æé†’å¼¹çª— -->
     <view class="medicine-modal" v-if="showModal" @click.self="closeModal">
       <view class="modal-content" @click.stop>
         <view class="modal-header">
-          <text class="modal-title">{{ editingIndex !== null ? '±à¼­ÓÃÒ©ÌáĞÑ' : 'Ìí¼ÓÓÃÒ©ÌáĞÑ' }}</text>
+          <text class="modal-title">{{ editingIndex !== null ? 'ç¼–è¾‘ç”¨è¯æé†’' : 'æ·»åŠ ç”¨è¯æé†’' }}</text>
           <text class="modal-close" @click="closeModal">?</text>
         </view>
 
         <scroll-view scroll-y class="modal-body">
-          <!-- Ò©Æ·Í¼Æ¬ÉÏ´« -->
+          <!-- è¯å“å›¾ç‰‡ä¸Šä¼  -->
           <view class="form-item">
-            <text class="form-label required">*Ò©Æ·Í¼Æ¬</text>
+            <text class="form-label required">*è¯å“å›¾ç‰‡</text>
             <view class="image-upload-area" @click="takeMedicinePhoto">
               <image 
                 v-if="medicineForm.image" 
@@ -60,32 +60,32 @@
               ></image>
               <view v-else class="upload-placeholder">
                 <image class="camera-icon" src="/static/mgc/Camera.png"></image>
-                <text class="upload-hint">µã»÷ÅÄÕÕÉÏ´«Ò©Æ·Í¼Æ¬</text>
+                <text class="upload-hint">ç‚¹å‡»æ‹ç…§ä¸Šä¼ è¯å“å›¾ç‰‡</text>
               </view>
             </view>
           </view>
 
           <view class="form-item">
-            <text class="form-label required">*Ò©Æ·Ãû³Æ</text>
+            <text class="form-label required">*è¯å“åç§°</text>
             <input 
               class="form-input" 
-              placeholder="ÇëÊäÈëÒ©Æ·Ãû³Æ" 
+              placeholder="è¯·è¾“å…¥è¯å“åç§°" 
               v-model.trim="medicineForm.name" 
             />
           </view>
 
           <view class="form-item">
-            <text class="form-label required">*Ã¿ÈÕÓÃÁ¿</text>
+            <text class="form-label required">*æ¯æ—¥ç”¨é‡</text>
             <textarea 
               class="form-textarea daily-dosage" 
-              placeholder="ÇëÊäÈëÃ¿ÈÕÓÃÁ¿±¸×¢£¬ÀıÈç£ºÔç·¹ºó1Æ¬£¬Îç·¹ºó1Æ¬£¬Íí·¹ºó1Æ¬" 
+              placeholder="è¯·è¾“å…¥æ¯æ—¥ç”¨é‡å¤‡æ³¨ï¼Œä¾‹å¦‚ï¼šæ—©é¥­å1ç‰‡ï¼Œåˆé¥­å1ç‰‡ï¼Œæ™šé¥­å1ç‰‡" 
               v-model.trim="medicineForm.dailyDosage"
               maxlength="200"
             ></textarea>
           </view>
 
           <view class="form-item">
-            <text class="form-label required">*ÓÃÒ©ÆµÂÊ</text>
+            <text class="form-label required">*ç”¨è¯é¢‘ç‡</text>
             <picker 
               mode="selector" 
               :range="frequencyOptions" 
@@ -93,55 +93,55 @@
               @change="onFrequencyChange"
             >
               <view class="picker-view">
-                {{ medicineForm.frequency || 'ÇëÑ¡ÔñÓÃÒ©ÆµÂÊ' }}
+                {{ medicineForm.frequency || 'è¯·é€‰æ‹©ç”¨è¯é¢‘ç‡' }}
               </view>
             </picker>
           </view>
 
           <view class="form-item">
-            <text class="form-label required">*ÌáĞÑÊ±¼ä</text>
+            <text class="form-label required">*æé†’æ—¶é—´</text>
             <picker 
               mode="time" 
               :value="medicineForm.time"
               @change="onTimeChange"
             >
               <view class="picker-view">
-                {{ medicineForm.time || 'ÇëÑ¡ÔñÌáĞÑÊ±¼ä' }}
+                {{ medicineForm.time || 'è¯·é€‰æ‹©æé†’æ—¶é—´' }}
               </view>
             </picker>
           </view>
 
           <view class="form-item">
-            <text class="form-label">¿ªÊ¼ÈÕÆÚ</text>
+            <text class="form-label">å¼€å§‹æ—¥æœŸ</text>
             <picker 
               mode="date" 
               :value="medicineForm.startDate"
               @change="onStartDateChange"
             >
               <view class="picker-view">
-                {{ medicineForm.startDate || 'ÇëÑ¡Ôñ¿ªÊ¼ÈÕÆÚ' }}
+                {{ medicineForm.startDate || 'è¯·é€‰æ‹©å¼€å§‹æ—¥æœŸ' }}
               </view>
             </picker>
           </view>
 
           <view class="form-item">
-            <text class="form-label">½áÊøÈÕÆÚ</text>
+            <text class="form-label">ç»“æŸæ—¥æœŸ</text>
             <picker 
               mode="date" 
               :value="medicineForm.endDate"
               @change="onEndDateChange"
             >
               <view class="picker-view">
-                {{ medicineForm.endDate || 'ÇëÑ¡Ôñ½áÊøÈÕÆÚ£¨¿ÉÑ¡£©' }}
+                {{ medicineForm.endDate || 'è¯·é€‰æ‹©ç»“æŸæ—¥æœŸï¼ˆå¯é€‰ï¼‰' }}
               </view>
             </picker>
           </view>
 
           <view class="form-item">
-            <text class="form-label">±¸×¢</text>
+            <text class="form-label">å¤‡æ³¨</text>
             <textarea 
               class="form-textarea" 
-              placeholder="ÇëÊäÈë±¸×¢ĞÅÏ¢£¨¿ÉÑ¡£©" 
+              placeholder="è¯·è¾“å…¥å¤‡æ³¨ä¿¡æ¯ï¼ˆå¯é€‰ï¼‰" 
               v-model.trim="medicineForm.note"
               maxlength="200"
             ></textarea>
@@ -149,8 +149,8 @@
         </scroll-view>
 
         <view class="modal-footer">
-          <button class="modal-btn cancel-btn" @click="closeModal">È¡Ïû</button>
-          <button class="modal-btn save-btn" @click="saveMedicine">±£´æ</button>
+          <button class="modal-btn cancel-btn" @click="closeModal">å–æ¶ˆ</button>
+          <button class="modal-btn save-btn" @click="saveMedicine">ä¿å­˜</button>
         </view>
       </view>
     </view>
@@ -166,13 +166,13 @@ export default {
       editingIndex: null,
       frequencyIndex: 0,
       frequencyOptions: [
-        'Ã¿Ìì1´Î',
-        'Ã¿Ìì2´Î',
-        'Ã¿Ìì3´Î',
-        'Ã¿Ìì4´Î',
-        'Ã¿2Ìì1´Î',
-        'Ã¿ÖÜ1´Î',
-        '°´Ğè·şÓÃ'
+        'æ¯å¤©1æ¬¡',
+        'æ¯å¤©2æ¬¡',
+        'æ¯å¤©3æ¬¡',
+        'æ¯å¤©4æ¬¡',
+        'æ¯2å¤©1æ¬¡',
+        'æ¯å‘¨1æ¬¡',
+        'æŒ‰éœ€æœç”¨'
       ],
       medicineForm: {
         name: '',
@@ -197,11 +197,11 @@ export default {
     loadMedicineList() {
       const list = uni.getStorageSync('medicineList') || [];
       this.medicineList = list.map(med => {
-        // ¼ÆËãÏÂ´ÎÌáĞÑÊ±¼ä
+        // è®¡ç®—ä¸‹æ¬¡æé†’æ—¶é—´
         if (med.time && med.frequency) {
           med.nextTime = this.calculateNextTime(med.time, med.frequency);
         } else {
-          med.nextTime = 'Î´ÉèÖÃ';
+          med.nextTime = 'æœªè®¾ç½®';
         }
         return med;
       });
@@ -212,13 +212,13 @@ export default {
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
       
       if (now < today) {
-        // ½ñÌìµÄÌáĞÑÊ±¼ä»¹Ã»µ½
-        return `½ñÌì ${time}`;
+        // ä»Šå¤©çš„æé†’æ—¶é—´è¿˜æ²¡åˆ°
+        return `ä»Šå¤© ${time}`;
       } else {
-        // ½ñÌìµÄÌáĞÑÊ±¼äÒÑ¹ı£¬·µ»ØÃ÷Ìì
+        // ä»Šå¤©çš„æé†’æ—¶é—´å·²è¿‡ï¼Œè¿”å›æ˜å¤©
         const tomorrow = new Date(today);
         tomorrow.setDate(tomorrow.getDate() + 1);
-        return `Ã÷Ìì ${time}`;
+        return `æ˜å¤© ${time}`;
       }
     },
     addMedicine() {
@@ -234,13 +234,13 @@ export default {
     },
     deleteMedicine(index) {
       uni.showModal({
-        title: 'È·ÈÏÉ¾³ı',
-        content: 'È·¶¨ÒªÉ¾³ıÕâ¸öÓÃÒ©ÌáĞÑÂğ£¿',
+        title: 'ç¡®è®¤åˆ é™¤',
+        content: 'ç¡®å®šè¦åˆ é™¤è¿™ä¸ªç”¨è¯æé†’å—ï¼Ÿ',
         success: (res) => {
           if (res.confirm) {
             this.medicineList.splice(index, 1);
             uni.setStorageSync('medicineList', this.medicineList);
-            uni.showToast({ title: 'ÒÑÉ¾³ı', icon: 'success' });
+            uni.showToast({ title: 'å·²åˆ é™¤', icon: 'success' });
           }
         }
       });
@@ -260,12 +260,12 @@ export default {
       this.frequencyIndex = 0;
     },
     takeMedicinePhoto() {
-      // Ìá¹©Ñ¡Ôñ²Ëµ¥£ºÅÄÕÕ»ò´ÓÏà²áÑ¡Ôñ
+      // æä¾›é€‰æ‹©èœå•ï¼šæ‹ç…§æˆ–ä»ç›¸å†Œé€‰æ‹©
       uni.showActionSheet({
-        itemList: ['ÅÄÕÕ', '´ÓÏà²áÑ¡Ôñ'],
+        itemList: ['æ‹ç…§', 'ä»ç›¸å†Œé€‰æ‹©'],
         success: (res) => {
           if (res.tapIndex === 0) {
-            // ÅÄÕÕ
+            // æ‹ç…§
             uni.chooseImage({
               count: 1,
               sourceType: ['camera'],
@@ -274,12 +274,12 @@ export default {
                 this.medicineForm.image = res.tempFilePaths[0];
               },
               fail: (err) => {
-                console.log('ÅÄÕÕÊ§°Ü:', err);
-                uni.showToast({ title: 'ÅÄÕÕÊ§°Ü£¬Çë¼ì²éÏà»úÈ¨ÏŞ', icon: 'none' });
+                console.log('æ‹ç…§å¤±è´¥:', err);
+                uni.showToast({ title: 'æ‹ç…§å¤±è´¥ï¼Œè¯·æ£€æŸ¥ç›¸æœºæƒé™', icon: 'none' });
               }
             });
           } else {
-            // ´ÓÏà²áÑ¡Ôñ
+            // ä»ç›¸å†Œé€‰æ‹©
             uni.chooseImage({
               count: 1,
               sourceType: ['album'],
@@ -287,8 +287,8 @@ export default {
                 this.medicineForm.image = res.tempFilePaths[0];
               },
               fail: (err) => {
-                console.log('Ñ¡ÔñÍ¼Æ¬Ê§°Ü:', err);
-                uni.showToast({ title: 'Çë¼ì²éÏà²áÈ¨ÏŞ', icon: 'none' });
+                console.log('é€‰æ‹©å›¾ç‰‡å¤±è´¥:', err);
+                uni.showToast({ title: 'è¯·æ£€æŸ¥ç›¸å†Œæƒé™', icon: 'none' });
               }
             });
           }
@@ -314,45 +314,45 @@ export default {
       this.medicineForm.endDate = e.detail.value;
     },
     saveMedicine() {
-      // ÑéÖ¤±ØÌîÏî
+      // éªŒè¯å¿…å¡«é¡¹
       if (!this.medicineForm.image) {
-        return uni.showToast({ title: 'ÇëÅÄÕÕÉÏ´«Ò©Æ·Í¼Æ¬', icon: 'none' });
+        return uni.showToast({ title: 'è¯·æ‹ç…§ä¸Šä¼ è¯å“å›¾ç‰‡', icon: 'none' });
       }
       if (!this.medicineForm.name) {
-        return uni.showToast({ title: 'ÇëÊäÈëÒ©Æ·Ãû³Æ', icon: 'none' });
+        return uni.showToast({ title: 'è¯·è¾“å…¥è¯å“åç§°', icon: 'none' });
       }
       if (!this.medicineForm.dailyDosage) {
-        return uni.showToast({ title: 'ÇëÊäÈëÃ¿ÈÕÓÃÁ¿±¸×¢', icon: 'none' });
+        return uni.showToast({ title: 'è¯·è¾“å…¥æ¯æ—¥ç”¨é‡å¤‡æ³¨', icon: 'none' });
       }
       if (!this.medicineForm.frequency) {
-        return uni.showToast({ title: 'ÇëÑ¡ÔñÓÃÒ©ÆµÂÊ', icon: 'none' });
+        return uni.showToast({ title: 'è¯·é€‰æ‹©ç”¨è¯é¢‘ç‡', icon: 'none' });
       }
       if (!this.medicineForm.time) {
-        return uni.showToast({ title: 'ÇëÑ¡ÔñÌáĞÑÊ±¼ä', icon: 'none' });
+        return uni.showToast({ title: 'è¯·é€‰æ‹©æé†’æ—¶é—´', icon: 'none' });
       }
 
-      // Èç¹ûÃ»ÓĞÉèÖÃ¿ªÊ¼ÈÕÆÚ£¬Ä¬ÈÏ½ñÌì
+      // å¦‚æœæ²¡æœ‰è®¾ç½®å¼€å§‹æ—¥æœŸï¼Œé»˜è®¤ä»Šå¤©
       if (!this.medicineForm.startDate) {
         const today = new Date();
         this.medicineForm.startDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
       }
 
-      // ¼ÆËãÏÂ´ÎÌáĞÑÊ±¼ä
+      // è®¡ç®—ä¸‹æ¬¡æé†’æ—¶é—´
       const medicine = {
         ...this.medicineForm,
         nextTime: this.calculateNextTime(this.medicineForm.time, this.medicineForm.frequency)
       };
 
       if (this.editingIndex !== null) {
-        // ±à¼­
+        // ç¼–è¾‘
         this.medicineList[this.editingIndex] = medicine;
       } else {
-        // ĞÂÔö
+        // æ–°å¢
         this.medicineList.push(medicine);
       }
 
       uni.setStorageSync('medicineList', this.medicineList);
-      uni.showToast({ title: '±£´æ³É¹¦', icon: 'success' });
+      uni.showToast({ title: 'ä¿å­˜æˆåŠŸ', icon: 'success' });
       this.closeModal();
     }
   }
@@ -365,11 +365,11 @@ export default {
 .medicine-page {
   min-height: 100vh;
   background: #f6f7f9;
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'å¾®è½¯é›…é»‘', Arial, sans-serif;
 }
 
 .medicine-page * {
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'å¾®è½¯é›…é»‘', Arial, sans-serif;
 }
 
 .header {
@@ -493,7 +493,7 @@ export default {
   color: #ccc;
 }
 
-/* µ¯´°ÑùÊ½ */
+/* å¼¹çª—æ ·å¼ */
 .medicine-modal {
   position: fixed;
   top: 0;
@@ -598,7 +598,7 @@ export default {
   min-height: 120rpx;
 }
 
-/* Í¼Æ¬ÉÏ´«ÇøÓò */
+/* å›¾ç‰‡ä¸Šä¼ åŒºåŸŸ */
 .image-upload-area {
   width: 100%;
   min-height: 300rpx;

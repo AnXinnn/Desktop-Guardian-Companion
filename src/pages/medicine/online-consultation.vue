@@ -2,45 +2,45 @@
   <view class="consultation-page">
     <view class="header">
       <image class="back-btn" src="/static/mgc/fanhui.png" @click="goBack"></image>
-      <text class="header-title">ÔÚÏßÎÊÕï</text>
+      <text class="header-title">åœ¨çº¿é—®è¯Š</text>
     </view>
 
     <scroll-view scroll-y class="content">
       <view class="banner">
-        <text class="banner-title">×¨ÒµÒ½ÉúÔÚÏß·şÎñ</text>
-        <text class="banner-desc">7¡Á24Ğ¡Ê±ÔÚÏß£¬ÎªÄúÌá¹©×¨ÒµÒ½ÁÆ×ÉÑ¯</text>
+        <text class="banner-title">ä¸“ä¸šåŒ»ç”Ÿåœ¨çº¿æœåŠ¡</text>
+        <text class="banner-desc">7Ã—24å°æ—¶åœ¨çº¿ï¼Œä¸ºæ‚¨æä¾›ä¸“ä¸šåŒ»ç–—å’¨è¯¢</text>
       </view>
 
       <view class="service-list">
-        <view class="service-card" @click="startConsultation('Í¼ÎÄ')">
+        <view class="service-card" @click="startConsultation('å›¾æ–‡')">
           <view class="service-icon">?</view>
           <view class="service-info">
-            <text class="service-name">Í¼ÎÄÎÊÕï</text>
-            <text class="service-desc">ÎÄ×ÖÃèÊö²¡Çé£¬Ò½ÉúÔÚÏß»Ø¸´</text>
+            <text class="service-name">å›¾æ–‡é—®è¯Š</text>
+            <text class="service-desc">æ–‡å­—æè¿°ç—…æƒ…ï¼ŒåŒ»ç”Ÿåœ¨çº¿å›å¤</text>
           </view>
-          <text class="service-price">?29Æğ</text>
+          <text class="service-price">?29èµ·</text>
         </view>
 
-        <view class="service-card" @click="startConsultation('ÓïÒô')">
+        <view class="service-card" @click="startConsultation('è¯­éŸ³')">
           <view class="service-icon">?</view>
           <view class="service-info">
-            <text class="service-name">ÓïÒôÎÊÕï</text>
-            <text class="service-desc">ÓëÒ½ÉúÓïÒôÍ¨»°£¬ÏêÏ¸¹µÍ¨</text>
+            <text class="service-name">è¯­éŸ³é—®è¯Š</text>
+            <text class="service-desc">ä¸åŒ»ç”Ÿè¯­éŸ³é€šè¯ï¼Œè¯¦ç»†æ²Ÿé€š</text>
           </view>
-          <text class="service-price">?49Æğ</text>
+          <text class="service-price">?49èµ·</text>
         </view>
 
-        <view class="service-card" @click="startConsultation('ÊÓÆµ')">
+        <view class="service-card" @click="startConsultation('è§†é¢‘')">
           <view class="service-icon">?</view>
           <view class="service-info">
-            <text class="service-name">ÊÓÆµÎÊÕï</text>
-            <text class="service-desc">Ãæ¶ÔÃæÊÓÆµ×ÉÑ¯£¬¸üÖ±¹Û</text>
+            <text class="service-name">è§†é¢‘é—®è¯Š</text>
+            <text class="service-desc">é¢å¯¹é¢è§†é¢‘å’¨è¯¢ï¼Œæ›´ç›´è§‚</text>
           </view>
-          <text class="service-price">?69Æğ</text>
+          <text class="service-price">?69èµ·</text>
         </view>
       </view>
 
-      <view class="section-title">ÀúÊ·ÎÊÕï</view>
+      <view class="section-title">å†å²é—®è¯Š</view>
       <view class="history-list">
         <view 
           class="history-item" 
@@ -49,7 +49,7 @@
           @click="viewConsultationDetail(record)"
         >
           <view class="history-info">
-            <text class="history-type">{{ record.type }}ÎÊÕï</text>
+            <text class="history-type">{{ record.type }}é—®è¯Š</text>
             <text class="history-time">{{ record.time }}</text>
             <text class="history-status" :class="'status-' + record.status">
               {{ getStatusText(record.status) }}
@@ -59,66 +59,66 @@
         </view>
 
         <view v-if="consultationHistory.length === 0" class="empty-tip">
-          <text>ÔİÎŞÎÊÕï¼ÇÂ¼</text>
+          <text>æš‚æ— é—®è¯Šè®°å½•</text>
         </view>
       </view>
     </scroll-view>
 
-    <!-- ÎÊÕï±íµ¥µ¯´° -->
+    <!-- é—®è¯Šè¡¨å•å¼¹çª— -->
     <view class="consultation-modal" v-if="showModal" @click.self="closeModal">
       <view class="modal-content" @click.stop>
         <view class="modal-header">
-          <text class="modal-title">{{ consultationType }}ÎÊÕï</text>
+          <text class="modal-title">{{ consultationType }}é—®è¯Š</text>
           <text class="modal-close" @click="closeModal">?</text>
         </view>
 
         <scroll-view scroll-y class="modal-body">
           <view class="form-item">
-            <text class="form-label required">*Ö¢×´ÃèÊö</text>
+            <text class="form-label required">*ç—‡çŠ¶æè¿°</text>
             <textarea 
               class="form-textarea" 
-              placeholder="ÇëÏêÏ¸ÃèÊöÄúµÄÖ¢×´¡¢³ÖĞøÊ±¼äºÍÏà¹ØÇé¿ö" 
+              placeholder="è¯·è¯¦ç»†æè¿°æ‚¨çš„ç—‡çŠ¶ã€æŒç»­æ—¶é—´å’Œç›¸å…³æƒ…å†µ" 
               v-model.trim="consultationForm.symptoms"
               maxlength="500"
             ></textarea>
           </view>
 
           <view class="form-item">
-            <text class="form-label">ÄêÁä</text>
+            <text class="form-label">å¹´é¾„</text>
             <input 
               class="form-input" 
               type="number" 
-              placeholder="ÇëÊäÈëÄêÁä" 
+              placeholder="è¯·è¾“å…¥å¹´é¾„" 
               v-model.trim="consultationForm.age" 
             />
           </view>
 
           <view class="form-item">
-            <text class="form-label">ĞÔ±ğ</text>
+            <text class="form-label">æ€§åˆ«</text>
             <view class="radio-group">
               <label class="radio-label">
                 <radio value="male" :checked="consultationForm.gender === 'male'" @click="consultationForm.gender = 'male'" />
-                <text>ÄĞ</text>
+                <text>ç”·</text>
               </label>
               <label class="radio-label">
                 <radio value="female" :checked="consultationForm.gender === 'female'" @click="consultationForm.gender = 'female'" />
-                <text>Å®</text>
+                <text>å¥³</text>
               </label>
             </view>
           </view>
 
           <view class="form-item">
-            <text class="form-label">ÁªÏµ·½Ê½</text>
+            <text class="form-label">è”ç³»æ–¹å¼</text>
             <input 
               class="form-input" 
               type="number" 
-              placeholder="ÇëÊäÈëÊÖ»úºÅÂë" 
+              placeholder="è¯·è¾“å…¥æ‰‹æœºå·ç " 
               v-model.trim="consultationForm.phone" 
             />
           </view>
 
           <view class="form-item">
-            <text class="form-label">¸½¼ş£¨¿ÉÑ¡£©</text>
+            <text class="form-label">é™„ä»¶ï¼ˆå¯é€‰ï¼‰</text>
             <view class="upload-area" @click="uploadImage">
               <image 
                 v-if="consultationForm.image" 
@@ -126,14 +126,14 @@
                 :src="consultationForm.image" 
                 mode="aspectFit"
               ></image>
-              <text v-else class="upload-hint">+ ÉÏ´«ÕÕÆ¬£¨¼ì²é±¨¸æ¡¢Ö¢×´Í¼Æ¬µÈ£©</text>
+              <text v-else class="upload-hint">+ ä¸Šä¼ ç…§ç‰‡ï¼ˆæ£€æŸ¥æŠ¥å‘Šã€ç—‡çŠ¶å›¾ç‰‡ç­‰ï¼‰</text>
             </view>
           </view>
         </scroll-view>
 
         <view class="modal-footer">
-          <button class="modal-btn cancel-btn" @click="closeModal">È¡Ïû</button>
-          <button class="modal-btn submit-btn" @click="submitConsultation">Ìá½»ÎÊÕï</button>
+          <button class="modal-btn cancel-btn" @click="closeModal">å–æ¶ˆ</button>
+          <button class="modal-btn submit-btn" @click="submitConsultation">æäº¤é—®è¯Š</button>
         </view>
       </view>
     </view>
@@ -195,7 +195,7 @@ export default {
     },
     submitConsultation() {
       if (!this.consultationForm.symptoms) {
-        return uni.showToast({ title: 'ÇëÊäÈëÖ¢×´ÃèÊö', icon: 'none' });
+        return uni.showToast({ title: 'è¯·è¾“å…¥ç—‡çŠ¶æè¿°', icon: 'none' });
       }
 
       const consultation = {
@@ -209,19 +209,19 @@ export default {
       this.consultationHistory.unshift(consultation);
       uni.setStorageSync('consultationHistory', this.consultationHistory);
 
-      uni.showToast({ title: 'ÎÊÕïÌá½»³É¹¦£¬Ò½Éú»á¾¡¿ì»Ø¸´', icon: 'success' });
+      uni.showToast({ title: 'é—®è¯Šæäº¤æˆåŠŸï¼ŒåŒ»ç”Ÿä¼šå°½å¿«å›å¤', icon: 'success' });
       this.closeModal();
     },
     viewConsultationDetail(record) {
-      uni.showToast({ title: 'ÎÊÕïÏêÇé£º' + record.symptoms, icon: 'none', duration: 3000 });
+      uni.showToast({ title: 'é—®è¯Šè¯¦æƒ…ï¼š' + record.symptoms, icon: 'none', duration: 3000 });
     },
     getStatusText(status) {
       const statusMap = {
-        'pending': '´ı´¦Àí',
-        'processing': '´¦ÀíÖĞ',
-        'completed': 'ÒÑÍê³É'
+        'pending': 'å¾…å¤„ç†',
+        'processing': 'å¤„ç†ä¸­',
+        'completed': 'å·²å®Œæˆ'
       };
-      return statusMap[status] || 'Î´Öª';
+      return statusMap[status] || 'æœªçŸ¥';
     }
   }
 }
@@ -233,11 +233,11 @@ export default {
 .consultation-page {
   min-height: 100vh;
   background: #f6f7f9;
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'å¾®è½¯é›…é»‘', Arial, sans-serif;
 }
 
 .consultation-page * {
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'å¾®è½¯é›…é»‘', Arial, sans-serif;
 }
 
 .header {
@@ -411,7 +411,7 @@ export default {
   font-size: 28rpx;
 }
 
-/* µ¯´°ÑùÊ½ */
+/* å¼¹çª—æ ·å¼ */
 .consultation-modal {
   position: fixed;
   top: 0;

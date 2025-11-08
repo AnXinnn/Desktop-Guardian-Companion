@@ -1,35 +1,31 @@
 <template>
   <view class="page">
-    <view class="top">
-      <button class="import-btn" @click="importFromContacts">Í¨Ñ¶Â¼</button>
-    </view>
-
     <view class="avatar-wrap">
       <image class="avatar" :src="avatar || '/static/mgc/geren.png'" @click="pickAvatar"></image>
-      <text class="add-photo">Ìí¼ÓÕÕÆ¬</text>
+      <text class="add-photo">æ·»åŠ ç…§ç‰‡</text>
     </view>
 
     <view class="form">
       <view class="label required">
-        <text>*Ãû×Ö</text>
+        <text>*å§“å</text>
       </view>
-      <input class="input" placeholder="ÇëÊäÈëÃû×Ö" v-model.trim="name" />
+      <input class="input" placeholder="è¯·è¾“å…¥å§“å" v-model.trim="name" />
 
       <view class="label">
-        <text>Î¢ĞÅ±¸×¢</text>
+        <text>*å¾®ä¿¡å¤‡æ³¨</text>
       </view>
-      <input class="input" placeholder="ÇëÊäÈëÁªÏµÈËµÄÎ¢ĞÅ±¸×¢" v-model.trim="wxNote" />
-      <text class="hint">*ĞèÒªÓëÎ¢ĞÅÀïÃæµÄ±¸×¢Ò»ÖÂ£¡</text>
+      <input class="input" placeholder="è¯·è¾“å…¥è”ç³»äººçš„å¾®ä¿¡å¤‡æ³¨" v-model.trim="wxNote" />
+      <text class="hint">*éœ€è¦ä¸å¾®ä¿¡é‡Œé¢çš„å¤‡æ³¨ä¸€è‡´</text>
 
       <view class="label required">
-        <text>*ÊÖ»úºÅÂë</text>
+        <text>*æ‰‹æœºå·ç </text>
       </view>
-      <input class="input" type="number" placeholder="ÇëÊäÈëÁªÏµÈËµÄÊÖ»úºÅÂë" v-model.trim="mobile" />
+      <input class="input" type="number" placeholder="è¯·è¾“å…¥è”ç³»äººæ‰‹æœºå·ç " v-model.trim="mobile" />
     </view>
 
     <view class="actions">
-      <button class="btn cancel" @click="onCancel">È¡Ïû</button>
-      <button class="btn save" @click="onSave">±£´æ</button>
+      <button class="btn cancel" @click="onCancel">å–æ¶ˆ</button>
+      <button class="btn save" @click="onSave">ä¿å­˜</button>
     </view>
   </view>
 </template>
@@ -53,31 +49,28 @@ export default {
         } 
       })
     },
-    importFromContacts() {
-      uni.showToast({ title: '´ÓÍ¨Ñ¶Â¼µ¼Èë', icon: 'none' })
-    },
     onCancel() {
       uni.navigateBack()
     },
     onSave() {
       if (!this.name) { 
-        return uni.showToast({ title: 'ÇëÊäÈëÃû×Ö', icon: 'none' }) 
+        return uni.showToast({ title: 'è¯·è¾“å…¥åå­—', icon: 'none' }) 
       }
       if (!/^1\d{10}$/.test(this.mobile)) { 
-        return uni.showToast({ title: 'ÇëÊäÈëÓĞĞ§ÊÖ»úºÅ', icon: 'none' }) 
+        return uni.showToast({ title: 'è¯·è¾“å…¥æœ‰æ•ˆæ‰‹æœºå·', icon: 'none' }) 
       }
 
-      // ±£´æµ½±¾µØ´æ´¢£¬°üº¬ËùÓĞ×Ö¶Î
+      
       let contacts = uni.getStorageSync('contacts') || [];
       contacts.push({
         name: this.name,
-        wxNote: this.wxNote || this.name, // Î¢ĞÅ±¸×¢£¬Èç¹ûÃ»ÓĞÔòÊ¹ÓÃÃû×Ö
+        wxNote: this.wxNote || this.name, 
         mobile: this.mobile,
         icon: this.avatar || '/static/mgc/geren.png'
       });
       uni.setStorageSync('contacts', contacts);
 
-      uni.showToast({ title: 'ÒÑ±£´æ', icon: 'success' })
+      uni.showToast({ title: 'å·²ä¿å­˜', icon: 'success' })
       setTimeout(() => {
         uni.navigateBack()
       }, 500)
@@ -93,7 +86,7 @@ export default {
   padding: 16px;
   background: #fff;
   min-height: 100vh;
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'å¾®è½¯é›…é»‘', Arial, sans-serif;
   font-size: 16px;
 }
 
@@ -109,7 +102,7 @@ export default {
   padding: 8px 16px;
   border-radius: 28px;
   font-size: 18px;
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'å¾®è½¯é›…é»‘', Arial, sans-serif;
   border: none;
 }
 
@@ -132,7 +125,7 @@ export default {
   color: #1ebd5a;
   font-size: 22px;
   font-weight: 700;
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'å¾®è½¯é›…é»‘', Arial, sans-serif;
 }
 
 .form {
@@ -145,7 +138,7 @@ export default {
   margin: 12px 0 8px;
   font-size: 22px;
   font-weight: 700;
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'å¾®è½¯é›…é»‘', Arial, sans-serif;
 }
 
 .label.required text {
@@ -158,7 +151,7 @@ export default {
   border-radius: 12px;
   padding: 0 16px;
   font-size: 18px;
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'å¾®è½¯é›…é»‘', Arial, sans-serif;
 }
 
 .hint {
@@ -166,7 +159,7 @@ export default {
   font-size: 16px;
   margin-top: 8px;
   display: block;
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'å¾®è½¯é›…é»‘', Arial, sans-serif;
 }
 
 .actions {
@@ -180,7 +173,7 @@ export default {
   height: 96rpx;
   border-radius: 12px;
   font-size: 22px;
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'å¾®è½¯é›…é»‘', Arial, sans-serif;
   border: none;
 }
 

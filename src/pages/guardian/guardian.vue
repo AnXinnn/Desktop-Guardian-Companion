@@ -2,11 +2,11 @@
   <view class="guardian-page">
     <view class="header">
       <image class="back-btn" src="/static/mgc/fanhui.png" @click="goBack"></image>
-      <text class="header-title">×ÀÃæÊØ»¤</text>
+      <text class="header-title">æ¡Œé¢å®ˆæŠ¤</text>
     </view>
 
     <scroll-view scroll-y class="content">
-      <view class="section-title">ÏµÍ³È¨ÏŞ¹ÜÀí</view>
+      <view class="section-title">ç³»ç»Ÿæƒé™ç®¡ç†</view>
       <view class="permission-list">
         <view 
           class="permission-item" 
@@ -20,7 +20,7 @@
           </view>
           <view class="permission-status">
             <text class="status-text" :class="{ 'granted': permission.granted }">
-              {{ permission.granted ? 'ÒÑ¿ªÆô' : 'Î´¿ªÆô' }}
+              {{ permission.granted ? 'å·²å¼€å¯' : 'æœªå¼€å¯' }}
             </text>
             <text class="arrow">></text>
           </view>
@@ -28,8 +28,8 @@
       </view>
 
       <view class="tip-box">
-        <text class="tip-title">ÎÂÜ°ÌáÊ¾</text>
-        <text class="tip-content">ÇëÈ·±£ËùÓĞÈ¨ÏŞ¶¼ÒÑ¿ªÆô£¬ÒÔÈ·±£Ó¦ÓÃÕı³£ÔËĞĞ¡£µã»÷È¨ÏŞÏî¿ÉÌø×ªµ½ÏµÍ³ÉèÖÃÒ³Ãæ¿ªÆôÈ¨ÏŞ¡£</text>
+        <text class="tip-title">æ¸©é¦¨æç¤º</text>
+        <text class="tip-content">è¯·ç¡®ä¿æ‰€æœ‰æƒé™éƒ½å·²å¼€å¯ï¼Œä»¥ç¡®ä¿åº”ç”¨æ­£å¸¸è¿è¡Œã€‚ç‚¹å‡»æƒé™é¡¹å¯è·³è½¬åˆ°ç³»ç»Ÿè®¾ç½®é¡µé¢å¼€å¯æƒé™ã€‚</text>
       </view>
     </scroll-view>
   </view>
@@ -42,85 +42,85 @@ export default {
       permissions: [
         {
           key: 'location',
-          name: 'Î»ÖÃĞÅÏ¢',
-          description: 'ÓÃÓÚ»ñÈ¡µ±Ç°Î»ÖÃºÍÌìÆøĞÅÏ¢',
+          name: 'ä½ç½®ä¿¡æ¯',
+          description: 'ç”¨äºè·å–å½“å‰ä½ç½®å’Œå¤©æ°”ä¿¡æ¯',
           granted: false,
           setting: 'android.settings.LOCATION_SOURCE_SETTINGS'
         },
         {
           key: 'camera',
-          name: 'Ïà»úÈ¨ÏŞ',
-          description: 'ÓÃÓÚÅÄÕÕºÍÍ·ÏñÉÏ´«¹¦ÄÜ',
+          name: 'ç›¸æœºæƒé™',
+          description: 'ç”¨äºæ‹ç…§å’Œå¤´åƒä¸Šä¼ åŠŸèƒ½',
           granted: false,
           permission: 'android.permission.CAMERA'
         },
         {
           key: 'storage',
-          name: '´æ´¢È¨ÏŞ',
-          description: 'ÓÃÓÚ±£´æÁªÏµÈËÊı¾İºÍÍ¼Æ¬',
+          name: 'å­˜å‚¨æƒé™',
+          description: 'ç”¨äºä¿å­˜è”ç³»äººæ•°æ®å’Œå›¾ç‰‡',
           granted: false,
           permission: 'android.permission.WRITE_EXTERNAL_STORAGE'
         },
         {
           key: 'phone',
-          name: 'µç»°È¨ÏŞ',
-          description: 'ÓÃÓÚ²¦´òÁªÏµÈËµç»°',
+          name: 'ç”µè¯æƒé™',
+          description: 'ç”¨äºæ‹¨æ‰“è”ç³»äººç”µè¯',
           granted: false,
           permission: 'android.permission.CALL_PHONE'
         },
         {
           key: 'audio',
-          name: 'ÒôÆµÈ¨ÏŞ',
-          description: 'ÓÃÓÚÉèÖÃÃâÌáºÍÒôÁ¿µ÷½Ú',
+          name: 'éŸ³é¢‘æƒé™',
+          description: 'ç”¨äºè®¾ç½®å…æå’ŒéŸ³é‡è°ƒèŠ‚',
           granted: false,
           permission: 'android.permission.MODIFY_AUDIO_SETTINGS'
         },
         {
           key: 'accessibility',
-          name: '¸¨Öú¹¦ÄÜÈ¨ÏŞ',
-          description: 'ÓÃÓÚ×Ô¶¯»¯²Ù×÷£¨Î¢ĞÅÊÓÆµ/ÓïÒôÍ¨»°£©',
+          name: 'è¾…åŠ©åŠŸèƒ½æƒé™',
+          description: 'ç”¨äºè‡ªåŠ¨åŒ–æ“ä½œï¼ˆå¾®ä¿¡è§†é¢‘/è¯­éŸ³é€šè¯ï¼‰',
           granted: false,
           setting: 'android.settings.ACCESSIBILITY_SETTINGS'
         },
         {
           key: 'overlay',
-          name: 'Ğü¸¡´°È¨ÏŞ',
-          description: 'ÓÃÓÚÏÔÊ¾Ğü¸¡²Ù×÷°´Å¥',
+          name: 'æ‚¬æµ®çª—æƒé™',
+          description: 'ç”¨äºæ˜¾ç¤ºæ‚¬æµ®æ“ä½œæŒ‰é’®',
           granted: false,
           setting: 'android.settings.action.MANAGE_OVERLAY_PERMISSION'
         },
         {
           key: 'install',
-          name: '°²×°Ó¦ÓÃÈ¨ÏŞ',
-          description: 'ÓÃÓÚ°²×°ºÍ¸üĞÂÓ¦ÓÃ',
+          name: 'å®‰è£…åº”ç”¨æƒé™',
+          description: 'ç”¨äºå®‰è£…å’Œæ›´æ–°åº”ç”¨',
           granted: false,
           permission: 'android.permission.REQUEST_INSTALL_PACKAGES'
         },
         {
           key: 'query',
-          name: '²éÑ¯Ó¦ÓÃÈ¨ÏŞ',
-          description: 'ÓÃÓÚ»ñÈ¡ÒÑ°²×°Ó¦ÓÃÁĞ±í',
+          name: 'æŸ¥è¯¢åº”ç”¨æƒé™',
+          description: 'ç”¨äºè·å–å·²å®‰è£…åº”ç”¨åˆ—è¡¨',
           granted: false,
           permission: 'android.permission.QUERY_ALL_PACKAGES'
         },
         {
           key: 'wifi',
-          name: 'WiFiÈ¨ÏŞ',
-          description: 'ÓÃÓÚ¼ì²âÍøÂçÁ¬½Ó×´Ì¬',
+          name: 'WiFiæƒé™',
+          description: 'ç”¨äºæ£€æµ‹ç½‘ç»œè¿æ¥çŠ¶æ€',
           granted: false,
           permission: 'android.permission.ACCESS_WIFI_STATE'
         },
         {
           key: 'network',
-          name: 'ÍøÂçÈ¨ÏŞ',
-          description: 'ÓÃÓÚ·ÃÎÊÍøÂçºÍAPIÇëÇó',
+          name: 'ç½‘ç»œæƒé™',
+          description: 'ç”¨äºè®¿é—®ç½‘ç»œå’ŒAPIè¯·æ±‚',
           granted: false,
           permission: 'android.permission.INTERNET'
         },
         {
           key: 'bluetooth',
-          name: 'À¶ÑÀÈ¨ÏŞ',
-          description: 'ÓÃÓÚÀ¶ÑÀÃâÌá¹¦ÄÜ',
+          name: 'è“ç‰™æƒé™',
+          description: 'ç”¨äºè“ç‰™å…æåŠŸèƒ½',
           granted: false,
           permission: 'android.permission.BLUETOOTH'
         }
@@ -131,14 +131,14 @@ export default {
     this.checkPermissions();
   },
   onResume() {
-    // ´ÓÉèÖÃÒ³Ãæ·µ»ØÊ±Ë¢ĞÂÈ¨ÏŞ×´Ì¬
+    // ä»è®¾ç½®é¡µé¢è¿”å›æ—¶åˆ·æ–°æƒé™çŠ¶æ€
     this.checkPermissions();
   },
   methods: {
     goBack() {
       uni.navigateBack();
     },
-    // ¼ì²éÈ¨ÏŞ×´Ì¬
+    // æ£€æŸ¥æƒé™çŠ¶æ€
     checkPermissions() {
       // #ifdef APP-PLUS
       if (plus && plus.android) {
@@ -150,55 +150,55 @@ export default {
           this.permissions.forEach(perm => {
             try {
               if (perm.key === 'location') {
-                // ¼ì²éÎ»ÖÃÈ¨ÏŞ
+                // æ£€æŸ¥ä½ç½®æƒé™
                 const fineLocation = main.checkSelfPermission('android.permission.ACCESS_FINE_LOCATION');
                 const coarseLocation = main.checkSelfPermission('android.permission.ACCESS_COARSE_LOCATION');
                 perm.granted = (fineLocation === PackageManager.PERMISSION_GRANTED || 
                                coarseLocation === PackageManager.PERMISSION_GRANTED);
               } else if (perm.key === 'accessibility') {
-                // ¼ì²é¸¨Öú¹¦ÄÜÈ¨ÏŞ
+                // æ£€æŸ¥è¾…åŠ©åŠŸèƒ½æƒé™
                 const accessibilityManager = main.getSystemService(Context.ACCESSIBILITY_SERVICE);
                 perm.granted = accessibilityManager.isEnabled();
               } else if (perm.key === 'overlay') {
-                // ¼ì²éĞü¸¡´°È¨ÏŞ
+                // æ£€æŸ¥æ‚¬æµ®çª—æƒé™
                 const Settings = plus.android.importClass('android.provider.Settings');
                 const version = plus.android.osVersion;
                 if (version >= 23) {
                   perm.granted = Settings.canDrawOverlays(main);
                 } else {
-                  perm.granted = true; // Android 6.0ÒÔÏÂ²»ĞèÒª´ËÈ¨ÏŞ
+                  perm.granted = true; // Android 6.0ä»¥ä¸‹ä¸éœ€è¦æ­¤æƒé™
                 }
               } else if (perm.permission) {
-                // ¼ì²éÔËĞĞÊ±È¨ÏŞ£¨Android 6.0+£©
+                // æ£€æŸ¥è¿è¡Œæ—¶æƒé™ï¼ˆAndroid 6.0+ï¼‰
                 const version = plus.android.osVersion;
                 if (version >= 23) {
                   const result = main.checkSelfPermission(perm.permission);
                   perm.granted = (result === PackageManager.PERMISSION_GRANTED);
                 } else {
-                  // Android 6.0ÒÔÏÂ£¬Í¨¹ıPackageManager¼ì²é
+                  // Android 6.0ä»¥ä¸‹ï¼Œé€šè¿‡PackageManageræ£€æŸ¥
                   const packageManager = main.getPackageManager();
                   const packageName = main.getPackageName();
                   const result = packageManager.checkPermission(perm.permission, packageName);
                   perm.granted = (result === PackageManager.PERMISSION_GRANTED);
                 }
               } else {
-                // ÆäËûÈ¨ÏŞÄ¬ÈÏÎ´¿ªÆô
+                // å…¶ä»–æƒé™é»˜è®¤æœªå¼€å¯
                 perm.granted = false;
               }
             } catch (e) {
-              console.log('¼ì²éÈ¨ÏŞÊ§°Ü:', perm.key, e);
+              console.log('æ£€æŸ¥æƒé™å¤±è´¥:', perm.key, e);
               perm.granted = false;
             }
           });
         } catch (e) {
-          console.log('È¨ÏŞ¼ì²é³õÊ¼»¯Ê§°Ü:', e);
-          // Èç¹û¼ì²éÊ§°Ü£¬Ä¬ÈÏÏÔÊ¾Î´¿ªÆô
+          console.log('æƒé™æ£€æŸ¥åˆå§‹åŒ–å¤±è´¥:', e);
+          // å¦‚æœæ£€æŸ¥å¤±è´¥ï¼Œé»˜è®¤æ˜¾ç¤ºæœªå¼€å¯
           this.permissions.forEach(perm => {
             perm.granted = false;
           });
         }
       } else {
-        // ·ÇAndroidÆ½Ì¨£¬Ä¬ÈÏÏÔÊ¾Î´¿ªÆô
+        // éAndroidå¹³å°ï¼Œé»˜è®¤æ˜¾ç¤ºæœªå¼€å¯
         this.permissions.forEach(perm => {
           perm.granted = false;
         });
@@ -206,13 +206,13 @@ export default {
       // #endif
       
       // #ifdef H5
-      // H5Æ½Ì¨ÎŞ·¨¼ì²éÈ¨ÏŞ£¬Ä¬ÈÏÏÔÊ¾Î´¿ªÆô
+      // H5å¹³å°æ— æ³•æ£€æŸ¥æƒé™ï¼Œé»˜è®¤æ˜¾ç¤ºæœªå¼€å¯
       this.permissions.forEach(perm => {
         perm.granted = false;
       });
       // #endif
     },
-    // ´ò¿ªÈ¨ÏŞÉèÖÃÒ³Ãæ
+    // æ‰“å¼€æƒé™è®¾ç½®é¡µé¢
     openPermissionSettings(permission) {
       // #ifdef APP-PLUS
       if (plus && plus.android) {
@@ -227,7 +227,7 @@ export default {
           let intent = null;
           
           if (permission.setting) {
-            // ´ò¿ªÏµÍ³ÉèÖÃÒ³Ãæ
+            // æ‰“å¼€ç³»ç»Ÿè®¾ç½®é¡µé¢
             if (permission.setting === 'android.settings.ACCESSIBILITY_SETTINGS') {
               intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
             } else if (permission.setting === 'android.settings.LOCATION_SOURCE_SETTINGS') {
@@ -240,32 +240,32 @@ export default {
               intent = new Intent(permission.setting);
             }
           } else if (permission.permission) {
-            // ÇëÇóÔËĞĞÊ±È¨ÏŞ
+            // è¯·æ±‚è¿è¡Œæ—¶æƒé™
             const version = plus.android.osVersion;
             if (version >= 23) {
-              // Android 6.0+ Ê¹ÓÃÔËĞĞÊ±È¨ÏŞÇëÇó
+              // Android 6.0+ ä½¿ç”¨è¿è¡Œæ—¶æƒé™è¯·æ±‚
               const currentResult = main.checkSelfPermission(permission.permission);
               if (currentResult !== PackageManager.PERMISSION_GRANTED) {
-                // ÇëÇóÈ¨ÏŞ
+                // è¯·æ±‚æƒé™
                 main.requestPermissions([permission.permission], 100);
                 uni.showToast({ 
-                  title: 'ÇëÔÚµ¯´°ÖĞÔÊĞí' + permission.name, 
+                  title: 'è¯·åœ¨å¼¹çª—ä¸­å…è®¸' + permission.name, 
                   icon: 'none',
                   duration: 2000
                 });
-                // ÑÓ³ÙË¢ĞÂÈ¨ÏŞ×´Ì¬
+                // å»¶è¿Ÿåˆ·æ–°æƒé™çŠ¶æ€
                 setTimeout(() => {
                   this.checkPermissions();
                 }, 1000);
                 return;
               } else {
-                // ÒÑÊÚÓèÈ¨ÏŞ£¬µ«ÈÔÈ»´ò¿ªÓ¦ÓÃÉèÖÃÒ³ÃæÒÔ±ãÓÃ»§²é¿´
+                // å·²æˆäºˆæƒé™ï¼Œä½†ä»ç„¶æ‰“å¼€åº”ç”¨è®¾ç½®é¡µé¢ä»¥ä¾¿ç”¨æˆ·æŸ¥çœ‹
                 intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                 const packageName = main.getPackageName();
                 intent.setData(Uri.parse('package:' + packageName));
               }
             } else {
-              // Android 6.0ÒÔÏÂ£¬Ö±½Ó´ò¿ªÓ¦ÓÃÉèÖÃÒ³Ãæ
+              // Android 6.0ä»¥ä¸‹ï¼Œç›´æ¥æ‰“å¼€åº”ç”¨è®¾ç½®é¡µé¢
               intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
               const packageName = main.getPackageName();
               intent.setData(Uri.parse('package:' + packageName));
@@ -275,15 +275,15 @@ export default {
           if (intent) {
             main.startActivity(intent);
             uni.showToast({ 
-              title: 'Çë¿ªÆô' + permission.name, 
+              title: 'è¯·å¼€å¯' + permission.name, 
               icon: 'none',
               duration: 2000
             });
           }
         } catch (e) {
-          console.log('´ò¿ªÉèÖÃÊ§°Ü:', e);
+          console.log('æ‰“å¼€è®¾ç½®å¤±è´¥:', e);
           uni.showToast({ 
-            title: 'ÎŞ·¨´ò¿ªÉèÖÃ£¬ÇëÊÖ¶¯Ç°ÍùÏµÍ³ÉèÖÃ¿ªÆôÈ¨ÏŞ', 
+            title: 'æ— æ³•æ‰“å¼€è®¾ç½®ï¼Œè¯·æ‰‹åŠ¨å‰å¾€ç³»ç»Ÿè®¾ç½®å¼€å¯æƒé™', 
             icon: 'none',
             duration: 3000
           });
@@ -293,7 +293,7 @@ export default {
       
       // #ifdef H5
       uni.showToast({ 
-        title: 'ÇëÔÚÊÖ»úÉèÖÃÖĞ¿ªÆô' + permission.name, 
+        title: 'è¯·åœ¨æ‰‹æœºè®¾ç½®ä¸­å¼€å¯' + permission.name, 
         icon: 'none',
         duration: 2000
       });
@@ -309,11 +309,11 @@ export default {
 .guardian-page {
   min-height: 100vh;
   background: #f6f7f9;
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'å¾®è½¯é›…é»‘', Arial, sans-serif;
 }
 
 .guardian-page * {
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'å¾®è½¯é›…é»‘', Arial, sans-serif;
 }
 
 .header {
@@ -338,7 +338,7 @@ export default {
   font-size: 36rpx;
   font-weight: 700;
   color: #fff;
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'å¾®è½¯é›…é»‘', Arial, sans-serif;
 }
 
 .content {
@@ -351,7 +351,7 @@ export default {
   font-weight: 700;
   color: #222;
   margin-bottom: 24rpx;
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'å¾®è½¯é›…é»‘', Arial, sans-serif;
 }
 
 .permission-list {
@@ -383,14 +383,14 @@ export default {
   font-weight: 600;
   color: #222;
   margin-bottom: 8rpx;
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'å¾®è½¯é›…é»‘', Arial, sans-serif;
 }
 
 .permission-desc {
   font-size: 26rpx;
   color: #999;
   line-height: 1.5;
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'å¾®è½¯é›…é»‘', Arial, sans-serif;
 }
 
 .permission-status {
@@ -402,7 +402,7 @@ export default {
 .status-text {
   font-size: 28rpx;
   color: #ff3b30;
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'å¾®è½¯é›…é»‘', Arial, sans-serif;
 }
 
 .status-text.granted {
@@ -427,7 +427,7 @@ export default {
   font-weight: 700;
   color: #856404;
   margin-bottom: 12rpx;
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'å¾®è½¯é›…é»‘', Arial, sans-serif;
 }
 
 .tip-content {
@@ -435,7 +435,7 @@ export default {
   font-size: 26rpx;
   color: #856404;
   line-height: 1.6;
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Î¢ÈíÑÅºÚ', Arial, sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'å¾®è½¯é›…é»‘', Arial, sans-serif;
 }
 </style>
 

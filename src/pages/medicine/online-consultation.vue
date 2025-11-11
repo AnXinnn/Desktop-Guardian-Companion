@@ -161,7 +161,9 @@ export default {
   },
   methods: {
     goBack() {
-      uni.navigateBack();
+      uni.redirectTo({
+					url: '/pages/index/index?page=1'
+				});
     },
     loadHistory() {
       const history = uni.getStorageSync('consultationHistory') || [];
@@ -213,7 +215,18 @@ export default {
       this.closeModal();
     },
     viewConsultationDetail(record) {
-      uni.showToast({ title: '问诊详情：' + record.symptoms, icon: 'none', duration: 3000 });
+      const history = uni.getStorageSync('consultationHistory') || [];
+      const index = history.findIndex(c => 
+        c.time === record.time && 
+        c.type === record.type
+      );
+      if (index !== -1) {
+        uni.navigateTo({
+          url: `/pages/medicine/consultation-detail?index=${index}`
+        });
+      } else {
+        uni.showToast({ title: '问诊记录不存在', icon: 'none' });
+      }
     },
     getStatusText(status) {
       const statusMap = {

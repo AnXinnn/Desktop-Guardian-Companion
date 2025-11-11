@@ -1,11 +1,14 @@
 <template>
 	<view class="page">
-		<view class="title">Ç¿ÖÆ×ÀÃæ</view>
+		<view class="header">
+			<image class="back-btn" src="/static/mgc/fanhui.png" @click="goBack"></image>
+			<text class="title">å¼ºåˆ¶æ¡Œé¢</text>
+		</view>
 		<view class="row">
-			<text>¿ªÆôÇ¿ÖÆ×ÀÃæ</text>
+			<text>å¼€å¯å¼ºåˆ¶æ¡Œé¢</text>
 			<switch :checked="settings.force" @change="onToggle" />
 		</view>
-		<view class="tip">¿ªÆôºó½öÔÊĞíÖ¸¶¨×ÀÃæ£¬·ÀÖ¹Îó²Ù×÷Àë¿ª¡£</view>
+		<view class="tip">å¼€å¯åä»…å…è®¸æŒ‡å®šæ¡Œé¢ï¼Œé˜²æ­¢è¯¯æ“ä½œç¦»å¼€ã€‚</view>
 	</view>
 </template>
 
@@ -15,10 +18,13 @@ export default {
 		return { settings: uni.getStorageSync('deskSettings') || { force:false, lock:false, stable:true } }
 	},
 	methods:{
+		goBack() {
+			uni.navigateBack();
+		},
 		onToggle(e){
 			this.settings.force = e.detail.value
 			uni.setStorageSync('deskSettings', this.settings)
-			uni.showToast({ title: this.settings.force ? 'ÒÑ¿ªÆô' : 'ÒÑ¹Ø±Õ', icon: 'none' })
+			uni.showToast({ title: this.settings.force ? 'å·²å¼€å¯' : 'å·²å…³é—­', icon: 'none' })
 		}
 	}
 }
@@ -26,7 +32,9 @@ export default {
 
 <style>
 .page{ padding: 20px; }
-.title{ font-size: 22px; font-weight: 700; margin-bottom: 16px; }
+.header{ display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.back-btn{ width: 24px; height: 24px; }
+.title{ font-size: 22px; font-weight: 700; }
 .row{ background:#fff; border-radius:12px; padding:16px; display:flex; justify-content:space-between; align-items:center; }
 .tip{ color:#888; font-size:14px; margin-top:12px; }
 </style>

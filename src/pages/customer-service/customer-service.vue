@@ -1,6 +1,7 @@
 <template>
   <view class="customer-service-page">
     <view class="header">
+      <image class="back-btn" src="/static/mgc/fanhui.png" @click="goBack"></image>
       <text class="title">客服中心</text>
     </view>
     <view class="content">
@@ -27,6 +28,9 @@ export default {
     return {}
   },
   methods: {
+    goBack() {
+      uni.navigateBack();
+    },
     goToChat() {
       uni.navigateTo({
         url: '/pages/chat/chat'
@@ -43,6 +47,14 @@ export default {
 
 .header {
   margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.back-btn {
+  width: 24px;
+  height: 24px;
 }
 
 .title {

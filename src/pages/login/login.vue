@@ -37,7 +37,7 @@
 		}
 		},
 		methods: {
-			goBack(){ uni.navigateTo({ url: '/pages/my/my' }); },
+			goBack(){ uni.navigateBack(); },
 			getCode(){
 				if(!/^1\d{10}$/.test(this.mobile)) return uni.showToast({ title:'请输入有效手机号', icon:'none' });
 				this.countdown = 60;
@@ -48,7 +48,7 @@
 				if(!this.code) return uni.showToast({ title:'请输入验证码', icon:'none' });
 				if(!this.agreed) return;
 				uni.showToast({ title:'登录成功', icon:'success' });
-				setTimeout(()=> uni.switchTab({ url:'/pages/index/index' }), 500);
+				setTimeout(()=> uni.redirectTo({ url:'/pages/index/index' }), 500);
 			}
 		}
 	}

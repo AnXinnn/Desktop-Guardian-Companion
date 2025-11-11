@@ -136,7 +136,10 @@ export default {
   },
   methods: {
     goBack() {
-      uni.navigateBack();
+      // 从主页进入，返回到主页第一页
+      uni.redirectTo({
+        url: '/pages/index/index?page=0'
+      });
     },
     // 检查权限状态
     checkPermissions() {

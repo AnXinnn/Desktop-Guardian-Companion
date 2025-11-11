@@ -1,5 +1,10 @@
 <template>
 	<view class="msgBox">
+		<!-- 返回按钮 -->
+		<view class="header">
+			<image class="back-btn" src="/static/mgc/fanhui.png" @click="goBack"></image>
+			<text class="header-title">在线客服</text>
+		</view>
 		<!-- 消息区：scroll-view 承载，自动滚底 -->
 		<scroll-view class="top" scroll-y :scroll-top="scrollTop" :scroll-with-animation="true">
 			<view v-for="(item, i) in msgArr" :key="i" class="message-item">
@@ -35,6 +40,9 @@ export default {
 		this.scrollToBottom();
 	},
 	methods: {
+		goBack() {
+			uni.navigateBack();
+		},
 		onEnter(e) {
 			if (!e.shiftKey) {
 				e.preventDefault && e.preventDefault();
@@ -101,6 +109,30 @@ export default {
 	position: relative;
 }
 
+.header {
+	background: #fff;
+	padding: 12px 16px;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	border-bottom: 1px solid #eee;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 100;
+}
+
+.back-btn {
+	width: 24px;
+	height: 24px;
+}
+
+.header-title {
+	font-size: 18px;
+	font-weight: 600;
+}
+
 /* 消息区 */
 .top {
 	flex: 1;
@@ -109,6 +141,7 @@ export default {
 	display: flex;
 	flex-direction: column;
 	gap: 30rpx;
+	margin-top: 60px; /* 为header留出空间 */
 }
 
 .message-item {

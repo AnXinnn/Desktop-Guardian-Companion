@@ -21,6 +21,20 @@
         <text>*手机号码</text>
       </view>
       <input class="input" type="number" placeholder="请输入联系人手机号码" v-model.trim="mobile" />
+
+      <view class="label">
+        <text>分组</text>
+      </view>
+      <picker 
+        mode="selector" 
+        :range="groupOptions" 
+        :value="groupIndex"
+        @change="onGroupChange"
+      >
+        <view class="picker-view">
+          {{ groupOptions[groupIndex] }}
+        </view>
+      </picker>
     </view>
 
     <view class="actions">
@@ -37,7 +51,19 @@ export default {
       avatar: '', 
       name: '', 
       wxNote: '', 
-      mobile: '' 
+      mobile: '',
+      group: 'other',
+      groupOptions: ['家人', '朋友', '医生', '其他'],
+      groupIndex: 3,
+      isEdit: false,
+      editContactIndex: -1
+    }
+  },
+  onLoad(options) {
+    // 如果是编辑模式
+    if (options.edit === '1' && options.name && options.mobile) {
+      this.isEdit = true;
+      this.loadContactForEdit(decodeURIComponent(options.name), options.mobile);
     }
   },
   methods: {
@@ -52,6 +78,25 @@ export default {
     onCancel() {
       uni.navigateBack()
     },
+    onGroupChange(e) {
+      this.groupIndex = parseInt(e.detail.value);
+      const groupMap = ['family', 'friend', 'doctor', 'other'];
+      this.group = groupMap[this.groupIndex];
+    },
+    loadContactForEdit(name, mobile) {
+      const contacts = uni.getStorageSync('contacts') || [];
+      const contact = contacts.find(c => c.name === name && c.mobile === mobile);
+      if (contact) {
+        this.name = contact.name;
+        this.wxNote = contact.wxNote || '';
+        this.mobile = contact.mobile;
+        this.avatar = contact.icon || '';
+        const groupMap = { 'family': 0, 'friend': 1, 'doctor': 2, 'other': 3 };
+        this.groupIndex = groupMap[contact.group || 'other'] || 3;
+        this.group = contact.group || 'other';
+        this.editContactIndex = contacts.findIndex(c => c.name === name && c.mobile === mobile);
+      }
+    },
     onSave() {
       if (!this.name) { 
         return uni.showToast({ title: '请输入名字', icon: 'none' }) 
@@ -60,14 +105,28 @@ export default {
         return uni.showToast({ title: '请输入有效手机号', icon: 'none' }) 
       }
 
-      
       let contacts = uni.getStorageSync('contacts') || [];
-      contacts.push({
-        name: this.name,
-        wxNote: this.wxNote || this.name, 
-        mobile: this.mobile,
-        icon: this.avatar || '/static/mgc/geren.png'
-      });
+      
+      if (this.isEdit && this.editContactIndex !== -1) {
+        // 编辑模式
+        contacts[this.editContactIndex] = {
+          name: this.name,
+          wxNote: this.wxNote || this.name, 
+          mobile: this.mobile,
+          icon: this.avatar || '/static/mgc/geren.png',
+          group: this.group
+        };
+      } else {
+        // 新增模式
+        contacts.push({
+          name: this.name,
+          wxNote: this.wxNote || this.name, 
+          mobile: this.mobile,
+          icon: this.avatar || '/static/mgc/geren.png',
+          group: this.group
+        });
+      }
+      
       uni.setStorageSync('contacts', contacts);
 
       uni.showToast({ title: '已保存', icon: 'success' })
@@ -159,6 +218,17 @@ export default {
   font-size: 16px;
   margin-top: 8px;
   display: block;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', '微软雅黑', Arial, sans-serif;
+}
+
+.picker-view {
+  height: 88rpx;
+  background: #f2f7fb;
+  border-radius: 12px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  font-size: 18px;
   font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', '微软雅黑', Arial, sans-serif;
 }
 

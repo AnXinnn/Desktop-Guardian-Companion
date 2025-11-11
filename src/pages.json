@@ -47,6 +47,22 @@
 		{
 			"path": "pages/medicine/online-consultation",
 			"style": {}
+		},
+		{
+			"path": "pages/medicine/consultation-detail",
+			"style": {}
+		},
+		{
+			"path": "pages/medicine/medicine-records",
+			"style": {}
+		},
+		{
+			"path": "pages/contacts/contacts",
+			"style": {}
+		},
+		{
+			"path": "pages/contacts/call-records",
+			"style": {}
 		}
 	],
 	"subPackages": [

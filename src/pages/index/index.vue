@@ -127,7 +127,7 @@
           <view class="contact-actions">
             <!-- 微信视频 -->
             <view class="action-btn wechat-video" @click="makeVideoCall">
-              <view class="vip-badge">VIP</view>
+              
               <view class="action-content">
                 <image class="action-icon" src="/static/mgc/Camera.png"></image>
                 <view class="action-text-wrap">
@@ -139,7 +139,7 @@
             
             <!-- 微信语音 -->
             <view class="action-btn wechat-voice" @click="makeVoiceCall">
-              <view class="vip-badge">VIP</view>
+              
               <view class="action-content">
                 <image class="action-icon" src="/static/mgc/telephone.png"></image>
                 <view class="action-text-wrap">
@@ -389,6 +389,12 @@ export default {
       }
       if (app.type === 'consultation') {
         uni.navigateTo({ url: '/pages/medicine/online-consultation' });
+        return;
+      }
+      
+      // 处理通讯录
+      if (app.name === '通讯录') {
+        uni.navigateTo({ url: '/pages/contacts/contacts' });
         return;
       }
       
@@ -1264,18 +1270,7 @@ export default {
   background: #007aff;
 }
 
-.vip-badge {
-  position: absolute;
-  left: 32rpx;
-  top: 24rpx;
-  background: #ffd700;
-  color: #222;
-  font-size: 20rpx;
-  padding: 4rpx 12rpx;
-  border-radius: 8rpx;
-  font-weight: 700;
-  line-height: 1.2;
-}
+
 
 .action-content {
   display: flex;

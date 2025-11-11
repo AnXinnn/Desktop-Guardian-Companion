@@ -8,6 +8,7 @@
     <scroll-view scroll-y class="content">
       <view class="add-btn-wrap">
         <button class="add-btn" @click="addMedicine">+ 添加用药提醒</button>
+        <button class="records-btn" @click="viewRecords">📊 用药记录</button>
       </view>
 
       <view class="medicine-list">
@@ -192,7 +193,14 @@ export default {
   },
   methods: {
     goBack() {
-      uni.navigateBack();
+      uni.redirectTo({
+					url: '/pages/index/index?page=1'
+				});
+    },
+    viewRecords() {
+      uni.navigateTo({
+        url: '/pages/medicine/medicine-records'
+      });
     },
     loadMedicineList() {
       const list = uni.getStorageSync('medicineList') || [];
@@ -403,15 +411,30 @@ export default {
 
 .add-btn-wrap {
   margin-bottom: 24rpx;
+  display: flex;
+  gap: 12rpx;
 }
 
 .add-btn {
-  width: 100%;
+  flex: 1;
   height: 88rpx;
   background: #28c266;
   color: #fff;
   border-radius: 12rpx;
   font-size: 32rpx;
+  font-weight: 700;
+  border: none;
+  display: flex;
+  align-items: center;
+}
+
+.records-btn {
+  flex: 1;
+  height: 88rpx;
+  background: #007AFF;
+  color: #fff;
+  border-radius: 12rpx;
+  font-size: 28rpx;
   font-weight: 700;
   border: none;
   display: flex;

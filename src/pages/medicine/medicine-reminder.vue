@@ -159,6 +159,8 @@
 </template>
 
 <script>
+import apiUtils from '@/utils/api.js';
+
 export default {
   data() {
     return {
@@ -188,8 +190,10 @@ export default {
       }
     }
   },
-  onLoad() {
+  async onLoad() {
     this.loadMedicineList();
+    // 尝试从云端恢复用药提醒数据
+    await this.loadMedicinesFromCloud();
   },
   methods: {
     goBack() {
@@ -213,6 +217,41 @@ export default {
         }
         return med;
       });
+    },
+    // 从云端加载用药提醒
+    async loadMedicinesFromCloud() {
+      try {
+        const result = await apiUtils.api.getMedicines();
+        if (result.success && result.data && Array.isArray(result.data) && result.data.length > 0) {
+          const localMedicines = uni.getStorageSync('medicineList') || [];
+          // 如果本地没有数据，使用云端数据
+          if (localMedicines.length === 0 && result.data.length > 0) {
+            uni.setStorageSync('medicineList', result.data);
+            this.loadMedicineList();
+            console.log('已从云端恢复用药提醒数据');
+          }
+        }
+      } catch (error) {
+        // 静默失败，404错误不显示（后端服务可能未启动）
+        if (error.message && !error.message.includes('404')) {
+          console.log('从云端加载用药提醒失败（使用本地数据）:', error.message);
+        }
+      }
+    },
+    // 同步用药提醒到云端
+    async syncMedicinesToCloud() {
+      try {
+        const medicines = uni.getStorageSync('medicineList') || [];
+        if (medicines.length > 0) {
+          await apiUtils.api.syncMedicines(medicines);
+          console.log('用药提醒已同步到云端');
+        }
+      } catch (error) {
+        // 静默失败，404错误不显示（后端服务可能未启动）
+        if (error.message && !error.message.includes('404')) {
+          console.error('同步用药提醒到云端失败:', error);
+        }
+      }
     },
     calculateNextTime(time, frequency) {
       const now = new Date();
@@ -240,14 +279,18 @@ export default {
       this.frequencyIndex = this.frequencyOptions.indexOf(medicine.frequency) || 0;
       this.showModal = true;
     },
-    deleteMedicine(index) {
+    async deleteMedicine(index) {
       uni.showModal({
         title: '确认删除',
         content: '确定要删除这个用药提醒吗？',
-        success: (res) => {
+        success: async (res) => {
           if (res.confirm) {
             this.medicineList.splice(index, 1);
             uni.setStorageSync('medicineList', this.medicineList);
+            
+            // 同步到云端
+            await this.syncMedicinesToCloud();
+            
             uni.showToast({ title: '已删除', icon: 'success' });
           }
         }
@@ -321,7 +364,7 @@ export default {
     onEndDateChange(e) {
       this.medicineForm.endDate = e.detail.value;
     },
-    saveMedicine() {
+    async saveMedicine() {
       // 验证必填项
       if (!this.medicineForm.image) {
         return uni.showToast({ title: '请拍照上传药品图片', icon: 'none' });
@@ -360,6 +403,11 @@ export default {
       }
 
       uni.setStorageSync('medicineList', this.medicineList);
+      this.loadMedicineList();
+      
+      // 同步到云端
+      await this.syncMedicinesToCloud();
+      
       uni.showToast({ title: '保存成功', icon: 'success' });
       this.closeModal();
     }

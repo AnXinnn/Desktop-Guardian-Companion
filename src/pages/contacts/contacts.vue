@@ -152,6 +152,7 @@ import {
   detectAndMergeDuplicates,
   repairContacts
 } from '@/utils/contactHelper.js';
+import apiUtils from '@/utils/api.js';
 
 export default {
   data() {
@@ -192,13 +193,16 @@ export default {
       });
     }
   },
-  onLoad() {
-    this.loadContacts();
+  async onLoad() {
+    await this.loadContacts();
     
     // 监听一键修复事件（从首页跳转过来）
     uni.$on('repairContacts', () => {
       this.repairContacts();
     });
+    
+    // 尝试从云端恢复联系人数据
+    await this.loadContactsFromCloud();
   },
   onUnload() {
     // 移除事件监听
@@ -212,6 +216,46 @@ export default {
     },
     loadContacts() {
       this.contacts = uni.getStorageSync('contacts') || [];
+    },
+    // 从云端加载联系人
+    async loadContactsFromCloud() {
+      try {
+        const result = await apiUtils.api.getContacts();
+        if (result.success && result.data && Array.isArray(result.data) && result.data.length > 0) {
+          // 合并云端数据和本地数据（以本地数据为主，云端数据补充）
+          const localContacts = uni.getStorageSync('contacts') || [];
+          const cloudContacts = result.data;
+          
+          // 简单的合并策略：如果本地有数据，优先使用本地；否则使用云端
+          if (localContacts.length === 0 && cloudContacts.length > 0) {
+            uni.setStorageSync('contacts', cloudContacts);
+            this.contacts = cloudContacts;
+            console.log('已从云端恢复联系人数据');
+          }
+        }
+      } catch (error) {
+        // 静默失败，不影响本地数据使用
+        // 如果是404错误，不显示错误信息（后端服务可能未启动）
+        if (error.message && !error.message.includes('404')) {
+          console.log('从云端加载联系人失败（使用本地数据）:', error.message);
+        }
+      }
+    },
+    // 保存联系人时同步到云端
+    async syncContactsToCloud() {
+      try {
+        const contacts = uni.getStorageSync('contacts') || [];
+        if (contacts.length > 0) {
+          await apiUtils.api.syncContacts(contacts);
+          console.log('联系人已同步到云端');
+        }
+      } catch (error) {
+        // 静默失败，不显示错误提示
+        // 404错误说明后端服务未启动，这是正常的（开发阶段）
+        if (error.message && !error.message.includes('404')) {
+          console.error('同步联系人到云端失败:', error);
+        }
+      }
     },
     handleSearch() {
       // 搜索逻辑已在computed中处理
@@ -236,7 +280,7 @@ export default {
     closeDetail() {
       this.selectedContact = null;
     },
-    onGroupChange(e) {
+    async onGroupChange(e) {
       const index = parseInt(e.detail.value);
       const groupMap = ['family', 'friend', 'doctor', 'other'];
       const newGroup = groupMap[index];
@@ -251,6 +295,10 @@ export default {
         this.contacts[contactIndex].group = newGroup;
         uni.setStorageSync('contacts', this.contacts);
         this.selectedContact.group = newGroup;
+        
+        // 同步到云端
+        await this.syncContactsToCloud();
+        
         uni.showToast({ title: '分组已更新', icon: 'success' });
       }
     },
@@ -305,6 +353,9 @@ export default {
               // 保存合并后的联系人
               uni.setStorageSync('contacts', duplicateResult.merged);
               this.loadContacts();
+              
+              // 同步到云端
+              await this.syncContactsToCloud();
               
               uni.hideLoading();
               uni.showToast({
@@ -382,10 +433,14 @@ export default {
         uni.showModal({
           title: '合并重复联系人',
           content: `发现${duplicateResult.count}个重复联系人，是否合并？`,
-          success: (res) => {
+          success: async (res) => {
             if (res.confirm) {
               uni.setStorageSync('contacts', duplicateResult.merged);
               this.loadContacts();
+              
+              // 同步到云端
+              await this.syncContactsToCloud();
+              
               uni.showToast({
                 title: `已合并${duplicateResult.count}个重复项`,
                 icon: 'success'
@@ -471,11 +526,11 @@ export default {
       }
       uni.setStorageSync('callRecords', callRecords);
     },
-    deleteContact() {
+    async deleteContact() {
       uni.showModal({
         title: '确认删除',
         content: `确定要删除联系人"${this.selectedContact.name}"吗？`,
-        success: (res) => {
+        success: async (res) => {
           if (res.confirm) {
             const index = this.contacts.findIndex(c => 
               c.mobile === this.selectedContact.mobile && 
@@ -484,6 +539,10 @@ export default {
             if (index !== -1) {
               this.contacts.splice(index, 1);
               uni.setStorageSync('contacts', this.contacts);
+              
+              // 同步到云端
+              await this.syncContactsToCloud();
+              
               this.closeDetail();
               uni.showToast({ title: '已删除', icon: 'success' });
             }

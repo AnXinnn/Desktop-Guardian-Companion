@@ -59,6 +59,21 @@
 					<text>设置为默认桌面</text>
 					<text class="arrow">></text>
 				</view>
+				<view class="setting-item" @click="backupData" v-if="isLoggedIn">
+					<image class="icon" src="/static/mgc/Guard.png"></image>
+					<text>数据备份</text>
+					<text class="arrow">></text>
+				</view>
+				<view class="setting-item" @click="restoreData" v-if="isLoggedIn">
+					<image class="icon" src="/static/mgc/Guard.png"></image>
+					<text>数据恢复</text>
+					<text class="arrow">></text>
+				</view>
+				<view class="setting-item" @click="toggleApiEnv">
+					<image class="icon" src="/static/mgc/Guard.png"></image>
+					<text>API环境: {{ apiEnvText }}</text>
+					<text class="arrow">></text>
+				</view>
 				<view class="setting-item">
 					<image class="icon" src="/static/mgc/Guard.png"></image>
 					<text>骚扰防护</text>
@@ -90,6 +105,7 @@ import {
   openAppSettings,
   saveDefaultLauncherStatus
 } from '@/utils/launcherHelper.js';
+import apiUtils, { getApiBaseUrl, setApiEnv } from '@/utils/api.js';
 
 	export default {
 		data() {
@@ -102,20 +118,30 @@ import {
 				userCode: ""
 			},
 			settings: { force: false, lock: false, stable: true },
-			harassProtection: true
+			harassProtection: true,
+			apiEnv: uni.getStorageSync('apiEnv') || 'prod' // 默认生产环境
 		}
 	},
 	computed: {
 		isLoggedIn() {
 			return !!(this.users && this.users.mobile);
-			}
 		},
-		onShow() {
-		this.loadUserInfo();
-		const st = uni.getStorageSync('deskSettings')
-		if (st) this.settings = st
-		const harass = uni.getStorageSync('harassProtection')
-		if (harass !== undefined) this.harassProtection = harass
+		apiEnvText() {
+			return this.apiEnv === 'dev' ? '开发环境' : '生产环境';
+		}
+	},
+	onShow() {
+		try {
+			this.loadUserInfo();
+			const st = uni.getStorageSync('deskSettings');
+			if (st) this.settings = st;
+			const harass = uni.getStorageSync('harassProtection');
+			if (harass !== undefined) this.harassProtection = harass;
+			// 更新API环境显示
+			this.apiEnv = uni.getStorageSync('apiEnv') || 'prod';
+		} catch (e) {
+			console.error('个人中心页面加载失败:', e);
+		}
 	},
 	methods: {
 		loadUserInfo() {
@@ -239,7 +265,85 @@ import {
 				return uni.showToast({ title: '请先登录', icon: 'none' });
 			}
 			uni.showToast({ title: '绑定管理', icon: 'none' });
+		},
+		// 数据备份
+		async backupData() {
+			if (!this.isLoggedIn) {
+				return uni.showToast({ title: '请先登录', icon: 'none' });
 			}
+			
+			uni.showLoading({ title: '备份中...' });
+			try {
+				const success = await apiUtils.syncUtils.backup();
+				if (success) {
+					uni.hideLoading();
+				} else {
+					uni.hideLoading();
+				}
+			} catch (error) {
+				uni.hideLoading();
+				console.error('数据备份失败:', error);
+			}
+		},
+		// 数据恢复
+		async restoreData() {
+			if (!this.isLoggedIn) {
+				return uni.showToast({ title: '请先登录', icon: 'none' });
+			}
+			
+			uni.showModal({
+				title: '确认恢复',
+				content: '恢复数据将覆盖本地数据，确定要继续吗？',
+				success: async (res) => {
+					if (res.confirm) {
+						uni.showLoading({ title: '恢复中...' });
+						try {
+							const success = await apiUtils.syncUtils.restoreAll();
+							if (success) {
+								uni.hideLoading();
+								// 刷新页面数据
+								this.$forceUpdate();
+								// 提示用户可能需要刷新页面
+								setTimeout(() => {
+									uni.showToast({ 
+										title: '数据已恢复，请刷新相关页面', 
+										icon: 'success',
+										duration: 3000
+									});
+								}, 500);
+							} else {
+								uni.hideLoading();
+							}
+						} catch (error) {
+							uni.hideLoading();
+							console.error('数据恢复失败:', error);
+						}
+					}
+				}
+			});
+		},
+		// 切换API环境
+		toggleApiEnv() {
+			const currentEnv = uni.getStorageSync('apiEnv') || 'prod';
+			const newEnv = currentEnv === 'dev' ? 'prod' : 'dev';
+			
+			uni.showModal({
+				title: '切换API环境',
+				content: `当前: ${currentEnv === 'dev' ? '开发环境' : '生产环境'}\n切换为: ${newEnv === 'dev' ? '开发环境' : '生产环境'}\n\n切换后需要重启应用生效`,
+				confirmText: '切换',
+				cancelText: '取消',
+				success: (res) => {
+					if (res.confirm) {
+						setApiEnv(newEnv);
+						this.apiEnv = newEnv;
+						uni.showToast({ 
+							title: `已切换为${newEnv === 'dev' ? '开发' : '生产'}环境，请重启应用`, 
+							icon: 'none',
+							duration: 3000
+						});
+					}
+				}
+			});
 		}
 	}
 </script>

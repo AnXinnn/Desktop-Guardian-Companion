@@ -133,6 +133,18 @@ export default {
       setTimeout(() => {
         uni.navigateBack()
       }, 500)
+      
+      // 同步到云端（异步执行，不阻塞保存流程）
+      this.syncContactsToCloud(contacts);
+    },
+    async syncContactsToCloud(contacts) {
+      try {
+        const apiUtils = await import('@/utils/api.js');
+        await apiUtils.default.api.syncContacts(contacts);
+      } catch (error) {
+        console.error('同步联系人失败:', error);
+        // 静默失败，不影响保存
+      }
     }
   }
 }

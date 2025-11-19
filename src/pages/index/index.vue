@@ -1318,9 +1318,9 @@ export default {
 .apps-grid {
   padding: 24rpx 24rpx 40rpx; /* 底部留白 */
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: 200rpx;
-  gap: 24rpx;
+  grid-template-columns: repeat(3, 1fr); /* 与第一页保持一致，改为3列 */
+  grid-auto-rows: 220rpx; /* 与第一页保持一致，从200rpx改为220rpx */
+  gap: 30rpx; /* 与第一页保持一致，从24rpx改为30rpx */
 }
 
 /* 加载提示和空状态 */
@@ -1350,23 +1350,23 @@ export default {
 }
 
 .apps-icon-wrapper {
-  width: 100rpx;
-  height: 100rpx;
-  margin-bottom: 12rpx;
+  width: 96rpx; /* 与第一页保持一致，从100rpx改为96rpx */
+  height: 96rpx; /* 与第一页保持一致，从100rpx改为96rpx */
+  margin-bottom: 14rpx; /* 与第一页保持一致，从12rpx改为14rpx */
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .apps-icon {
-  width: 100rpx;
-  height: 100rpx;
+  width: 96rpx; /* 与第一页保持一致，从100rpx改为96rpx */
+  height: 96rpx; /* 与第一页保持一致，从100rpx改为96rpx */
   border-radius: 20rpx;
 }
 
 .apps-icon-default {
-  width: 100rpx;
-  height: 100rpx;
+  width: 96rpx; /* 与第一页保持一致，从100rpx改为96rpx */
+  height: 96rpx; /* 与第一页保持一致，从100rpx改为96rpx */
   border-radius: 20rpx;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
@@ -1375,14 +1375,14 @@ export default {
 }
 
 .apps-icon-text {
-  font-size: 40rpx;
+  font-size: 36rpx; /* 与第一页标题字体大小保持一致，从40rpx改为36rpx */
   font-weight: bold;
   color: #fff;
 }
 
 .apps-name {
-  font-size: 24rpx;
-  color: #333;
+  font-size: 36rpx; /* 与第一页保持一致，从24rpx改为36rpx */
+  color: #222; /* 与第一页保持一致，从#333改为#222 */
   text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;

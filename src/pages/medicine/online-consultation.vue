@@ -141,6 +141,8 @@
 </template>
 
 <script>
+import apiUtils from '@/utils/api.js';
+
 export default {
   data() {
     return {
@@ -169,6 +171,41 @@ export default {
       const history = uni.getStorageSync('consultationHistory') || [];
       this.consultationHistory = history;
     },
+    // 从云端加载问诊记录
+    async loadConsultationsFromCloud() {
+      try {
+        const result = await apiUtils.api.getConsultations();
+        if (result.success && result.data && Array.isArray(result.data) && result.data.length > 0) {
+          const localConsultations = uni.getStorageSync('consultationHistory') || [];
+          // 如果本地没有数据，使用云端数据
+          if (localConsultations.length === 0 && result.data.length > 0) {
+            uni.setStorageSync('consultationHistory', result.data);
+            this.loadHistory();
+            console.log('已从云端恢复问诊记录数据');
+          }
+        }
+      } catch (error) {
+        // 静默失败，404错误不显示（后端服务可能未启动）
+        if (error.message && !error.message.includes('404')) {
+          console.log('从云端加载问诊记录失败（使用本地数据）:', error.message);
+        }
+      }
+    },
+    // 同步问诊记录到云端
+    async syncConsultationsToCloud() {
+      try {
+        const consultations = uni.getStorageSync('consultationHistory') || [];
+        if (consultations.length > 0) {
+          await apiUtils.api.syncConsultations(consultations);
+          console.log('问诊记录已同步到云端');
+        }
+      } catch (error) {
+        // 静默失败，404错误不显示（后端服务可能未启动）
+        if (error.message && !error.message.includes('404')) {
+          console.error('同步问诊记录到云端失败:', error);
+        }
+      }
+    },
     startConsultation(type) {
       this.consultationType = type;
       this.resetForm();
@@ -195,7 +232,7 @@ export default {
         }
       });
     },
-    submitConsultation() {
+    async submitConsultation() {
       if (!this.consultationForm.symptoms) {
         return uni.showToast({ title: '请输入症状描述', icon: 'none' });
       }
@@ -205,11 +242,15 @@ export default {
         ...this.consultationForm,
         time: new Date().toLocaleString('zh-CN'),
         status: 'pending', // pending, processing, completed
-        id: Date.now()
+        id: Date.now(),
+        createdAt: new Date().toISOString() // 添加ISO格式时间用于API
       };
 
       this.consultationHistory.unshift(consultation);
       uni.setStorageSync('consultationHistory', this.consultationHistory);
+
+      // 同步到云端
+      await this.syncConsultationsToCloud();
 
       uni.showToast({ title: '问诊提交成功，医生会尽快回复', icon: 'success' });
       this.closeModal();

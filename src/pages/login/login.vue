@@ -29,26 +29,66 @@
 <script>
 	export default {
 		data() {
-		return {
-			mobile: '',
-			code: '',
-			countdown: 0,
-			agreed: false
-		}
+			return {
+				mobile: '',
+				code: '',
+				countdown: 0,
+				agreed: false
+			}
+		},
+		computed: {
+			valid() {
+				return /^1\d{10}$/.test(this.mobile) && this.code.length >= 4;
+			}
 		},
 		methods: {
-			goBack(){ uni.navigateBack(); },
+			goBack(){ 
+				uni.navigateBack(); 
+			},
 			getCode(){
-				if(!/^1\d{10}$/.test(this.mobile)) return uni.showToast({ title:'请输入有效手机号', icon:'none' });
+				if(!/^1\d{10}$/.test(this.mobile)) {
+					return uni.showToast({ title:'请输入有效手机号', icon:'none' });
+				}
 				this.countdown = 60;
-				const timer = setInterval(()=>{ this.countdown--; if(this.countdown<=0) clearInterval(timer); },1000);
+				const timer = setInterval(()=>{ 
+					this.countdown--; 
+					if(this.countdown<=0) clearInterval(timer); 
+				},1000);
+				// 模拟发送验证码
+				uni.showToast({ title:'验证码已发送', icon:'success' });
 			},
 			ok() {
-				if(!/^1\d{10}$/.test(this.mobile)) return uni.showToast({ title:'请输入有效手机号', icon:'none' });
-				if(!this.code) return uni.showToast({ title:'请输入验证码', icon:'none' });
-				if(!this.agreed) return;
+				if(!/^1\d{10}$/.test(this.mobile)) {
+					return uni.showToast({ title:'请输入有效手机号', icon:'none' });
+				}
+				if(!this.code) {
+					return uni.showToast({ title:'请输入验证码', icon:'none' });
+				}
+				if(!this.agreed) {
+					return uni.showToast({ title:'请同意用户协议和隐私政策', icon:'none' });
+				}
+				
+				// 生成用户码（基于手机号后7位）
+				const userCode = this.mobile.slice(-7);
+				
+				// 保存用户信息到本地存储
+				const userInfo = {
+					mobile: this.mobile,
+					name: `用户${this.mobile.slice(-4)}`, // 默认昵称为手机号后4位
+					a: '', // 头像，默认为空
+					userCode: userCode,
+					loginTime: new Date().toISOString()
+				};
+				
+				uni.setStorageSync('users', userInfo);
+				uni.setStorageSync('userId', this.mobile); // 保存用户ID用于API调用
+				
 				uni.showToast({ title:'登录成功', icon:'success' });
-				setTimeout(()=> uni.redirectTo({ url:'/pages/index/index' }), 500);
+				
+				// 登录成功后返回个人中心页面
+				setTimeout(()=> {
+					uni.redirectTo({ url:'/pages/my/my' });
+				}, 500);
 			}
 		}
 	}
@@ -67,7 +107,21 @@
 .code-row{ display:flex; gap: 12px; align-items:center; }
 .code{ flex: 1; }
 .get-code{ background:#2fc27a; color:#fff; height:48px; border-radius:14px; padding:0 14px; }
-.submit{ width: 100%; height: 56px; border-radius:28px; margin-top: 16px; background:#ccc; }
-.submit[disabled]{ opacity:.7; }
+.submit{ 
+	width: 100%; 
+	height: 56px; 
+	border-radius:28px; 
+	margin-top: 16px; 
+	background:#28c266; 
+	color:#fff; 
+	font-size:18px; 
+	font-weight:600;
+	border:none;
+}
+.submit[disabled]{ 
+	background:#ccc; 
+	color:#999;
+	opacity:.7; 
+}
 .agree{ margin-top: 10px; color:#666; font-size: 14px; display:flex; align-items:center; gap:8px; }
 </style>

@@ -41,7 +41,21 @@
                     "<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\"/>",
                     "<uses-permission android:name=\"android.permission.BLUETOOTH\"/>",
                     "<uses-permission android:name=\"android.permission.BIND_ACCESSIBILITY_SERVICE\"/>",
-                    "<uses-permission android:name=\"android.permission.WRITE_SECURE_SETTINGS\"/>"
+                    "<uses-permission android:name=\"android.permission.WRITE_SECURE_SETTINGS\"/>",
+                    "<uses-permission android:name=\"android.permission.QUERY_ALL_PACKAGES\"/>",
+                    "<uses-permission android:name=\"android.permission.READ_CONTACTS\"/>",
+                    "<uses-permission android:name=\"android.permission.WRITE_CONTACTS\"/>"
+                ],
+                "intentFilters" : [
+                    {
+                        "action" : [
+                            "android.intent.action.MAIN"
+                        ],
+                        "category" : [
+                            "android.intent.category.HOME",
+                            "android.intent.category.DEFAULT"
+                        ]
+                    }
                 ]
             },
             /* ios打包配置 */

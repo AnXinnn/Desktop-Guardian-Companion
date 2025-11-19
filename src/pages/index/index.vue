@@ -8,39 +8,39 @@
       <!-- 第1页：原主页 -->
       <swiper-item>
         <view class="page page-home">
-          <!-- Top Section -->
-          <view class="top-section">
-            <view class="left-info">
-              <view class="time-display">
-              <text class="time">{{ currentTime }}</text>
-              <text class="am-pm">{{ ampm }}</text>
-              </view>
-              <text class="date">{{ currentDate }} {{ weekday }}</text>
-              <text class="lunar-date">{{ lunarDate }}</text>
-            </view>
-            
-            <view class="right-info">
-              <view class="weather-info">
-                <text class="weather">{{ weather }}</text>
-                <text class="temperature">{{ temperature }}°C</text>
-              </view>
-              <text class="location">{{ city }}</text>
-            </view>
-          </view>
-          <!-- Middle Section -->
-          <view class="middle-section">
+          <!-- Top Section - 固定顶部 -->
+    <view class="top-section">
+      <view class="left-info">
+        <view class="time-display">
+        <text class="time">{{ currentTime }}</text>
+        <text class="am-pm">{{ ampm }}</text>
+        </view>
+        <text class="date">{{ currentDate }} {{ weekday }}</text>
+        <text class="lunar-date">{{ lunarDate }}</text>
+      </view>
+      
+      <view class="right-info">
+        <view class="weather-info">
+          <text class="weather">{{ weather }}</text>
+          <text class="temperature">{{ temperature }}°C</text>
+        </view>
+        <text class="location">{{ city }}</text>
+      </view>
+    </view>
+          <!-- Middle Section - 可滚动区域 -->
+          <scroll-view class="middle-section" scroll-y>
             <view class="card-grid">
               <view class="card" @click="openGuardian">
                 <image class="card-icon" src="/static/mgc/Guard.png" @error="handleImageError({icon: '/static/mgc/Guard.png'})"></image>
                 <text class="card-title">桌面守护</text>
-              </view>
+        </view>
               <view class="card" @click="openRemoteHelp">
                 <view class="code-wrap">
                   <text class="code">{{ userCode }}</text>
                   <text class="code-sub">用户码</text>
-                </view>
+      </view>
                 <text class="assist">远程协助</text>
-              </view>
+    </view>
               <view class="card" @click="openService">
                 <image class="card-icon" src="/static/mgc/kefu.png" @error="handleImageError({icon: '/static/mgc/kefu.png'})"></image>
                 <text class="card-title">客服</text>
@@ -54,18 +54,83 @@
                 <text class="card-title">{{ contact.wxNote || contact.name }}</text>
               </view>
             </view>
-          </view>
+          </scroll-view>
         </view>
       </swiper-item>
 
       <!-- 第2页：应用网格（可下滑） -->
       <swiper-item>
         <view class="page page-apps">
+          <!-- 搜索框 -->
+          <view class="app-search-bar">
+            <input 
+              class="app-search-input" 
+              placeholder="搜索应用" 
+              v-model.trim="appSearchKeyword"
+              @input="handleAppSearch"
+            />
+            <text class="app-search-icon">🔍</text>
+          </view>
+          
+          <!-- 分类标签和过滤选项 -->
+          <view class="app-category-tabs">
+            <scroll-view scroll-x class="category-scroll">
+              <view 
+                class="category-tab" 
+                v-for="cat in appCategories" 
+                :key="cat"
+                :class="{ active: currentAppCategory === cat }"
+                @click="switchAppCategory(cat)"
+              >
+                {{ cat }}
+              </view>
+            </scroll-view>
+            <!-- 过滤系统应用开关 -->
+            <view class="filter-toggle" @click="toggleSystemApps">
+              <text class="filter-label">隐藏系统应用</text>
+              <switch :checked="excludeSystemApps" @change="onSystemAppsToggle" />
+            </view>
+          </view>
+          
           <scroll-view class="apps-scroll" scroll-y>
             <view class="apps-grid">
-              <view class="apps-card" v-for="app in appsPage" :key="app.name" @click="openApp(app)">
-                <image class="apps-icon" :src="app.icon" @error="handleImageError(app)"></image>
+              <!-- 内置应用 -->
+              <view class="apps-card" v-for="app in builtInApps" :key="'builtin-' + app.name" @click="openApp(app)">
+                <view class="apps-icon-wrapper">
+                  <image class="apps-icon" :src="app.icon" @error="handleImageError(app)"></image>
+                </view>
                 <text class="apps-name">{{ app.name }}</text>
+              </view>
+              
+              <!-- 已安装应用 -->
+              <view 
+                class="apps-card" 
+                v-for="app in displayedApps" 
+                :key="'installed-' + app.packageName" 
+                @click="openApp(app)"
+              >
+                <view class="apps-icon-wrapper">
+                  <image 
+                    v-if="app.icon" 
+                    class="apps-icon" 
+                    :src="app.icon" 
+                    @error="handleImageError(app)"
+                  ></image>
+                  <view v-else class="apps-icon-default">
+                    <text class="apps-icon-text">{{ app.name.charAt(0) }}</text>
+                  </view>
+                </view>
+                <text class="apps-name">{{ app.name }}</text>
+              </view>
+              
+              <!-- 加载中提示 -->
+              <view v-if="loadingApps" class="loading-tip">
+                <text>正在加载应用...</text>
+              </view>
+              
+              <!-- 空状态 -->
+              <view v-if="!loadingApps && displayedApps.length === 0 && appSearchKeyword" class="empty-tip">
+                <text>未找到匹配的应用</text>
               </view>
             </view>
           </scroll-view>
@@ -97,11 +162,18 @@
     <!-- Bottom Section -->
     <view class="bottom-section">
       <view class="dock">
-        <view class="dock-item" v-for="app in dockApps" :key="app.name">
+        <!-- 保留导航栏结构，用于真机测试时添加实体应用 -->
+        <!-- 当前不显示静态图片，等待真机测试时动态添加 -->
+        <view class="dock-item" v-for="app in dockApps" :key="app.name" v-if="dockApps.length > 0">
           <view class="dock-icon-wrap">
-            <image class="dock-icon" :src="app.icon" @error="handleImageError(app)"></image>
+            <image class="dock-icon" :src="app.icon" @error="handleImageError(app)" v-if="app.icon"></image>
+            <view class="dock-icon-placeholder" v-else></view>
           </view>
           <text class="dock-name">{{ app.name }}</text>
+        </view>
+        <!-- 空状态提示 -->
+        <view class="dock-empty" v-if="dockApps.length === 0">
+          <text class="dock-empty-text">底部导航栏（真机测试时添加应用）</text>
         </view>
       </view>
     </view>
@@ -221,6 +293,22 @@
 
 <script>
 import LunarCalendar from 'lunar-calendar';
+import { 
+  getInstalledApps, 
+  launchApp, 
+  getAppsByCategory, 
+  searchApps, 
+  getAllCategories,
+  getRecentApps
+} from '@/utils/appLauncher.js';
+import {
+  isDefaultLauncher,
+  openLauncherChooser,
+  openAppSettings,
+  shouldShowLauncherTip,
+  markLauncherTipShown,
+  saveDefaultLauncherStatus
+} from '@/utils/launcherHelper.js';
 
 export default {
   data() {
@@ -247,46 +335,54 @@ export default {
         icon: ''
       },
       originalContact: null, // 保存原始联系人信息，用于取消编辑时恢复
-      appsPage: [
-        { name: '用药提醒', icon: '/static/mgc/Guard.png', type: 'medicine' },
-        { name: '在线问诊', icon: '/static/mgc/kefu.png', type: 'consultation' },
-        { name: '通讯录', icon: '/static/mgc/WeChat.png' },
-        { name: '短信', icon: '/static/mgc/Information.png' },
-        { name: '付款码', icon: '/static/mgc/Alipay.png' },
-        { name: '扫一扫', icon: '/static/mgc/Camera.png' },
-        { name: '相册', icon: '/static/mgc/geren.png' },
-        { name: '计算器', icon: '/static/mgc/Information.png' },
-        { name: '天气', icon: '/static/mgc/Guard.png' },
-        { name: '日历', icon: '/static/mgc/Information.png' },
-        { name: '设置', icon: '/static/mgc/Guard.png' },
-        { name: '爱肌肤', icon: '/static/mgc/geren.png' },
-        { name: '华为', icon: '/static/mgc/WeChat.png' },
-        { name: '钉钉', icon: '/static/mgc/Information.png' },
-        { name: '微信', icon: '/static/mgc/WeChat.png' },
-        { name: '醒图', icon: '/static/mgc/Guard.png' },
-        { name: '学习通', icon: '/static/mgc/Information.png' },
-        { name: '校园', icon: '/static/mgc/Guard.png' },
-        { name: '支付宝', icon: '/static/mgc/Alipay.png' },
-        { name: '添加', icon: '/static/mgc/Add.png' }
+      // 内置应用（项目自带的功能）
+      builtInApps: [
+        { name: '用药提醒', icon: '/static/mgc/yongyaotixing.png', type: 'medicine' },
+        { name: '在线问诊', icon: '/static/mgc/zaixianwenzhen.png', type: 'consultation' },
+        { name: '联系人', icon: '/static/mgc/lianxiren.png' },
+        { name: '个人中心', icon: '/static/mgc/geren.png' }
       ],
+      // 已安装应用列表
+      installedApps: [],
+      // 应用分类
+      appCategories: ['全部'],
+      currentAppCategory: '全部',
+      // 应用搜索
+      appSearchKeyword: '',
+      // 是否过滤系统应用
+      excludeSystemApps: false,
+      // 加载状态
+      loadingApps: false,
       appsPage2: [
-        { name: '悬浮球', icon: '/static/mgc/Guard.png' },
-        { name: '拍照朗读', icon: '/static/mgc/Camera.png' },
-        { name: '远程协助', icon: '/static/mgc/Information.png' },
-        { name: '语音设置', icon: '/static/mgc/Information.png' },
-        { name: '呼叫设置', icon: '/static/mgc/telephone.png' },
-        { name: '个人中心', icon: '/static/mgc/geren.png' },
-        { name: '教程中心', icon: '/static/mgc/Information.png' },
-        { name: '亲友管理', icon: '/static/mgc/Information.png' },
-        { name: '语音点读', icon: '/static/mgc/Information.png' },
-        { name: '骚扰拦截', icon: '/static/mgc/Information.png' },
-        { name: '用机守护', icon: '/static/mgc/Guard.png' }
+        // 预留位置，用于真机测试时添加实体应用
       ],
       dockApps: [
-        { name: '电话', icon: '/static/mgc/telephone.png' },
-        { name: '相机', icon: '/static/mgc/Camera.png' },
-        { name: '微信', icon: '/static/mgc/WeChat.png' }
+        // 预留位置，用于真机测试时添加实体应用（电话、相机、微信等）
+        // 保留导航栏结构，但不显示静态图片
       ]
+    }
+  },
+  computed: {
+    // 显示的应用列表（根据分类和搜索过滤）
+    displayedApps() {
+      let apps = [];
+      
+      // 如果有搜索关键词，使用搜索
+      if (this.appSearchKeyword) {
+        apps = searchApps(this.appSearchKeyword);
+        // 搜索时也应用系统应用过滤
+        if (this.excludeSystemApps) {
+          apps = apps.filter(app => !app.isSystemApp);
+        }
+      } else {
+        // 否则按分类过滤
+        apps = getAppsByCategory(
+          this.currentAppCategory === '全部' ? null : this.currentAppCategory,
+          this.excludeSystemApps // 根据开关决定是否过滤系统应用
+        );
+      }
+      
+      return apps;
     }
   },
   onLoad(options) {
@@ -301,6 +397,18 @@ export default {
     
     if (options.page) {
       this.currentPage = parseInt(options.page) || 0;
+    }
+    
+    // 加载已安装应用列表
+    this.loadInstalledApps();
+    
+    // 检查默认桌面状态
+    this.checkDefaultLauncher();
+    
+    // 加载系统应用过滤设置
+    const savedFilter = uni.getStorageSync('excludeSystemApps');
+    if (savedFilter !== undefined) {
+      this.excludeSystemApps = savedFilter;
     }
     
     let _this = this;
@@ -371,12 +479,30 @@ export default {
       this.currentPage = returnPage;
       uni.removeStorageSync('returnToPage');
     }
+    
+    // 每次显示时重新检查默认桌面状态（用户可能从设置中更改了）
+    this.checkDefaultLauncher();
+  },
+  // 拦截返回键（Home键拦截在manifest.json中配置）
+  onBackPress() {
+    // #ifdef APP-PLUS
+    // 如果启用了强制桌面模式，拦截返回键
+    const deskSettings = uni.getStorageSync('deskSettings') || {};
+    if (deskSettings.forceDesktop) {
+      // 拦截返回键，保持在桌面
+      return true;
+    }
+    // #endif
+    
+    // 默认允许返回
+    return false;
   },
   methods: {
     onSwiperChange(e) {
       this.currentPage = e.detail.current || 0;
     },
     openApp(app) {
+      // 处理个人中心
       if (app.name === '个人中心') {
         this.navigateToMy();
         return;
@@ -392,24 +518,110 @@ export default {
         return;
       }
       
-      // 处理通讯录
-      if (app.name === '通讯录') {
+      // 处理联系人/通讯录
+      if (app.name === '联系人' || app.name === '通讯录') {
         uni.navigateTo({ url: '/pages/contacts/contacts' });
         return;
       }
       
-      // 其他应用处理
+      // 处理已安装的应用（通过packageName启动）
       if (app.packageName) {
-        // #ifdef APP-PLUS
-        if (plus && plus.runtime) {
-          plus.runtime.launchApplication({ pname: app.packageName }, (e) => {
-            uni.showToast({ title: '打开失败: ' + e.message, icon: 'none' });
+        launchApp(app.packageName, app.className)
+          .then(() => {
+            // 启动成功，已自动记录到最近使用
+            console.log('应用启动成功:', app.name);
+          })
+          .catch((err) => {
+            console.error('启动应用失败:', err);
+            uni.showToast({ 
+              title: '打开失败: ' + (err.message || '未知错误'), 
+              icon: 'none',
+              duration: 2000
+            });
           });
-        }
-        // #endif
       } else {
-        uni.showToast({ title: app.name, icon: 'none' });
+        // 如果没有packageName，说明是预留位置，暂不处理
+        // uni.showToast({ title: app.name + '功能开发中', icon: 'none' });
       }
+    },
+    // 加载已安装应用列表
+    async loadInstalledApps() {
+      this.loadingApps = true;
+      try {
+        const apps = await getInstalledApps();
+        this.installedApps = apps;
+        
+        // 更新分类列表
+        this.appCategories = getAllCategories();
+        
+        console.log('已加载应用数量:', apps.length);
+      } catch (err) {
+        console.error('加载应用列表失败:', err);
+        uni.showToast({
+          title: '加载应用列表失败',
+          icon: 'none'
+        });
+      } finally {
+        this.loadingApps = false;
+      }
+    },
+    // 切换应用分类
+    switchAppCategory(category) {
+      this.currentAppCategory = category;
+      this.appSearchKeyword = ''; // 切换分类时清空搜索
+    },
+    // 处理应用搜索
+    handleAppSearch() {
+      // 搜索逻辑已在computed中处理
+      if (this.appSearchKeyword) {
+        this.currentAppCategory = '全部'; // 搜索时重置分类
+      }
+    },
+    // 切换系统应用过滤
+    toggleSystemApps() {
+      // 这个方法用于点击整个区域时切换，实际切换由switch组件处理
+    },
+    // 系统应用过滤开关变化
+    onSystemAppsToggle(e) {
+      this.excludeSystemApps = e.detail.value;
+      // 保存用户偏好
+      uni.setStorageSync('excludeSystemApps', this.excludeSystemApps);
+    },
+    // 检查默认桌面状态
+    async checkDefaultLauncher() {
+      // #ifdef APP-PLUS
+      try {
+        const isDefault = await isDefaultLauncher();
+        saveDefaultLauncherStatus(isDefault);
+        
+        // 如果不是默认桌面，且未显示过提示，则显示提示
+        if (!isDefault && shouldShowLauncherTip()) {
+          setTimeout(() => {
+            this.showLauncherTip();
+          }, 2000); // 延迟2秒显示，避免影响启动体验
+        }
+      } catch (e) {
+        console.error('检查默认桌面状态失败:', e);
+      }
+      // #endif
+    },
+    // 显示桌面选择提示
+    showLauncherTip() {
+      uni.showModal({
+        title: '设置为默认桌面',
+        content: '是否将"陪伴桌面守护"设置为默认桌面？设置后，按Home键将直接返回本应用。',
+        confirmText: '去设置',
+        cancelText: '稍后',
+        success: (res) => {
+          if (res.confirm) {
+            markLauncherTipShown();
+            openLauncherChooser();
+          } else {
+            // 用户选择稍后，标记已显示过，避免频繁提示
+            markLauncherTipShown();
+          }
+        }
+      });
     },
     navigateToMy() {
       uni.navigateTo({
@@ -441,11 +653,11 @@ export default {
         if (!LunarCalendar || typeof LunarCalendar.solarToLunar !== 'function') {
           return '农历未知';
         }
-        const lunar = LunarCalendar.solarToLunar(
-          solarDate.getFullYear(),
-          solarDate.getMonth() + 1,
-          solarDate.getDate()
-        );
+      const lunar = LunarCalendar.solarToLunar(
+        solarDate.getFullYear(),
+        solarDate.getMonth() + 1,
+        solarDate.getDate()
+      );
 
         if (!lunar || lunar.error) return '农历未知';
 
@@ -931,19 +1143,28 @@ export default {
 
 .main-swiper {
   flex: 1;
+  overflow: hidden;
 }
 
 .page {
   height: 100%;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+}
+
+.page-home {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .top-section {
-  flex: 1;
+  flex-shrink: 0;
   padding: 40rpx;
   display: flex;
   justify-content: space-between;
+  min-height: 200rpx;
 }
 
 .left-info {
@@ -1003,52 +1224,185 @@ export default {
 }
 
 .middle-section {
-  flex: 2;
+  flex: 1;
   padding: 20rpx;
-}
-.page-apps .apps-scroll {
   height: 100%;
+  box-sizing: border-box;
+}
+.page-apps {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+/* 应用搜索栏 */
+.app-search-bar {
+  flex-shrink: 0;
+  padding: 20rpx 24rpx;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  position: relative;
+}
+
+.app-search-input {
+  width: 100%;
+  height: 72rpx;
+  background: #f5f5f5;
+  border-radius: 36rpx;
+  padding: 0 80rpx 0 32rpx;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.app-search-icon {
+  position: absolute;
+  right: 48rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 32rpx;
+  color: #999;
+}
+
+/* 分类标签 */
+.app-category-tabs {
+  flex-shrink: 0;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  padding: 16rpx 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.category-scroll {
+  white-space: nowrap;
+  height: 60rpx;
+  margin-bottom: 12rpx;
+}
+
+.filter-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24rpx;
+  height: 60rpx;
+}
+
+.filter-label {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.category-tab {
+  display: inline-block;
+  padding: 8rpx 24rpx;
+  margin: 0 12rpx;
+  border-radius: 30rpx;
+  font-size: 26rpx;
+  color: #666;
+  background: #f5f5f5;
+  white-space: nowrap;
+}
+
+.category-tab.active {
+  background: #28c266;
+  color: #fff;
+}
+
+.page-apps .apps-scroll {
+  flex: 1;
+  height: 0; /* 配合flex:1使用 */
 }
 
 .apps-grid {
-  padding: 24rpx 24rpx 240rpx; /* 预留更多底部空间避免被指示点遮挡 */
+  padding: 24rpx 24rpx 40rpx; /* 底部留白 */
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-auto-rows: 360rpx;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 200rpx;
   gap: 24rpx;
+}
+
+/* 加载提示和空状态 */
+.loading-tip,
+.empty-tip {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 80rpx 20rpx;
+  color: #999;
+  font-size: 28rpx;
 }
 
 .apps-card {
   background: rgba(255,255,255,0.96);
   border-radius: 24rpx;
-  box-shadow: 0 10rpx 28rpx rgba(0,0,0,0.08);
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.08);
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx 10rpx;
+  transition: transform 0.2s;
+}
+
+.apps-card:active {
+  transform: scale(0.95);
+}
+
+.apps-icon-wrapper {
+  width: 100rpx;
+  height: 100rpx;
+  margin-bottom: 12rpx;
+  display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .apps-icon {
-  width: 220rpx;
-  height: 220rpx;
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 20rpx;
+}
+
+.apps-icon-default {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 20rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.apps-icon-text {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #fff;
 }
 
 .apps-name {
-  margin-top: 14rpx;
-  font-size: 44rpx;
-  font-weight: 700;
-  color: #222;
+  font-size: 24rpx;
+  color: #333;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+  padding: 0 8rpx;
+  line-height: 1.2;
 }
 
 .pager {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 220rpx; /* 位于底部导航上方一点 */
+  bottom: 200rpx; /* 位于底部导航上方 */
   height: 40rpx;
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 10;
+  pointer-events: none; /* 不阻挡滚动 */
 }
 
 .dot {
@@ -1064,11 +1418,14 @@ export default {
 }
 
 .bottom-section {
-  height: 200rpx; /* 固定底部导航高度，避免占用过多中间空间 */
+  flex-shrink: 0;
+  height: 200rpx; /* 固定底部导航高度 */
   display: flex;
   justify-content: center;
   align-items: flex-end;
   padding-bottom: 20rpx;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10rpx);
 }
 
 .card-grid {
@@ -1076,6 +1433,7 @@ export default {
   grid-template-columns: repeat(3, 1fr);
   grid-auto-rows: 220rpx;
   gap: 30rpx;
+  padding-bottom: 40rpx; /* 底部留白，避免被遮挡 */
 }
 
 .card {
@@ -1158,6 +1516,28 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.dock-icon-placeholder {
+  width: 130rpx;
+  height: 130rpx;
+  border-radius: 20rpx;
+  background: rgba(0, 0, 0, 0.05);
+  border: 2rpx dashed rgba(0, 0, 0, 0.1);
+}
+
+.dock-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx 0;
+  width: 100%;
+}
+
+.dock-empty-text {
+  font-size: 24rpx;
+  color: #999;
+  text-align: center;
 }
 
 .app-name, .dock-name {

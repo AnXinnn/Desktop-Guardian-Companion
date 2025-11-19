@@ -2,7 +2,7 @@
   <view class="call-records-page">
     <view class="header">
       <image class="back-btn" src="/static/mgc/fanhui.png" @click="goBack"></image>
-      <text class="header-title">通话记录</text>
+      <text class="header-title">閫氳瘽璁板綍</text>
     </view>
 
     <scroll-view scroll-y class="records-list">
@@ -26,7 +26,7 @@
       </view>
 
       <view v-if="callRecords.length === 0" class="empty-tip">
-        <text>暂无通话记录</text>
+        <text>鏆傛棤閫氳瘽璁板綍</text>
       </view>
     </scroll-view>
   </view>
@@ -59,9 +59,9 @@ export default {
       if (days === 0) {
         return date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
       } else if (days === 1) {
-        return '昨天 ' + date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+        return '鏄ㄥぉ ' + date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
       } else if (days < 7) {
-        return days + '天前';
+        return days + '澶╁墠';
       } else {
         return date.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' });
       }
@@ -71,7 +71,7 @@ export default {
         uni.makePhoneCall({
           phoneNumber: record.mobile,
           success: () => {
-            // 更新通话记录时间
+            // 鏇存柊閫氳瘽璁板綍鏃堕棿
             const index = this.callRecords.findIndex(r => 
               r.mobile === record.mobile && r.name === record.name
             );

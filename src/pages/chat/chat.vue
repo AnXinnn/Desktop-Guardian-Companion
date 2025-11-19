@@ -8,12 +8,24 @@
 		<!-- 消息区：scroll-view 承载，自动滚底 -->
 		<scroll-view class="top" scroll-y :scroll-top="scrollTop" :scroll-with-animation="true">
 			<view v-for="(item, i) in msgArr" :key="i" class="message-item">
+				<!-- 时间显示 -->
 				<text class="time" v-if="showTime(i)">{{ item.time }}</text>
-				<view :class="['message', item.my ? 'message--self' : 'message--other']">
-					<image class="avatar" :src="item.my ? '/static/mgc/geren.png' : '/static/mgc/kefu.png'" />
-					<view class="bubble-wrap">
-						<view class="bubble">{{ item.text }}</view>
-					</view>
+				<!-- 消息气泡 -->
+				<view :class="['message-wrapper', item.my ? 'message-wrapper--self' : 'message-wrapper--other']">
+					<!-- 对方消息：头像在左 -->
+					<template v-if="!item.my">
+						<image class="avatar" src="/static/mgc/kefu.png" />
+						<view class="bubble-wrap">
+							<view class="bubble bubble--other">{{ item.text }}</view>
+						</view>
+					</template>
+					<!-- 我的消息：头像在右 -->
+					<template v-else>
+						<view class="bubble-wrap">
+							<view class="bubble bubble--self">{{ item.text }}</view>
+						</view>
+						<image class="avatar" src="/static/mgc/geren.png" />
+					</template>
 				</view>
 			</view>
 		</scroll-view>
@@ -136,102 +148,109 @@ export default {
 /* 消息区 */
 .top {
 	flex: 1;
-	padding: 20rpx 18rpx 180rpx; /* 预留底部输入区高度 */
+	padding: 20rpx 24rpx 200rpx; /* 预留底部输入区高度 */
 	box-sizing: border-box;
-	display: flex;
-	flex-direction: column;
-	gap: 30rpx;
 	margin-top: 60px; /* 为header留出空间 */
+	background: #f2f3f5;
 }
 
 .message-item {
+	margin-bottom: 30rpx;
 	display: flex;
 	flex-direction: column;
-	align-items: center;
-	gap: 10rpx;
-}
-
-.message {
-	display: flex;
-	align-items: flex-start;
-	gap: 20rpx;
-	width: 100%;
-	box-sizing: border-box;
-	position: relative;
-}
-
-.message--other { /* 左侧 */
-	justify-content: flex-start;
-}
-
-.message--self { 
-	justify-content: flex-end;
-	flex-direction: row-reverse;
-}
-
-.avatar {
-	width: 88rpx;
-	height: 88rpx;
-	border-radius: 50%;
-}
-
-.bubble-wrap {
-	max-width: 72%;
-	display: flex;
-	align-items: flex-start;
-	position: relative;
-}
-
-.bubble {
-	padding: 18rpx 26rpx;
-	border-radius: 18rpx;
-	font-size: 34rpx;
-	line-height: 44rpx;
-	word-break: break-word;
-	white-space: pre-wrap;
-	position: relative;
-	font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; /* 支持中文字体 */
-}
-
-.message--other .bubble {
-	background: #fff;
-	color: #222;
-	border: 1rpx solid #e6e6e6;
-}
-
-.message--other .bubble::before { /* 左侧箭头 */
-	content: '';
-	position: absolute;
-	left: -8rpx;
-	top: 20rpx;
-	width: 0;
-	height: 0;
-	border: 8rpx solid transparent;
-	border-right-color: #fff;
-}
-
-.message--self .bubble {
-	background: #07c160;
-	color: #fff;
-}
-
-.message--self .bubble::after { /* 右侧箭头 */
-	content: '';
-	position: absolute;
-	right: -8rpx;
-	top: 20rpx;
-	width: 0;
-	height: 0;
-	border: 8rpx solid transparent;
-	border-left-color: #07c160;
 }
 
 .time {
 	font-size: 24rpx;
 	color: #999;
 	text-align: center;
-	margin: 10rpx 0;
+	margin: 20rpx 0;
+	padding: 0 20rpx;
 }
+
+/* 消息容器 */
+.message-wrapper {
+	display: flex;
+	align-items: flex-start;
+	gap: 16rpx;
+	width: 100%;
+	box-sizing: border-box;
+	margin-top: 10rpx;
+}
+
+/* 对方消息：左对齐 */
+.message-wrapper--other {
+	justify-content: flex-start;
+}
+
+/* 我的消息：右对齐 */
+.message-wrapper--self {
+	justify-content: flex-end;
+}
+
+.avatar {
+	width: 80rpx;
+	height: 80rpx;
+	border-radius: 50%;
+	flex-shrink: 0;
+	background: #e0e0e0;
+}
+
+.bubble-wrap {
+	max-width: calc(100% - 120rpx); /* 减去头像和间距 */
+	display: flex;
+	align-items: flex-start;
+	position: relative;
+}
+
+.bubble {
+	padding: 20rpx 28rpx;
+	border-radius: 12rpx;
+	font-size: 32rpx;
+	line-height: 1.5;
+	word-break: break-word;
+	white-space: pre-wrap;
+	position: relative;
+	font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 对方消息气泡：白色，左侧 */
+.bubble--other {
+	background: #fff;
+	color: #333;
+	border-top-left-radius: 4rpx; /* 左上角小圆角 */
+}
+
+.bubble--other::before {
+	content: '';
+	position: absolute;
+	left: -12rpx;
+	top: 20rpx;
+	width: 0;
+	height: 0;
+	border: 12rpx solid transparent;
+	border-right-color: #fff;
+}
+
+/* 我的消息气泡：绿色，右侧 */
+.bubble--self {
+	background: #07c160;
+	color: #fff;
+	border-top-right-radius: 4rpx; /* 右上角小圆角 */
+}
+
+.bubble--self::after {
+	content: '';
+	position: absolute;
+	right: -12rpx;
+	top: 20rpx;
+	width: 0;
+	height: 0;
+	border: 12rpx solid transparent;
+	border-left-color: #07c160;
+}
+
 
 /* 底部输入区（固定） */
 .bottom {

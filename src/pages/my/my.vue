@@ -1,7 +1,7 @@
 <template>
 	<view class="my-page">
 		<!-- 顶部栏 -->
-		<view class="headerBox">
+	<view class="headerBox">
 			<image class="back-btn" src="/static/mgc/fanhui.png" @click="goBack"></image>
 		</view>
 
@@ -54,6 +54,11 @@
 					<text>客服中心</text>
 					<text class="arrow">></text>
 				</view>
+				<view class="setting-item" @click="setAsDefaultLauncher">
+					<image class="icon" src="/static/mgc/Guard.png"></image>
+					<text>设置为默认桌面</text>
+					<text class="arrow">></text>
+				</view>
 				<view class="setting-item">
 					<image class="icon" src="/static/mgc/Guard.png"></image>
 					<text>骚扰防护</text>
@@ -79,12 +84,19 @@
 </template>
 
 <script>
-export default {
-	data() {
-		return {
+import {
+  isDefaultLauncher,
+  openLauncherChooser,
+  openAppSettings,
+  saveDefaultLauncherStatus
+} from '@/utils/launcherHelper.js';
+
+	export default {
+		data() {
+			return {
 			userCode: '5090922',
-			users: {
-				a: "",
+				users: {
+					a: "",
 				name: "",
 				mobile: "",
 				userCode: ""
@@ -96,9 +108,9 @@ export default {
 	computed: {
 		isLoggedIn() {
 			return !!(this.users && this.users.mobile);
-		}
-	},
-	onShow() {
+			}
+		},
+		onShow() {
 		this.loadUserInfo();
 		const st = uni.getStorageSync('deskSettings')
 		if (st) this.settings = st
@@ -112,7 +124,7 @@ export default {
 				this.users = { ...this.users, ...storedUsers }
 				if (storedUsers.userCode) {
 					this.userCode = storedUsers.userCode
-				}
+			}
 			} else {
 				// 重置用户信息
 				this.users = {
@@ -123,17 +135,62 @@ export default {
 				}
 			}
 		},
-		gologin() {
-			uni.navigateTo({
-				url: '/pages/login/login',
+			gologin() {
+				uni.navigateTo({
+					url: '/pages/login/login',
+				});
+			},
+			goCustomerService() {
+				uni.navigateTo({
+					url: '/pages/customer-service/customer-service'
+				});
+			},
+		// 设置为默认桌面
+		async setAsDefaultLauncher() {
+			// #ifdef APP-PLUS
+			try {
+				// 先检查当前是否已经是默认桌面
+				const isDefault = await isDefaultLauncher();
+				
+				if (isDefault) {
+					uni.showModal({
+						title: '提示',
+						content: '当前应用已经是默认桌面',
+						showCancel: false
+					});
+					return;
+				}
+				
+				// 显示确认对话框
+				uni.showModal({
+					title: '设置为默认桌面',
+					content: '是否将"陪伴桌面守护"设置为默认桌面？设置后，按Home键将直接返回本应用。',
+					confirmText: '去设置',
+					cancelText: '取消',
+					success: (res) => {
+						if (res.confirm) {
+							// 打开桌面选择器
+							openLauncherChooser();
+						}
+					}
+				});
+			} catch (e) {
+				console.error('设置默认桌面失败:', e);
+				uni.showToast({
+					title: '设置失败',
+					icon: 'none'
+				});
+			}
+			// #endif
+			
+			// #ifndef APP-PLUS
+			uni.showToast({
+				title: '当前平台不支持此功能',
+				icon: 'none'
 			});
+			// #endif
 		},
-		goCustomerService() {
-			uni.navigateTo({
-				url: '/pages/customer-service/customer-service'
-			});
-		},
-		goBack() {
+			goBack() {
 			uni.redirectTo({
 					url: '/pages/index/index?page=2'
 				});
@@ -182,50 +239,50 @@ export default {
 				return uni.showToast({ title: '请先登录', icon: 'none' });
 			}
 			uni.showToast({ title: '绑定管理', icon: 'none' });
+			}
 		}
 	}
-}
 </script>
 
 <style>
 .my-page { height: 100vh; background: #f6f7f9; }
-.headerBox {
-	width: 100%;
+	.headerBox {
+		width: 100%;
 	height: 88px;
 	background-color: #28c266;
 	padding-top: var(--status-bar-height);
-	display: flex;
-	align-items: center;
+		display: flex;
+		align-items: center;
 	justify-content: space-between;
-	position: relative;
-}
+		position: relative;
+	}
 .back-btn { width: 24px; height: 24px; margin-left: 16px; }
-.avatarImg {
+	.avatarImg {
 	width: 72px;
 	height: 72px;
 	margin-right: 16px;
-	border-radius: 50%;
-}
+		border-radius: 50%;
+	}
 
-.loginbtn {
-	padding: 8px 20px;
+	.loginbtn {
+		padding: 8px 20px;
 	background-color: #ff7a00;
 	color: #fff;
-	border-radius: 20px;
-}
+		border-radius: 20px;
+	}
 
-.user-name {
-	font-size: 18px;
-	font-weight: bold;
-}
+	.user-name {
+		font-size: 18px;
+		font-weight: bold;
+	}
 	
-.customer-service {
-	position: absolute;
-	right: 20px;
+	.customer-service {
+		position: absolute;
+		right: 20px;
 	top: calc(var(--status-bar-height) + 16px);
-	width: 30px;
-	height: 30px;
-}
+		width: 30px;
+		height: 30px;
+	}
 
 .vip-card {
 	margin: 12px 16px 20px;

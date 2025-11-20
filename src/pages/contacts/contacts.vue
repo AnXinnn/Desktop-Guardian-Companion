@@ -220,7 +220,7 @@ export default {
     // 从云端加载联系人
     async loadContactsFromCloud() {
       try {
-        const result = await apiUtils.api.getContacts();
+        const result = await apiUtils.api.getContacts(true); // 静默模式
         if (result.success && result.data && Array.isArray(result.data) && result.data.length > 0) {
           // 合并云端数据和本地数据（以本地数据为主，云端数据补充）
           const localContacts = uni.getStorageSync('contacts') || [];
@@ -235,10 +235,8 @@ export default {
         }
       } catch (error) {
         // 静默失败，不影响本地数据使用
-        // 如果是404错误，不显示错误信息（后端服务可能未启动）
-        if (error.message && !error.message.includes('404')) {
-          console.log('从云端加载联系人失败（使用本地数据）:', error.message);
-        }
+        // 超时或404错误都不显示，避免干扰用户
+        console.log('从云端加载联系人失败（使用本地数据）:', error.message);
       }
     },
     // 保存联系人时同步到云端
@@ -246,7 +244,7 @@ export default {
       try {
         const contacts = uni.getStorageSync('contacts') || [];
         if (contacts.length > 0) {
-          await apiUtils.api.syncContacts(contacts);
+          await apiUtils.api.syncContacts(contacts, true); // 静默模式，后台同步
           console.log('联系人已同步到云端');
         }
       } catch (error) {

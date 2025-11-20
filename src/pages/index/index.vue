@@ -446,7 +446,10 @@ export default {
 					});
 				},
 				fail: (err) => {
-					console.error('定位失败，尝试IP定位兜底', err);
+					// 静默处理定位失败，不显示错误信息
+					// 地图服务未配置或坐标系转换失败时，使用IP定位兜底
+					console.log('定位失败，尝试IP定位兜底', err.errMsg || err);
+					
 					// 使用IP定位兜底
 					uni.request({
 						url: `https://restapi.amap.com/v3/ip?key=3bef76ab67ff3a02d5567db5f6ce2bbb`,
@@ -459,9 +462,27 @@ export default {
 									success: (w) => {
 										_this.weather = w.data.lives && w.data.lives[0] ? w.data.lives[0].weather : '未知';
 										_this.temperature = w.data.lives && w.data.lives[0] ? w.data.lives[0].temperature : '0';
+									},
+									fail: (wErr) => {
+										// 静默处理天气请求失败
+										console.log('获取天气信息失败:', wErr);
+										_this.weather = '未知';
+										_this.temperature = '0';
 									}
 								});
+							} else {
+								// IP定位失败，使用默认值
+								_this.city = '未知';
+								_this.weather = '未知';
+								_this.temperature = '0';
 							}
+						},
+						fail: (ipErr) => {
+							// IP定位也失败，使用默认值
+							console.log('IP定位失败:', ipErr);
+							_this.city = '未知';
+							_this.weather = '未知';
+							_this.temperature = '0';
 						}
 					});
 				},

@@ -1,7 +1,7 @@
 {
   "name": "companion-desktop-server",
   "version": "1.0.0",
-  "description": "陪伴桌面守护后端服务",
+  "description": "闄即妗岄潰瀹堟姢鍚庣鏈嶅姟",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -27,4 +27,3 @@
     "nodemon": "^3.0.1"
   }
 }
-

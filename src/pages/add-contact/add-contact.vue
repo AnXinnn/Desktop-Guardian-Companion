@@ -140,7 +140,7 @@ export default {
     async syncContactsToCloud(contacts) {
       try {
         const apiUtils = await import('@/utils/api.js');
-        await apiUtils.default.api.syncContacts(contacts);
+        await apiUtils.default.api.syncContacts(contacts, true); // 静默模式，后台同步
       } catch (error) {
         console.error('同步联系人失败:', error);
         // 静默失败，不影响保存

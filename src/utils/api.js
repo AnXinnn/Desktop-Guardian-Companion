@@ -1,13 +1,13 @@
 /**
- * API¹¤¾ßÀà - ÓÃÓÚÓëºó¶Ë·şÎñÍ¨ĞÅ
- * ¸ù¾İAPIÎÄµµÊµÏÖËùÓĞ½Ó¿Ú¶Ô½Ó
+ * APIå·¥å…·ç±» - ç”¨äºä¸åç«¯æœåŠ¡é€šä¿¡
+ * æ ¹æ®APIæ–‡æ¡£å®ç°æ‰€æœ‰æ¥å£å¯¹æ¥
  */
 
-// ¸ù¾İ»·¾³×Ô¶¯ÇĞ»»APIµØÖ·
-// ¿ÉÒÔÍ¨¹ı uni.setStorageSync('apiEnv', 'dev' | 'prod') ÊÖ¶¯ÇĞ»»»·¾³
+// æ ¹æ®ç¯å¢ƒè‡ªåŠ¨åˆ‡æ¢APIåœ°å€
+// å¯ä»¥é€šè¿‡ uni.setStorageSync('apiEnv', 'dev' | 'prod') æ‰‹åŠ¨åˆ‡æ¢ç¯å¢ƒ
 function getApiEnv() {
   try {
-    // °²È«µØ»ñÈ¡»·¾³ÉèÖÃ
+    // å®‰å…¨åœ°è·å–ç¯å¢ƒè®¾ç½®
     const manualEnv = uni.getStorageSync('apiEnv');
     if (manualEnv === 'dev') {
       return 'dev';
@@ -15,11 +15,11 @@ function getApiEnv() {
       return 'prod';
     }
   } catch (e) {
-    console.warn('»ñÈ¡API»·¾³ÉèÖÃÊ§°Ü:', e);
+    console.warn('è·å–APIç¯å¢ƒè®¾ç½®å¤±è´¥:', e);
   }
 
   // #ifdef H5
-  // H5»·¾³ÏÂ£¬¸ù¾İhostnameÅĞ¶Ï
+  // H5ç¯å¢ƒä¸‹ï¼Œæ ¹æ®hostnameåˆ¤æ–­
   if (typeof window !== 'undefined' && window.location) {
     const hostname = window.location.hostname;
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
@@ -28,70 +28,70 @@ function getApiEnv() {
   }
   // #endif
 
-  // Ä¬ÈÏÉú²ú»·¾³
+  // é»˜è®¤ç”Ÿäº§ç¯å¢ƒ
   return 'prod';
 }
 
-// ÑÓ³Ù³õÊ¼»¯£¬±ÜÃâÔÚÄ£¿é¼ÓÔØÊ±µ÷ÓÃuni API
+// å»¶è¿Ÿåˆå§‹åŒ–ï¼Œé¿å…åœ¨æ¨¡å—åŠ è½½æ—¶è°ƒç”¨uni API
 let _isDev = null;
 let _API_BASE_URL = null;
 
 function initApiConfig() {
   if (_isDev !== null) {
-    return; // ÒÑ¾­³õÊ¼»¯
+    return; // å·²ç»åˆå§‹åŒ–
   }
 
   try {
     const env = getApiEnv();
     _isDev = env === 'dev';
     _API_BASE_URL = _isDev
-      ? 'http://localhost:3000/api'  // ¿ª·¢»·¾³
-      : 'https://ummbivlfynon.sealosbja.site/api'; // Éú²ú»·¾³
+      ? 'http://localhost:3000/api'  // å¼€å‘ç¯å¢ƒ
+      : 'https://ummbivlfynon.sealosbja.site/api'; // ç”Ÿäº§ç¯å¢ƒ
 
     console.log('API_BASE_URL:', _API_BASE_URL, 'isDev:', _isDev);
   } catch (e) {
-    console.error('³õÊ¼»¯APIÅäÖÃÊ§°Ü:', e);
-    // Ä¬ÈÏÊ¹ÓÃÉú²ú»·¾³
+    console.error('åˆå§‹åŒ–APIé…ç½®å¤±è´¥:', e);
+    // é»˜è®¤ä½¿ç”¨ç”Ÿäº§ç¯å¢ƒ
     _isDev = false;
     _API_BASE_URL = 'https://ummbivlfynon.sealosbja.site/api';
   }
 }
 
-// »ñÈ¡API»ù´¡URL
-function getApiBaseUrl() {
+// è·å–APIåŸºç¡€URLï¼ˆå†…éƒ¨å‡½æ•°ï¼‰
+function _getApiBaseUrlInternal() {
   if (_API_BASE_URL === null) {
     initApiConfig();
   }
   return _API_BASE_URL;
 }
 
-// ÑÓ³Ù³õÊ¼»¯ÅäÖÃ£¬±ÜÃâÔÚÄ£¿é¼ÓÔØÊ±Á¢¼´Ö´ĞĞ
-// Ê¹ÓÃtry-catch°ü×°£¬È·±£¼´Ê¹³ö´íÒ²²»»áÓ°ÏìÄ£¿é¼ÓÔØ
+// å»¶è¿Ÿåˆå§‹åŒ–é…ç½®ï¼Œé¿å…åœ¨æ¨¡å—åŠ è½½æ—¶ç«‹å³æ‰§è¡Œ
+// ä½¿ç”¨try-catchåŒ…è£…ï¼Œç¡®ä¿å³ä½¿å‡ºé”™ä¹Ÿä¸ä¼šå½±å“æ¨¡å—åŠ è½½
 try {
   initApiConfig();
 } catch (e) {
-  console.warn('APIÅäÖÃ³õÊ¼»¯Ê§°Ü£¬Ê¹ÓÃÄ¬ÈÏÅäÖÃ:', e);
+  console.warn('APIé…ç½®åˆå§‹åŒ–å¤±è´¥ï¼Œä½¿ç”¨é»˜è®¤é…ç½®:', e);
   _isDev = false;
   _API_BASE_URL = 'https://ummbivlfynon.sealosbja.site/api';
 }
 
-// ÎªÁËÏòºó¼æÈİ£¬±£ÁôAPI_BASE_URL³£Á¿
-// µ«Êµ¼ÊÊ¹ÓÃÊ±Ó¦¸ÃÍ¨¹ıgetApiBaseUrl()º¯Êı»ñÈ¡
-const API_BASE_URL = getApiBaseUrl();
+// ä¸ºäº†å‘åå…¼å®¹ï¼Œä¿ç•™API_BASE_URLå¸¸é‡
+// ä½†å®é™…ä½¿ç”¨æ—¶åº”è¯¥é€šè¿‡getApiBaseUrl()å‡½æ•°è·å–
+const API_BASE_URL = _getApiBaseUrlInternal();
 
-// »ñÈ¡ÓÃ»§ID£¨´Ó±¾µØ´æ´¢£©
+// è·å–ç”¨æˆ·IDï¼ˆä»æœ¬åœ°å­˜å‚¨ï¼‰
 function getUserId() {
   const users = uni.getStorageSync('users') || {};
   const userId = uni.getStorageSync('userId');
   return userId || users.mobile || 'default';
 }
 
-// Í¨ÓÃÇëÇó·½·¨
+// é€šç”¨è¯·æ±‚æ–¹æ³•
 function request(options) {
   return new Promise((resolve, reject) => {
     const userId = getUserId();
 
-    // µÇÂ¼½Ó¿ÚºÍ½¡¿µ¼ì²é²»ĞèÒªUser-Id
+    // ç™»å½•æ¥å£å’Œå¥åº·æ£€æŸ¥ä¸éœ€è¦User-Id
     const needUserId = !options.skipAuth && options.url !== '/health' && options.url !== '/auth/login';
 
     const headers = {
@@ -103,97 +103,118 @@ function request(options) {
       headers['User-Id'] = userId;
     }
 
-    // È·±£APIÅäÖÃÒÑ³õÊ¼»¯
-    const baseUrl = getApiBaseUrl();
+    // ç¡®ä¿APIé…ç½®å·²åˆå§‹åŒ–
+    const baseUrl = _getApiBaseUrlInternal();
     const fullUrl = baseUrl + options.url;
-    console.log(`[APIÇëÇó] ${options.method || 'GET'} ${fullUrl}`, options.data || '');
+    console.log(`[APIè¯·æ±‚] ${options.method || 'GET'} ${fullUrl}`, options.data || '');
 
     uni.request({
       url: fullUrl,
       method: options.method || 'GET',
       header: headers,
       data: options.data || {},
+      timeout: options.timeout || 30000, // é»˜è®¤30ç§’è¶…æ—¶ï¼Œå¯é€šè¿‡options.timeoutè‡ªå®šä¹‰
       success: (res) => {
-        console.log(`[APIÏìÓ¦] ${fullUrl}`, res.statusCode, res.data);
+        console.log(`[APIå“åº”] ${fullUrl}`, res.statusCode, res.data);
 
-        // ´¦ÀíHTTP×´Ì¬Âë
+        // å¤„ç†HTTPçŠ¶æ€ç 
         if (res.statusCode === 200) {
-          // ¼ì²éÏìÓ¦Êı¾İ¸ñÊ½
+          // æ£€æŸ¥å“åº”æ•°æ®æ ¼å¼
           if (res.data.success !== undefined) {
-            // ±ê×¼ÏìÓ¦¸ñÊ½
+            // æ ‡å‡†å“åº”æ ¼å¼
             if (res.data.success) {
               resolve(res.data);
             } else {
-              reject(new Error(res.data.message || 'ÇëÇóÊ§°Ü'));
+              reject(new Error(res.data.message || 'è¯·æ±‚å¤±è´¥'));
             }
           } else {
-            // ½¡¿µ¼ì²éµÈÌØÊâ½Ó¿Ú¿ÉÄÜÃ»ÓĞsuccess×Ö¶Î
+            // å¥åº·æ£€æŸ¥ç­‰ç‰¹æ®Šæ¥å£å¯èƒ½æ²¡æœ‰successå­—æ®µ
             resolve(res.data);
           }
         } else if (res.statusCode === 400) {
-          reject(new Error(res.data.message || 'ÇëÇó²ÎÊı´íÎó'));
+          reject(new Error(res.data.message || 'è¯·æ±‚å‚æ•°é”™è¯¯'));
         } else if (res.statusCode === 401) {
-          reject(new Error(res.data.message || 'Î´ÊÚÈ¨£¬ÇëÖØĞÂµÇÂ¼'));
+          reject(new Error(res.data.message || 'æœªæˆæƒï¼Œè¯·é‡æ–°ç™»å½•'));
         } else if (res.statusCode === 404) {
-          // 404´íÎóÏêÏ¸ÌáÊ¾
+          // 404é”™è¯¯è¯¦ç»†æç¤º
           const errorMsg = res.data && res.data.message
             ? res.data.message
-            : `½Ó¿Ú²»´æÔÚ: ${fullUrl}`;
-          console.error('[404´íÎó]', errorMsg);
+            : `æ¥å£ä¸å­˜åœ¨: ${fullUrl}`;
+          console.error('[404é”™è¯¯]', errorMsg);
           reject(new Error(errorMsg));
         } else if (res.statusCode >= 500) {
-          reject(new Error(res.data.message || '·şÎñÆ÷ÄÚ²¿´íÎó'));
+          reject(new Error(res.data.message || 'æœåŠ¡å™¨å†…éƒ¨é”™è¯¯'));
         } else {
-          reject(new Error(res.data.message || `ÇëÇóÊ§°Ü (${res.statusCode})`));
+          reject(new Error(res.data.message || `è¯·æ±‚å¤±è´¥ (${res.statusCode})`));
         }
       },
       fail: (err) => {
-        console.error('[APIÇëÇóÊ§°Ü]', fullUrl, err);
-        // Èç¹ûÊÇ404´íÎó£¬Ìá¹©¸üÏêÏ¸µÄÌáÊ¾
+        console.error('[APIè¯·æ±‚å¤±è´¥]', fullUrl, err);
+
+        // å¤„ç†è¶…æ—¶é”™è¯¯
+        if (err.errMsg && (err.errMsg.includes('timeout') || err.errMsg.includes('è¶…æ—¶') || err.errMsg.includes('time out'))) {
+          const timeoutMsg = options.silent
+            ? 'è¿æ¥è¶…æ—¶'
+            : `è¿æ¥æœåŠ¡å™¨è¶…æ—¶ï¼Œè¯·æ£€æŸ¥ç½‘ç»œè¿æ¥æˆ–ç¨åé‡è¯•\n${fullUrl}`;
+          reject(new Error(timeoutMsg));
+          return;
+        }
+
+        // å¦‚æœæ˜¯404é”™è¯¯ï¼Œæä¾›æ›´è¯¦ç»†çš„æç¤º
         if (err.errMsg && err.errMsg.includes('404')) {
-          reject(new Error(`½Ó¿Ú²»´æÔÚ: ${fullUrl}\nÇë¼ì²éºó¶Ë·şÎñÊÇ·ñÕı³£ÔËĞĞ`));
+          reject(new Error(`æ¥å£ä¸å­˜åœ¨: ${fullUrl}\nè¯·æ£€æŸ¥åç«¯æœåŠ¡æ˜¯å¦æ­£å¸¸è¿è¡Œ`));
+        } else if (err.errMsg && err.errMsg.includes('fail')) {
+          // ç½‘ç»œè¿æ¥å¤±è´¥
+          const networkMsg = options.silent
+            ? 'ç½‘ç»œè¿æ¥å¤±è´¥'
+            : `ç½‘ç»œè¿æ¥å¤±è´¥ï¼Œè¯·æ£€æŸ¥ç½‘ç»œè®¾ç½®\n${err.errMsg}`;
+          reject(new Error(networkMsg));
         } else {
-          reject(new Error(err.errMsg || 'ÍøÂçÇëÇóÊ§°Ü£¬Çë¼ì²éÍøÂçÁ¬½Ó'));
+          reject(new Error(err.errMsg || 'ç½‘ç»œè¯·æ±‚å¤±è´¥ï¼Œè¯·æ£€æŸ¥ç½‘ç»œè¿æ¥'));
         }
       }
     });
   });
 }
 
-// API½Ó¿Ú
+// APIæ¥å£
 const api = {
-  // ½¡¿µ¼ì²é£¨²»ĞèÒªUser-IdÇëÇóÍ·£©
+  // å¥åº·æ£€æŸ¥ï¼ˆä¸éœ€è¦User-Idè¯·æ±‚å¤´ï¼‰
   healthCheck() {
     return request({
       url: '/health',
-      skipAuth: true // Ìø¹ıUser-IdÑéÖ¤
+      skipAuth: true // è·³è¿‡User-IdéªŒè¯
     });
   },
 
-  // ÓÃ»§µÇÂ¼£¨²»ĞèÒªUser-IdÇëÇóÍ·£©
+  // ç”¨æˆ·ç™»å½•ï¼ˆä¸éœ€è¦User-Idè¯·æ±‚å¤´ï¼‰
   login(mobile, code) {
     return request({
       url: '/auth/login',
       method: 'POST',
       data: { mobile, code },
-      skipAuth: true // Ìø¹ıUser-IdÑéÖ¤
+      skipAuth: true // è·³è¿‡User-IdéªŒè¯
     });
   },
 
-  // ÁªÏµÈËÏà¹Ø
-  syncContacts(contacts) {
+  // è”ç³»äººç›¸å…³
+  syncContacts(contacts, silent = false) {
     return request({
       url: '/contacts/sync',
       method: 'POST',
-      data: { contacts }
+      data: { contacts },
+      silent: silent // åå°åŒæ­¥æ—¶é™é»˜å¤„ç†é”™è¯¯
     });
   },
 
-  getContacts() {
-    return request({ url: '/contacts' });
+  getContacts(silent = false) {
+    return request({
+      url: '/contacts',
+      silent: silent // åå°åŠ è½½æ—¶é™é»˜å¤„ç†é”™è¯¯
+    });
   },
 
-  // ÓÃÒ©ÌáĞÑÏà¹Ø
+  // ç”¨è¯æé†’ç›¸å…³
   syncMedicines(medicines) {
     return request({
       url: '/medicines/sync',
@@ -206,42 +227,51 @@ const api = {
     return request({ url: '/medicines' });
   },
 
-  // ÓÃÒ©¼ÇÂ¼Ïà¹Ø
-  syncMedicineRecords(records) {
+  // ç”¨è¯è®°å½•ç›¸å…³
+  syncMedicineRecords(records, silent = false) {
     return request({
       url: '/medicine-records/sync',
       method: 'POST',
-      data: { records }
+      data: { records },
+      silent: silent
     });
   },
 
-  // ÎÊÕïÏà¹Ø
-  syncConsultations(consultations) {
+  // é—®è¯Šç›¸å…³
+  syncConsultations(consultations, silent = false) {
     return request({
       url: '/consultations/sync',
       method: 'POST',
-      data: { consultations }
+      data: { consultations },
+      silent: silent
     });
   },
 
-  getConsultations() {
-    return request({ url: '/consultations' });
+  getConsultations(silent = false) {
+    return request({
+      url: '/consultations',
+      silent: silent
+    });
   },
 
-  // Í¨»°¼ÇÂ¼Ïà¹Ø
-  syncCallRecords(records) {
+  // é€šè¯è®°å½•ç›¸å…³
+  syncCallRecords(records, silent = false) {
     return request({
       url: '/call-records/sync',
       method: 'POST',
-      data: { records }
+      data: { records },
+      silent: silent
     });
   },
 
-  getCallRecords() {
-    return request({ url: '/call-records' });
+  getCallRecords(silent = false) {
+    return request({
+      url: '/call-records',
+      silent: silent
+    });
   },
 
-  // Êı¾İ±¸·İ
+  // æ•°æ®å¤‡ä»½
   backup(data) {
     return request({
       url: '/backup',
@@ -250,15 +280,15 @@ const api = {
     });
   },
 
-  // Êı¾İ»Ö¸´
+  // æ•°æ®æ¢å¤
   restore() {
     return request({ url: '/restore' });
   }
 };
 
-// Êı¾İÍ¬²½¹¤¾ßÀà
+// æ•°æ®åŒæ­¥å·¥å…·ç±»
 const syncUtils = {
-  // Í¬²½ËùÓĞÊı¾İµ½ÔÆ¶Ë
+  // åŒæ­¥æ‰€æœ‰æ•°æ®åˆ°äº‘ç«¯
   async syncAll() {
     try {
       const contacts = uni.getStorageSync('contacts') || [];
@@ -268,27 +298,27 @@ const syncUtils = {
       const medicineRecords = uni.getStorageSync('medicineRecords') || [];
 
       await Promise.all([
-        api.syncContacts(contacts),
-        api.syncMedicines(medicines),
-        api.syncConsultations(consultations),
-        api.syncCallRecords(callRecords),
-        api.syncMedicineRecords(medicineRecords)
+        api.syncContacts(contacts, true).catch(e => console.warn('åŒæ­¥è”ç³»äººå¤±è´¥:', e)),
+        api.syncMedicines(medicines, true).catch(e => console.warn('åŒæ­¥è¯å“åˆ—è¡¨å¤±è´¥:', e)),
+        api.syncConsultations(consultations, true).catch(e => console.warn('åŒæ­¥å’¨è¯¢è®°å½•å¤±è´¥:', e)),
+        api.syncCallRecords(callRecords, true).catch(e => console.warn('åŒæ­¥é€šè¯è®°å½•å¤±è´¥:', e)),
+        api.syncMedicineRecords(medicineRecords, true).catch(e => console.warn('åŒæ­¥è¯å“è®°å½•å¤±è´¥:', e))
       ]);
 
-      uni.showToast({ title: 'Êı¾İÍ¬²½³É¹¦', icon: 'success' });
+      uni.showToast({ title: 'æ•°æ®åŒæ­¥æˆåŠŸ', icon: 'success' });
       return true;
     } catch (error) {
-      console.error('Êı¾İÍ¬²½Ê§°Ü:', error);
-      // Èç¹ûÊÇ404´íÎó£¬ÌáÊ¾ºó¶Ë·şÎñÎ´Æô¶¯
+      console.error('æ•°æ®åŒæ­¥å¤±è´¥:', error);
+      // å¦‚æœæ˜¯404é”™è¯¯ï¼Œæç¤ºåç«¯æœåŠ¡æœªå¯åŠ¨
       if (error.message && error.message.includes('404')) {
         uni.showToast({
-          title: 'ºó¶Ë·şÎñÎ´Æô¶¯£¬Êı¾İÒÑ±£´æÔÚ±¾µØ',
+          title: 'åç«¯æœåŠ¡æœªå¯åŠ¨ï¼Œæ•°æ®å·²ä¿å­˜åœ¨æœ¬åœ°',
           icon: 'none',
           duration: 3000
         });
       } else {
         uni.showToast({
-          title: error.message || 'Êı¾İÍ¬²½Ê§°Ü',
+          title: error.message || 'æ•°æ®åŒæ­¥å¤±è´¥',
           icon: 'none',
           duration: 3000
         });
@@ -297,13 +327,13 @@ const syncUtils = {
     }
   },
 
-  // ´ÓÔÆ¶Ë»Ö¸´Êı¾İ
+  // ä»äº‘ç«¯æ¢å¤æ•°æ®
   async restoreAll() {
     try {
       const result = await api.restore();
       const { contacts, medicines, consultations, callRecords, medicineRecords } = result.data || {};
 
-      // »Ö¸´Êı¾İµ½±¾µØ´æ´¢
+      // æ¢å¤æ•°æ®åˆ°æœ¬åœ°å­˜å‚¨
       if (contacts && Array.isArray(contacts)) {
         uni.setStorageSync('contacts', contacts);
       }
@@ -320,20 +350,20 @@ const syncUtils = {
         uni.setStorageSync('medicineRecords', medicineRecords);
       }
 
-      uni.showToast({ title: 'Êı¾İ»Ö¸´³É¹¦', icon: 'success' });
+      uni.showToast({ title: 'æ•°æ®æ¢å¤æˆåŠŸ', icon: 'success' });
       return true;
     } catch (error) {
-      console.error('Êı¾İ»Ö¸´Ê§°Ü:', error);
-      // Èç¹ûÊÇ404´íÎó£¬ÌáÊ¾ºó¶Ë·şÎñÎ´Æô¶¯
+      console.error('æ•°æ®æ¢å¤å¤±è´¥:', error);
+      // å¦‚æœæ˜¯404é”™è¯¯ï¼Œæç¤ºåç«¯æœåŠ¡æœªå¯åŠ¨
       if (error.message && error.message.includes('404')) {
         uni.showToast({
-          title: 'ºó¶Ë·şÎñÎ´Æô¶¯»ò½Ó¿Ú²»´æÔÚ',
+          title: 'åç«¯æœåŠ¡æœªå¯åŠ¨æˆ–æ¥å£ä¸å­˜åœ¨',
           icon: 'none',
           duration: 3000
         });
       } else {
         uni.showToast({
-          title: error.message || 'Êı¾İ»Ö¸´Ê§°Ü',
+          title: error.message || 'æ•°æ®æ¢å¤å¤±è´¥',
           icon: 'none',
           duration: 3000
         });
@@ -342,7 +372,7 @@ const syncUtils = {
     }
   },
 
-  // ±¸·İÊı¾İ
+  // å¤‡ä»½æ•°æ®
   async backup() {
     try {
       const data = {
@@ -353,20 +383,20 @@ const syncUtils = {
       };
 
       await api.backup(data);
-      uni.showToast({ title: 'Êı¾İ±¸·İ³É¹¦', icon: 'success' });
+      uni.showToast({ title: 'æ•°æ®å¤‡ä»½æˆåŠŸ', icon: 'success' });
       return true;
     } catch (error) {
-      console.error('Êı¾İ±¸·İÊ§°Ü:', error);
-      // Èç¹ûÊÇ404´íÎó£¬ÌáÊ¾ºó¶Ë·şÎñÎ´Æô¶¯
+      console.error('æ•°æ®å¤‡ä»½å¤±è´¥:', error);
+      // å¦‚æœæ˜¯404é”™è¯¯ï¼Œæç¤ºåç«¯æœåŠ¡æœªå¯åŠ¨
       if (error.message && error.message.includes('404')) {
         uni.showToast({
-          title: 'ºó¶Ë·şÎñÎ´Æô¶¯£¬Êı¾İÒÑ±£´æÔÚ±¾µØ',
+          title: 'åç«¯æœåŠ¡æœªå¯åŠ¨ï¼Œæ•°æ®å·²ä¿å­˜åœ¨æœ¬åœ°',
           icon: 'none',
           duration: 3000
         });
       } else {
         uni.showToast({
-          title: error.message || 'Êı¾İ±¸·İÊ§°Ü',
+          title: error.message || 'æ•°æ®å¤‡ä»½å¤±è´¥',
           icon: 'none',
           duration: 3000
         });
@@ -375,49 +405,44 @@ const syncUtils = {
     }
   },
 
-  // Í¬²½ÁªÏµÈË£¨µ¥¶À·½·¨£¬ÓÃÓÚÁªÏµÈËĞŞ¸´¹¦ÄÜ£©
+  // åŒæ­¥è”ç³»äººï¼ˆå•ç‹¬æ–¹æ³•ï¼Œç”¨äºè”ç³»äººä¿®å¤åŠŸèƒ½ï¼‰
   async syncContacts(contacts) {
     try {
       await api.syncContacts(contacts);
       return true;
     } catch (error) {
-      console.error('ÁªÏµÈËÍ¬²½Ê§°Ü:', error);
+      console.error('è”ç³»äººåŒæ­¥å¤±è´¥:', error);
       return false;
     }
   }
 };
 
-// µ¼³öAPI_BASE_URLÓÃÓÚµ÷ÊÔºÍÅäÖÃ
+// å¯¼å‡ºAPI_BASE_URLç”¨äºè°ƒè¯•å’Œé…ç½®
 export const getApiBaseUrl = () => {
-  if (_API_BASE_URL === null) {
-    initApiConfig();
-  }
-  return _API_BASE_URL;
+  return _getApiBaseUrlInternal();
 };
 
 export const setApiEnv = (env) => {
   if (env === 'dev' || env === 'prod') {
     try {
       uni.setStorageSync('apiEnv', env);
-      // ÖØÖÃÅäÖÃ£¬ÏÂ´Î»ñÈ¡Ê±»áÖØĞÂ³õÊ¼»¯
+      // é‡ç½®é…ç½®ï¼Œä¸‹æ¬¡è·å–æ—¶ä¼šé‡æ–°åˆå§‹åŒ–
       _isDev = null;
       _API_BASE_URL = null;
       initApiConfig();
-      console.log('API»·¾³ÒÑÇĞ»»Îª:', env);
+      console.log('APIç¯å¢ƒå·²åˆ‡æ¢ä¸º:', env);
       uni.showToast({
-        title: `API»·¾³ÒÑÇĞ»»Îª${env === 'dev' ? '¿ª·¢' : 'Éú²ú'}`,
+        title: `APIç¯å¢ƒå·²åˆ‡æ¢ä¸º${env === 'dev' ? 'å¼€å‘' : 'ç”Ÿäº§'}`,
         icon: 'none'
       });
     } catch (e) {
-      console.error('ÉèÖÃAPI»·¾³Ê§°Ü:', e);
+      console.error('è®¾ç½®APIç¯å¢ƒå¤±è´¥:', e);
     }
   }
 };
 
 export default {
   api,
-  syncUtils,
-  getApiBaseUrl,
-  setApiEnv
+  syncUtils
 };
 

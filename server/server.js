@@ -7,12 +7,12 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ÖĞ¼ä¼ş
+// ä¸­é—´ä»¶
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Á¬½ÓMongoDB£¨Èç¹ûÃ»ÓĞMongoDB£¬¿ÉÒÔÊ¹ÓÃÄÚ´æ´æ´¢£©
+// è¿æ¥MongoDBï¼ˆå¦‚æœæ²¡æœ‰MongoDBï¼Œå¯ä»¥ä½¿ç”¨å†…å­˜å­˜å‚¨ï¼‰
 let db = {
   users: [],
   contacts: [],
@@ -21,7 +21,7 @@ let db = {
   callRecords: []
 };
 
-// Êı¾İÄ£ĞÍ£¨¼ò»¯°æ£¬Êµ¼ÊÓ¦¸ÃÊ¹ÓÃMongoDB£©
+// æ•°æ®æ¨¡å‹ï¼ˆç®€åŒ–ç‰ˆï¼Œå®é™…åº”è¯¥ä½¿ç”¨MongoDBï¼‰
 class DataStore {
   constructor() {
     this.data = {
@@ -33,7 +33,7 @@ class DataStore {
     };
   }
 
-  // ÓÃ»§Ïà¹Ø
+  // ç”¨æˆ·ç›¸å…³
   saveUser(userId, userData) {
     this.data.users.set(userId, { ...userData, userId, updatedAt: new Date() });
   }
@@ -42,7 +42,7 @@ class DataStore {
     return this.data.users.get(userId);
   }
 
-  // ÁªÏµÈËÏà¹Ø
+  // è”ç³»äººç›¸å…³
   saveContacts(userId, contacts) {
     this.data.contacts.set(userId, contacts);
   }
@@ -51,7 +51,7 @@ class DataStore {
     return this.data.contacts.get(userId) || [];
   }
 
-  // ÓÃÒ©ÌáĞÑÏà¹Ø
+  // ç”¨è¯æé†’ç›¸å…³
   saveMedicines(userId, medicines) {
     this.data.medicines.set(userId, medicines);
   }
@@ -60,7 +60,7 @@ class DataStore {
     return this.data.medicines.get(userId) || [];
   }
 
-  // ÎÊÕïÏà¹Ø
+  // é—®è¯Šç›¸å…³
   saveConsultations(userId, consultations) {
     this.data.consultations.set(userId, consultations);
   }
@@ -69,7 +69,7 @@ class DataStore {
     return this.data.consultations.get(userId) || [];
   }
 
-  // Í¨»°¼ÇÂ¼Ïà¹Ø
+  // é€šè¯è®°å½•ç›¸å…³
   saveCallRecords(userId, records) {
     this.data.callRecords.set(userId, records);
   }
@@ -81,29 +81,29 @@ class DataStore {
 
 const dataStore = new DataStore();
 
-// ÖĞ¼ä¼ş£ºÑéÖ¤ÓÃ»§£¨¼ò»¯°æ£©
+// ä¸­é—´ä»¶ï¼šéªŒè¯ç”¨æˆ·ï¼ˆç®€åŒ–ç‰ˆï¼‰
 const authenticateUser = (req, res, next) => {
   const userId = req.headers['user-id'] || req.body.userId || 'default';
   req.userId = userId;
   next();
 };
 
-// Â·ÓÉ
+// è·¯ç”±
 
-// ½¡¿µ¼ì²é
+// å¥åº·æ£€æŸ¥
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: '·şÎñÆ÷ÔËĞĞÕı³£' });
+  res.json({ status: 'ok', message: 'æœåŠ¡å™¨è¿è¡Œæ­£å¸¸' });
 });
 
-// ÓÃ»§µÇÂ¼/×¢²á
+// ç”¨æˆ·ç™»å½•/æ³¨å†Œ
 app.post('/api/auth/login', (req, res) => {
   const { mobile, code } = req.body;
-  
+
   if (!mobile || !code) {
-    return res.status(400).json({ success: false, message: 'ÊÖ»úºÅºÍÑéÖ¤Âë²»ÄÜÎª¿Õ' });
+    return res.status(400).json({ success: false, message: 'æ‰‹æœºå·å’ŒéªŒè¯ç ä¸èƒ½ä¸ºç©º' });
   }
 
-  // ¼ò»¯°æ£ºÖ±½Ó·µ»ØÓÃ»§ID
+  // ç®€åŒ–ç‰ˆï¼šç›´æ¥è¿”å›ç”¨æˆ·ID
   const userId = mobile;
   const userData = {
     mobile,
@@ -111,9 +111,9 @@ app.post('/api/auth/login', (req, res) => {
     createdAt: new Date(),
     lastLoginAt: new Date()
   };
-  
+
   dataStore.saveUser(userId, userData);
-  
+
   res.json({
     success: true,
     data: {
@@ -123,20 +123,20 @@ app.post('/api/auth/login', (req, res) => {
   });
 });
 
-// Í¬²½ÁªÏµÈË
+// åŒæ­¥è”ç³»äºº
 app.post('/api/contacts/sync', authenticateUser, (req, res) => {
   const { contacts } = req.body;
   const userId = req.userId;
-  
+
   if (!Array.isArray(contacts)) {
-    return res.status(400).json({ success: false, message: 'ÁªÏµÈËÊı¾İ¸ñÊ½´íÎó' });
+    return res.status(400).json({ success: false, message: 'è”ç³»äººæ•°æ®æ ¼å¼é”™è¯¯' });
   }
 
   dataStore.saveContacts(userId, contacts);
-  
+
   res.json({
     success: true,
-    message: 'ÁªÏµÈËÍ¬²½³É¹¦',
+    message: 'è”ç³»äººåŒæ­¥æˆåŠŸ',
     data: { count: contacts.length }
   });
 });
@@ -144,27 +144,27 @@ app.post('/api/contacts/sync', authenticateUser, (req, res) => {
 app.get('/api/contacts', authenticateUser, (req, res) => {
   const userId = req.userId;
   const contacts = dataStore.getContacts(userId);
-  
+
   res.json({
     success: true,
     data: contacts
   });
 });
 
-// Í¬²½ÓÃÒ©ÌáĞÑ
+// åŒæ­¥ç”¨è¯æé†’
 app.post('/api/medicines/sync', authenticateUser, (req, res) => {
   const { medicines } = req.body;
   const userId = req.userId;
-  
+
   if (!Array.isArray(medicines)) {
-    return res.status(400).json({ success: false, message: 'ÓÃÒ©ÌáĞÑÊı¾İ¸ñÊ½´íÎó' });
+    return res.status(400).json({ success: false, message: 'ç”¨è¯æé†’æ•°æ®æ ¼å¼é”™è¯¯' });
   }
 
   dataStore.saveMedicines(userId, medicines);
-  
+
   res.json({
     success: true,
-    message: 'ÓÃÒ©ÌáĞÑÍ¬²½³É¹¦',
+    message: 'ç”¨è¯æé†’åŒæ­¥æˆåŠŸ',
     data: { count: medicines.length }
   });
 });
@@ -172,44 +172,44 @@ app.post('/api/medicines/sync', authenticateUser, (req, res) => {
 app.get('/api/medicines', authenticateUser, (req, res) => {
   const userId = req.userId;
   const medicines = dataStore.getMedicines(userId);
-  
+
   res.json({
     success: true,
     data: medicines
   });
 });
 
-// Í¬²½ÓÃÒ©¼ÇÂ¼
+// åŒæ­¥ç”¨è¯è®°å½•
 app.post('/api/medicine-records/sync', authenticateUser, (req, res) => {
   const { records } = req.body;
   const userId = req.userId;
-  
+
   if (!Array.isArray(records)) {
-    return res.status(400).json({ success: false, message: 'ÓÃÒ©¼ÇÂ¼Êı¾İ¸ñÊ½´íÎó' });
+    return res.status(400).json({ success: false, message: 'ç”¨è¯è®°å½•æ•°æ®æ ¼å¼é”™è¯¯' });
   }
 
-  // ÕâÀï¿ÉÒÔ±£´æµ½Êı¾İ¿â
+  // è¿™é‡Œå¯ä»¥ä¿å­˜åˆ°æ•°æ®åº“
   res.json({
     success: true,
-    message: 'ÓÃÒ©¼ÇÂ¼Í¬²½³É¹¦',
+    message: 'ç”¨è¯è®°å½•åŒæ­¥æˆåŠŸ',
     data: { count: records.length }
   });
 });
 
-// Í¬²½ÎÊÕï¼ÇÂ¼
+// åŒæ­¥é—®è¯Šè®°å½•
 app.post('/api/consultations/sync', authenticateUser, (req, res) => {
   const { consultations } = req.body;
   const userId = req.userId;
-  
+
   if (!Array.isArray(consultations)) {
-    return res.status(400).json({ success: false, message: 'ÎÊÕï¼ÇÂ¼Êı¾İ¸ñÊ½´íÎó' });
+    return res.status(400).json({ success: false, message: 'é—®è¯Šè®°å½•æ•°æ®æ ¼å¼é”™è¯¯' });
   }
 
   dataStore.saveConsultations(userId, consultations);
-  
+
   res.json({
     success: true,
-    message: 'ÎÊÕï¼ÇÂ¼Í¬²½³É¹¦',
+    message: 'é—®è¯Šè®°å½•åŒæ­¥æˆåŠŸ',
     data: { count: consultations.length }
   });
 });
@@ -217,27 +217,27 @@ app.post('/api/consultations/sync', authenticateUser, (req, res) => {
 app.get('/api/consultations', authenticateUser, (req, res) => {
   const userId = req.userId;
   const consultations = dataStore.getConsultations(userId);
-  
+
   res.json({
     success: true,
     data: consultations
   });
 });
 
-// Í¬²½Í¨»°¼ÇÂ¼
+// åŒæ­¥é€šè¯è®°å½•
 app.post('/api/call-records/sync', authenticateUser, (req, res) => {
   const { records } = req.body;
   const userId = req.userId;
-  
+
   if (!Array.isArray(records)) {
-    return res.status(400).json({ success: false, message: 'Í¨»°¼ÇÂ¼Êı¾İ¸ñÊ½´íÎó' });
+    return res.status(400).json({ success: false, message: 'é€šè¯è®°å½•æ•°æ®æ ¼å¼é”™è¯¯' });
   }
 
   dataStore.saveCallRecords(userId, records);
-  
+
   res.json({
     success: true,
-    message: 'Í¨»°¼ÇÂ¼Í¬²½³É¹¦',
+    message: 'é€šè¯è®°å½•åŒæ­¥æˆåŠŸ',
     data: { count: records.length }
   });
 });
@@ -245,36 +245,36 @@ app.post('/api/call-records/sync', authenticateUser, (req, res) => {
 app.get('/api/call-records', authenticateUser, (req, res) => {
   const userId = req.userId;
   const records = dataStore.getCallRecords(userId);
-  
+
   res.json({
     success: true,
     data: records
   });
 });
 
-// Êı¾İ±¸·İ
+// æ•°æ®å¤‡ä»½
 app.post('/api/backup', authenticateUser, (req, res) => {
   const userId = req.userId;
   const { contacts, medicines, consultations, callRecords } = req.body;
-  
+
   if (contacts) dataStore.saveContacts(userId, contacts);
   if (medicines) dataStore.saveMedicines(userId, medicines);
   if (consultations) dataStore.saveConsultations(userId, consultations);
   if (callRecords) dataStore.saveCallRecords(userId, callRecords);
-  
+
   res.json({
     success: true,
-    message: 'Êı¾İ±¸·İ³É¹¦',
+    message: 'æ•°æ®å¤‡ä»½æˆåŠŸ',
     data: {
       timestamp: new Date().toISOString()
     }
   });
 });
 
-// Êı¾İ»Ö¸´
+// æ•°æ®æ¢å¤
 app.get('/api/restore', authenticateUser, (req, res) => {
   const userId = req.userId;
-  
+
   res.json({
     success: true,
     data: {
@@ -286,28 +286,28 @@ app.get('/api/restore', authenticateUser, (req, res) => {
   });
 });
 
-// ´íÎó´¦Àí
+// é”™è¯¯å¤„ç†
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({
     success: false,
-    message: '·şÎñÆ÷ÄÚ²¿´íÎó',
+    message: 'æœåŠ¡å™¨å†…éƒ¨é”™è¯¯',
     error: process.env.NODE_ENV === 'development' ? err.message : undefined
   });
 });
 
-// 404´¦Àí
+// 404å¤„ç†
 app.use((req, res) => {
   res.status(404).json({
     success: false,
-    message: '½Ó¿Ú²»´æÔÚ'
+    message: 'æ¥å£ä¸å­˜åœ¨'
   });
 });
 
-// Æô¶¯·şÎñÆ÷
+// å¯åŠ¨æœåŠ¡å™¨
 app.listen(PORT, () => {
-  console.log(`·şÎñÆ÷ÔËĞĞÔÚ http://localhost:${PORT}`);
-  console.log(`APIÎÄµµ: http://localhost:${PORT}/api/health`);
+  console.log(`æœåŠ¡å™¨è¿è¡Œåœ¨ http://localhost:${PORT}`);
+  console.log(`APIæ–‡æ¡£: http://localhost:${PORT}/api/health`);
 });
 
 module.exports = app;

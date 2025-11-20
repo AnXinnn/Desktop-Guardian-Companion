@@ -1,22 +1,22 @@
 /**
- * Ó¦ÓÃÆô¶¯Æ÷¹¤¾ßÀà - ÓÃÓÚ»ñÈ¡ºÍ¹ÜÀíÒÑ°²×°Ó¦ÓÃ
+ * åº”ç”¨å¯åŠ¨å™¨å·¥å…·ç±» - ç”¨äºè·å–å’Œç®¡ç†å·²å®‰è£…åº”ç”¨
  */
 
-// Ó¦ÓÃ·ÖÀàÓ³Éä
+// åº”ç”¨åˆ†ç±»æ˜ å°„
 const APP_CATEGORIES = {
-  'Éç½»': ['Î¢ĞÅ', 'QQ', 'Î¢²©', '¶¶Òô', '¿ìÊÖ', 'Ğ¡ºìÊé', 'Öªºõ', 'Ìù°É', 'Ä°Ä°', 'Ì½Ì½'],
-  '¹¤¾ß': ['ÉèÖÃ', 'ÎÄ¼ş¹ÜÀí', 'ÏÂÔØ', 'ä¯ÀÀÆ÷', 'Ó¦ÓÃÉÌµê', '°²È«ÖĞĞÄ', 'ÇåÀí', 'ÓÅ»¯'],
-  'ÓéÀÖ': ['ÒôÀÖ', 'ÊÓÆµ', 'ÓÎÏ·', 'ÔÄ¶Á', 'Ö±²¥', 'K¸è', 'Ïà»ú', 'ÃÀÍ¼'],
-  '¹ºÎï': ['ÌÔ±¦', '¾©¶«', 'Æ´¶à¶à', 'ÃÀÍÅ', '¶öÁËÃ´', 'Ö§¸¶±¦', 'Î¢ĞÅÖ§¸¶'],
-  '³öĞĞ': ['µØÍ¼', 'µ¼º½', '´ò³µ', '¹«½»', '»ğ³µ', '·É»ú', '¾Æµê'],
-  '½ÌÓı': ['Ñ§Ï°', '¿Î³Ì', '¿¼ÊÔ', '´Êµä', '·­Òë', '×÷Òµ'],
-  '½¡¿µ': ['ÔË¶¯', '½¡Éí', 'Ò½ÁÆ', 'Ò½Ôº', 'Ò©µê', '½¡¿µ'],
-  '½ğÈÚ': ['ÒøĞĞ', 'Àí²Æ', '¹ÉÆ±', '»ù½ğ', '±£ÏÕ', '´û¿î'],
-  'ÏµÍ³': ['ÉèÖÃ', 'µç»°', '¶ÌĞÅ', 'ÁªÏµÈË', 'ÈÕÀú', 'Ê±ÖÓ', 'Ïà»ú', 'Í¼¿â', 'ÎÄ¼ş¹ÜÀí']
+  'ç¤¾äº¤': ['å¾®ä¿¡', 'QQ', 'å¾®åš', 'æŠ–éŸ³', 'å¿«æ‰‹', 'å°çº¢ä¹¦', 'çŸ¥ä¹', 'è´´å§', 'é™Œé™Œ', 'æ¢æ¢'],
+  'å·¥å…·': ['è®¾ç½®', 'æ–‡ä»¶ç®¡ç†', 'ä¸‹è½½', 'æµè§ˆå™¨', 'åº”ç”¨å•†åº—', 'å®‰å…¨ä¸­å¿ƒ', 'æ¸…ç†', 'ä¼˜åŒ–'],
+  'å¨±ä¹': ['éŸ³ä¹', 'è§†é¢‘', 'æ¸¸æˆ', 'é˜…è¯»', 'ç›´æ’­', 'Kæ­Œ', 'ç›¸æœº', 'ç¾å›¾'],
+  'è´­ç‰©': ['æ·˜å®', 'äº¬ä¸œ', 'æ‹¼å¤šå¤š', 'ç¾å›¢', 'é¥¿äº†ä¹ˆ', 'æ”¯ä»˜å®', 'å¾®ä¿¡æ”¯ä»˜'],
+  'å‡ºè¡Œ': ['åœ°å›¾', 'å¯¼èˆª', 'æ‰“è½¦', 'å…¬äº¤', 'ç«è½¦', 'é£æœº', 'é…’åº—'],
+  'æ•™è‚²': ['å­¦ä¹ ', 'è¯¾ç¨‹', 'è€ƒè¯•', 'è¯å…¸', 'ç¿»è¯‘', 'ä½œä¸š'],
+  'å¥åº·': ['è¿åŠ¨', 'å¥èº«', 'åŒ»ç–—', 'åŒ»é™¢', 'è¯åº—', 'å¥åº·'],
+  'é‡‘è': ['é“¶è¡Œ', 'ç†è´¢', 'è‚¡ç¥¨', 'åŸºé‡‘', 'ä¿é™©', 'è´·æ¬¾'],
+  'ç³»ç»Ÿ': ['è®¾ç½®', 'ç”µè¯', 'çŸ­ä¿¡', 'è”ç³»äºº', 'æ—¥å†', 'æ—¶é’Ÿ', 'ç›¸æœº', 'å›¾åº“', 'æ–‡ä»¶ç®¡ç†']
 };
 
 /**
- * ¸ù¾İÓ¦ÓÃÃû³ÆÅĞ¶Ï·ÖÀà
+ * æ ¹æ®åº”ç”¨åç§°åˆ¤æ–­åˆ†ç±»
  */
 function getAppCategory(appName) {
   for (const [category, keywords] of Object.entries(APP_CATEGORIES)) {
@@ -26,12 +26,12 @@ function getAppCategory(appName) {
       }
     }
   }
-  return 'ÆäËû';
+  return 'å…¶ä»–';
 }
 
 /**
- * »ñÈ¡ÒÑ°²×°Ó¦ÓÃÁĞ±í
- * @returns {Promise<Array>} Ó¦ÓÃÁĞ±í
+ * è·å–å·²å®‰è£…åº”ç”¨åˆ—è¡¨
+ * @returns {Promise<Array>} åº”ç”¨åˆ—è¡¨
  */
 export function getInstalledApps() {
   return new Promise((resolve, reject) => {
@@ -42,63 +42,63 @@ export function getInstalledApps() {
       const Intent = plus.android.importClass('android.content.Intent');
       const ResolveInfo = plus.android.importClass('android.content.pm.ResolveInfo');
       const ApplicationInfo = plus.android.importClass('android.content.pm.ApplicationInfo');
-      
+
       const pm = main.getPackageManager();
       const intent = new Intent(Intent.ACTION_MAIN, null);
       intent.addCategory(Intent.CATEGORY_LAUNCHER);
-      
+
       const resolveList = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
       const apps = [];
-      
+
       for (let i = 0; i < resolveList.size(); i++) {
         try {
           const resolveInfo = resolveList.get(i);
           const activityInfo = resolveInfo.activityInfo;
           const packageName = activityInfo.packageName;
           const applicationInfo = activityInfo.applicationInfo;
-          
-          // »ñÈ¡Ó¦ÓÃÃû³Æ
+
+          // è·å–åº”ç”¨åç§°
           const appName = resolveInfo.loadLabel(pm).toString();
-          
-          // »ñÈ¡Ó¦ÓÃÍ¼±ê
-          // ×¢Òâ£ºuni-appÖĞÖ±½Ó»ñÈ¡Android DrawableÍ¼±ê±È½Ï¸´ÔÓ
-          // ÕâÀïÔİÊ±·µ»Ønull£¬Ç°¶Ë»áÊ¹ÓÃÄ¬ÈÏÍ¼±ê
-          // ºóĞø¿ÉÒÔÍ¨¹ınative²å¼ş»ò·şÎñ¶ËAPI»ñÈ¡Í¼±ê
+
+          // è·å–åº”ç”¨å›¾æ ‡
+          // æ³¨æ„ï¼šuni-appä¸­ç›´æ¥è·å–Android Drawableå›¾æ ‡æ¯”è¾ƒå¤æ‚
+          // è¿™é‡Œæš‚æ—¶è¿”å›nullï¼Œå‰ç«¯ä¼šä½¿ç”¨é»˜è®¤å›¾æ ‡
+          // åç»­å¯ä»¥é€šè¿‡nativeæ’ä»¶æˆ–æœåŠ¡ç«¯APIè·å–å›¾æ ‡
           let icon = null;
-          
-          // ÅĞ¶ÏÊÇ·ñÎªÏµÍ³Ó¦ÓÃ
+
+          // åˆ¤æ–­æ˜¯å¦ä¸ºç³»ç»Ÿåº”ç”¨
           const isSystemApp = (applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) !== 0;
-          
-          // »ñÈ¡Ó¦ÓÃ·ÖÀà
+
+          // è·å–åº”ç”¨åˆ†ç±»
           const category = getAppCategory(appName);
-          
+
           apps.push({
             packageName: packageName,
             name: appName,
-            icon: icon, // ÔİÊ±Îªnull£¬ºóĞøÓÅ»¯
+            icon: icon, // æš‚æ—¶ä¸ºnullï¼Œåç»­ä¼˜åŒ–
             category: category,
             isSystemApp: isSystemApp,
             launchIntent: activityInfo.name,
             className: activityInfo.name
           });
         } catch (e) {
-          console.log('´¦ÀíÓ¦ÓÃĞÅÏ¢Ê§°Ü:', e);
+          console.log('å¤„ç†åº”ç”¨ä¿¡æ¯å¤±è´¥:', e);
           continue;
         }
       }
-      
-      // °´Ãû³ÆÅÅĞò
+
+      // æŒ‰åç§°æ’åº
       apps.sort((a, b) => {
         return a.name.localeCompare(b.name, 'zh-CN');
       });
-      
-      // ±£´æµ½±¾µØ´æ´¢£¨ÓÃÓÚÀëÏßÊ¹ÓÃ£©
+
+      // ä¿å­˜åˆ°æœ¬åœ°å­˜å‚¨ï¼ˆç”¨äºç¦»çº¿ä½¿ç”¨ï¼‰
       uni.setStorageSync('installedApps', apps);
-      
+
       resolve(apps);
     } catch (e) {
-      console.error('»ñÈ¡Ó¦ÓÃÁĞ±íÊ§°Ü:', e);
-      // Èç¹û»ñÈ¡Ê§°Ü£¬³¢ÊÔ´Ó±¾µØ´æ´¢¶ÁÈ¡
+      console.error('è·å–åº”ç”¨åˆ—è¡¨å¤±è´¥:', e);
+      // å¦‚æœè·å–å¤±è´¥ï¼Œå°è¯•ä»æœ¬åœ°å­˜å‚¨è¯»å–
       const cachedApps = uni.getStorageSync('installedApps') || [];
       if (cachedApps.length > 0) {
         resolve(cachedApps);
@@ -107,100 +107,100 @@ export function getInstalledApps() {
       }
     }
     // #endif
-    
+
     // #ifndef APP-PLUS
-    // H5»òÆäËûÆ½Ì¨£¬·µ»Ø¿ÕÊı×é»òÄ£ÄâÊı¾İ
-    console.warn('µ±Ç°Æ½Ì¨²»Ö§³Ö»ñÈ¡Ó¦ÓÃÁĞ±í');
+    // H5æˆ–å…¶ä»–å¹³å°ï¼Œè¿”å›ç©ºæ•°ç»„æˆ–æ¨¡æ‹Ÿæ•°æ®
+    console.warn('å½“å‰å¹³å°ä¸æ”¯æŒè·å–åº”ç”¨åˆ—è¡¨');
     resolve([]);
     // #endif
   });
 }
 
 /**
- * Æô¶¯Ó¦ÓÃ
- * @param {String} packageName Ó¦ÓÃ°üÃû
- * @param {String} className ¿ÉÑ¡£¬ActivityÀàÃû
+ * å¯åŠ¨åº”ç”¨
+ * @param {String} packageName åº”ç”¨åŒ…å
+ * @param {String} className å¯é€‰ï¼ŒActivityç±»å
  * @returns {Promise}
  */
 export function launchApp(packageName, className = null) {
   return new Promise((resolve, reject) => {
     // #ifdef APP-PLUS
     try {
-      // ¼ÇÂ¼×î½üÊ¹ÓÃ£¨ÏÈ¼ÇÂ¼£¬¼´Ê¹Æô¶¯Ê§°ÜÒ²²»Ó°Ïì£©
+      // è®°å½•æœ€è¿‘ä½¿ç”¨ï¼ˆå…ˆè®°å½•ï¼Œå³ä½¿å¯åŠ¨å¤±è´¥ä¹Ÿä¸å½±å“ï¼‰
       recordRecentApp(packageName);
-      
+
       const launchOptions = {
         pname: packageName
       };
-      
-      // Ê¹ÓÃplus.runtime.launchApplicationÆô¶¯Ó¦ÓÃ
+
+      // ä½¿ç”¨plus.runtime.launchApplicationå¯åŠ¨åº”ç”¨
       plus.runtime.launchApplication(launchOptions, (e) => {
-        // ×¢Òâ£ºplus.runtime.launchApplicationµÄ»Øµ÷ÖĞ£¬eÎªnull±íÊ¾³É¹¦
+        // æ³¨æ„ï¼šplus.runtime.launchApplicationçš„å›è°ƒä¸­ï¼Œeä¸ºnullè¡¨ç¤ºæˆåŠŸ
         if (e) {
-          console.error('Æô¶¯Ó¦ÓÃÊ§°Ü:', e);
-          const errorMsg = e.message || (e.code ? `´íÎó´úÂë: ${e.code}` : 'Æô¶¯Ó¦ÓÃÊ§°Ü');
+          console.error('å¯åŠ¨åº”ç”¨å¤±è´¥:', e);
+          const errorMsg = e.message || (e.code ? `é”™è¯¯ä»£ç : ${e.code}` : 'å¯åŠ¨åº”ç”¨å¤±è´¥');
           reject(new Error(errorMsg));
         } else {
-          console.log('Ó¦ÓÃÆô¶¯³É¹¦:', packageName);
+          console.log('åº”ç”¨å¯åŠ¨æˆåŠŸ:', packageName);
           resolve();
         }
       });
     } catch (e) {
-      console.error('Æô¶¯Ó¦ÓÃÒì³£:', e);
+      console.error('å¯åŠ¨åº”ç”¨å¼‚å¸¸:', e);
       reject(e);
     }
     // #endif
-    
+
     // #ifndef APP-PLUS
-    // H5»òÆäËûÆ½Ì¨£¬ÏÔÊ¾ÌáÊ¾
+    // H5æˆ–å…¶ä»–å¹³å°ï¼Œæ˜¾ç¤ºæç¤º
     uni.showToast({
-      title: 'µ±Ç°Æ½Ì¨²»Ö§³ÖÆô¶¯Ó¦ÓÃ',
+      title: 'å½“å‰å¹³å°ä¸æ”¯æŒå¯åŠ¨åº”ç”¨',
       icon: 'none'
     });
-    reject(new Error('µ±Ç°Æ½Ì¨²»Ö§³ÖÆô¶¯Ó¦ÓÃ'));
+    reject(new Error('å½“å‰å¹³å°ä¸æ”¯æŒå¯åŠ¨åº”ç”¨'));
     // #endif
   });
 }
 
 /**
- * ¼ÇÂ¼×î½üÊ¹ÓÃµÄÓ¦ÓÃ
+ * è®°å½•æœ€è¿‘ä½¿ç”¨çš„åº”ç”¨
  */
 function recordRecentApp(packageName) {
   let recentApps = uni.getStorageSync('recentApps') || [];
-  
-  // ÒÆ³ıÒÑ´æÔÚµÄ¼ÇÂ¼
+
+  // ç§»é™¤å·²å­˜åœ¨çš„è®°å½•
   recentApps = recentApps.filter(app => app.packageName !== packageName);
-  
-  // Ìí¼Óµ½×îÇ°Ãæ
+
+  // æ·»åŠ åˆ°æœ€å‰é¢
   recentApps.unshift({
     packageName: packageName,
     timestamp: Date.now()
   });
-  
-  // Ö»±£Áô×î½ü20¸ö
+
+  // åªä¿ç•™æœ€è¿‘20ä¸ª
   if (recentApps.length > 20) {
     recentApps = recentApps.slice(0, 20);
   }
-  
+
   uni.setStorageSync('recentApps', recentApps);
 }
 
 /**
- * »ñÈ¡×î½üÊ¹ÓÃµÄÓ¦ÓÃÁĞ±í
- * @param {Number} limit ·µ»ØÊıÁ¿ÏŞÖÆ
+ * è·å–æœ€è¿‘ä½¿ç”¨çš„åº”ç”¨åˆ—è¡¨
+ * @param {Number} limit è¿”å›æ•°é‡é™åˆ¶
  * @returns {Array}
  */
 export function getRecentApps(limit = 10) {
   const recentApps = uni.getStorageSync('recentApps') || [];
   const installedApps = uni.getStorageSync('installedApps') || [];
-  
-  // ´´½¨°üÃûµ½Ó¦ÓÃµÄÓ³Éä
+
+  // åˆ›å»ºåŒ…ååˆ°åº”ç”¨çš„æ˜ å°„
   const appMap = {};
   installedApps.forEach(app => {
     appMap[app.packageName] = app;
   });
-  
-  // »ñÈ¡×î½üÊ¹ÓÃµÄÓ¦ÓÃĞÅÏ¢
+
+  // è·å–æœ€è¿‘ä½¿ç”¨çš„åº”ç”¨ä¿¡æ¯
   const recentAppsWithInfo = recentApps
     .slice(0, limit)
     .map(recent => {
@@ -214,61 +214,61 @@ export function getRecentApps(limit = 10) {
       return null;
     })
     .filter(app => app !== null);
-  
+
   return recentAppsWithInfo;
 }
 
 /**
- * °´·ÖÀà»ñÈ¡Ó¦ÓÃ
- * @param {String} category ·ÖÀàÃû³Æ£¬null±íÊ¾È«²¿
- * @param {Boolean} excludeSystemApp ÊÇ·ñÅÅ³ıÏµÍ³Ó¦ÓÃ
+ * æŒ‰åˆ†ç±»è·å–åº”ç”¨
+ * @param {String} category åˆ†ç±»åç§°ï¼Œnullè¡¨ç¤ºå…¨éƒ¨
+ * @param {Boolean} excludeSystemApp æ˜¯å¦æ’é™¤ç³»ç»Ÿåº”ç”¨
  * @returns {Array}
  */
 export function getAppsByCategory(category = null, excludeSystemApp = false) {
   const apps = uni.getStorageSync('installedApps') || [];
-  
+
   let filteredApps = apps;
-  
-  // ¹ıÂËÏµÍ³Ó¦ÓÃ
+
+  // è¿‡æ»¤ç³»ç»Ÿåº”ç”¨
   if (excludeSystemApp) {
     filteredApps = filteredApps.filter(app => !app.isSystemApp);
   }
-  
-  // °´·ÖÀà¹ıÂË
-  if (category && category !== 'È«²¿') {
+
+  // æŒ‰åˆ†ç±»è¿‡æ»¤
+  if (category && category !== 'å…¨éƒ¨') {
     filteredApps = filteredApps.filter(app => app.category === category);
   }
-  
+
   return filteredApps;
 }
 
 /**
- * ËÑË÷Ó¦ÓÃ
- * @param {String} keyword ËÑË÷¹Ø¼ü´Ê
+ * æœç´¢åº”ç”¨
+ * @param {String} keyword æœç´¢å…³é”®è¯
  * @returns {Array}
  */
 export function searchApps(keyword) {
   const apps = uni.getStorageSync('installedApps') || [];
   const lowerKeyword = keyword.toLowerCase();
-  
+
   return apps.filter(app => {
     return app.name.toLowerCase().includes(lowerKeyword) ||
-           app.packageName.toLowerCase().includes(lowerKeyword);
+      app.packageName.toLowerCase().includes(lowerKeyword);
   });
 }
 
 /**
- * »ñÈ¡ËùÓĞ·ÖÀà
+ * è·å–æ‰€æœ‰åˆ†ç±»
  * @returns {Array}
  */
 export function getAllCategories() {
   const apps = uni.getStorageSync('installedApps') || [];
   const categories = new Set();
-  
+
   apps.forEach(app => {
     categories.add(app.category);
   });
-  
-  return ['È«²¿', ...Array.from(categories).sort()];
+
+  return ['å…¨éƒ¨', ...Array.from(categories).sort()];
 }
 

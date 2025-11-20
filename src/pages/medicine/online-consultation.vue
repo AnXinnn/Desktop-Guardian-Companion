@@ -174,7 +174,7 @@ export default {
     // 从云端加载问诊记录
     async loadConsultationsFromCloud() {
       try {
-        const result = await apiUtils.api.getConsultations();
+        const result = await apiUtils.api.getConsultations(true); // 静默模式
         if (result.success && result.data && Array.isArray(result.data) && result.data.length > 0) {
           const localConsultations = uni.getStorageSync('consultationHistory') || [];
           // 如果本地没有数据，使用云端数据
@@ -185,10 +185,8 @@ export default {
           }
         }
       } catch (error) {
-        // 静默失败，404错误不显示（后端服务可能未启动）
-        if (error.message && !error.message.includes('404')) {
-          console.log('从云端加载问诊记录失败（使用本地数据）:', error.message);
-        }
+        // 静默失败，不影响本地数据使用
+        console.log('从云端加载问诊记录失败（使用本地数据）:', error.message);
       }
     },
     // 同步问诊记录到云端
@@ -196,7 +194,7 @@ export default {
       try {
         const consultations = uni.getStorageSync('consultationHistory') || [];
         if (consultations.length > 0) {
-          await apiUtils.api.syncConsultations(consultations);
+          await apiUtils.api.syncConsultations(consultations, true); // 静默模式，后台同步
           console.log('问诊记录已同步到云端');
         }
       } catch (error) {

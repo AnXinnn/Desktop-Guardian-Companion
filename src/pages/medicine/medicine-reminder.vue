@@ -221,7 +221,7 @@ export default {
     // 从云端加载用药提醒
     async loadMedicinesFromCloud() {
       try {
-        const result = await apiUtils.api.getMedicines();
+        const result = await apiUtils.api.getMedicines(true); // 静默模式
         if (result.success && result.data && Array.isArray(result.data) && result.data.length > 0) {
           const localMedicines = uni.getStorageSync('medicineList') || [];
           // 如果本地没有数据，使用云端数据
@@ -232,10 +232,8 @@ export default {
           }
         }
       } catch (error) {
-        // 静默失败，404错误不显示（后端服务可能未启动）
-        if (error.message && !error.message.includes('404')) {
-          console.log('从云端加载用药提醒失败（使用本地数据）:', error.message);
-        }
+        // 静默失败，不影响本地数据使用
+        console.log('从云端加载用药提醒失败（使用本地数据）:', error.message);
       }
     },
     // 同步用药提醒到云端
@@ -243,7 +241,7 @@ export default {
       try {
         const medicines = uni.getStorageSync('medicineList') || [];
         if (medicines.length > 0) {
-          await apiUtils.api.syncMedicines(medicines);
+          await apiUtils.api.syncMedicines(medicines, true); // 静默模式，后台同步
           console.log('用药提醒已同步到云端');
         }
       } catch (error) {

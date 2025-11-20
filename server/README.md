@@ -1,70 +1,70 @@
-# Åã°é×ÀÃæÊØ»¤ºó¶Ë·þÎñ
+# é™ªä¼´æ¡Œé¢å®ˆæŠ¤åŽç«¯æœåŠ¡
 
-»ùÓÚ Node.js + Express µÄºó¶ËAPI·þÎñ£¬Ìá¹©Êý¾ÝÍ¬²½¡¢±¸·ÝºÍ»Ö¸´¹¦ÄÜ¡£
+åŸºäºŽ Node.js + Express çš„åŽç«¯APIæœåŠ¡ï¼Œæä¾›æ•°æ®åŒæ­¥ã€å¤‡ä»½å’Œæ¢å¤åŠŸèƒ½ã€‚
 
-## ¹¦ÄÜÌØÐÔ
+## åŠŸèƒ½ç‰¹æ€§
 
-- ? ÓÃ»§µÇÂ¼/×¢²á
-- ? ÁªÏµÈËÊý¾ÝÍ¬²½
-- ? ÓÃÒ©ÌáÐÑÊý¾ÝÍ¬²½
-- ? ÓÃÒ©¼ÇÂ¼Í¬²½
-- ? ÎÊÕï¼ÇÂ¼Í¬²½
-- ? Í¨»°¼ÇÂ¼Í¬²½
-- ? Êý¾Ý±¸·ÝºÍ»Ö¸´
-- ? RESTful APIÉè¼Æ
+- ? ç”¨æˆ·ç™»å½•/æ³¨å†Œ
+- ? è”ç³»äººæ•°æ®åŒæ­¥
+- ? ç”¨è¯æé†’æ•°æ®åŒæ­¥
+- ? ç”¨è¯è®°å½•åŒæ­¥
+- ? é—®è¯Šè®°å½•åŒæ­¥
+- ? é€šè¯è®°å½•åŒæ­¥
+- ? æ•°æ®å¤‡ä»½å’Œæ¢å¤
+- ? RESTful APIè®¾è®¡
 
-## °²×°ºÍÔËÐÐ
+## å®‰è£…å’Œè¿è¡Œ
 
-### 1. °²×°ÒÀÀµ
+### 1. å®‰è£…ä¾èµ–
 
 ```bash
 cd server
 npm install
 ```
 
-### 2. ÅäÖÃ»·¾³±äÁ¿
+### 2. é…ç½®çŽ¯å¢ƒå˜é‡
 
-¸´ÖÆ `.env.example` Îª `.env` ²¢ÐÞ¸ÄÅäÖÃ£º
+å¤åˆ¶ `.env.example` ä¸º `.env` å¹¶ä¿®æ”¹é…ç½®ï¼š
 
 ```bash
 cp .env.example .env
 ```
 
-### 3. Æô¶¯·þÎñ
+### 3. å¯åŠ¨æœåŠ¡
 
-¿ª·¢»·¾³£¨×Ô¶¯ÖØÆô£©£º
+å¼€å‘çŽ¯å¢ƒï¼ˆè‡ªåŠ¨é‡å¯ï¼‰ï¼š
 ```bash
 npm run dev
 ```
 
-Éú²ú»·¾³£º
+ç”Ÿäº§çŽ¯å¢ƒï¼š
 ```bash
 npm start
 ```
 
-·þÎñ½«ÔÚ `http://localhost:3000` Æô¶¯
+æœåŠ¡å°†åœ¨ `http://localhost:3000` å¯åŠ¨
 
-## API½Ó¿ÚÎÄµµ
+## APIæŽ¥å£æ–‡æ¡£
 
-### »ù´¡URL
+### åŸºç¡€URL
 ```
 http://localhost:3000/api
 ```
 
-### ÇëÇóÍ·
+### è¯·æ±‚å¤´
 ```
 Content-Type: application/json
-User-Id: {userId}  // ÓÃ»§ID£¨¼ò»¯°æÈÏÖ¤£©
+User-Id: {userId}  // ç”¨æˆ·IDï¼ˆç®€åŒ–ç‰ˆè®¤è¯ï¼‰
 ```
 
-### ½Ó¿ÚÁÐ±í
+### æŽ¥å£åˆ—è¡¨
 
-#### 1. ½¡¿µ¼ì²é
+#### 1. å¥åº·æ£€æŸ¥
 ```
 GET /api/health
 ```
 
-#### 2. ÓÃ»§µÇÂ¼
+#### 2. ç”¨æˆ·ç™»å½•
 ```
 POST /api/auth/login
 Body: {
@@ -73,7 +73,7 @@ Body: {
 }
 ```
 
-#### 3. Í¬²½ÁªÏµÈË
+#### 3. åŒæ­¥è”ç³»äºº
 ```
 POST /api/contacts/sync
 Body: {
@@ -83,7 +83,7 @@ Body: {
 GET /api/contacts
 ```
 
-#### 4. Í¬²½ÓÃÒ©ÌáÐÑ
+#### 4. åŒæ­¥ç”¨è¯æé†’
 ```
 POST /api/medicines/sync
 Body: {
@@ -93,7 +93,7 @@ Body: {
 GET /api/medicines
 ```
 
-#### 5. Í¬²½ÓÃÒ©¼ÇÂ¼
+#### 5. åŒæ­¥ç”¨è¯è®°å½•
 ```
 POST /api/medicine-records/sync
 Body: {
@@ -101,7 +101,7 @@ Body: {
 }
 ```
 
-#### 6. Í¬²½ÎÊÕï¼ÇÂ¼
+#### 6. åŒæ­¥é—®è¯Šè®°å½•
 ```
 POST /api/consultations/sync
 Body: {
@@ -111,7 +111,7 @@ Body: {
 GET /api/consultations
 ```
 
-#### 7. Í¬²½Í¨»°¼ÇÂ¼
+#### 7. åŒæ­¥é€šè¯è®°å½•
 ```
 POST /api/call-records/sync
 Body: {
@@ -121,7 +121,7 @@ Body: {
 GET /api/call-records
 ```
 
-#### 8. Êý¾Ý±¸·Ý
+#### 8. æ•°æ®å¤‡ä»½
 ```
 POST /api/backup
 Body: {
@@ -132,15 +132,15 @@ Body: {
 }
 ```
 
-#### 9. Êý¾Ý»Ö¸´
+#### 9. æ•°æ®æ¢å¤
 ```
 GET /api/restore
 ```
 
-## Ç°¶Ë¼¯³ÉÊ¾Àý
+## å‰ç«¯é›†æˆç¤ºä¾‹
 
 ```javascript
-// Í¬²½ÁªÏµÈËµ½ÔÆ¶Ë
+// åŒæ­¥è”ç³»äººåˆ°äº‘ç«¯
 uni.request({
   url: 'http://localhost:3000/api/contacts/sync',
   method: 'POST',
@@ -152,11 +152,11 @@ uni.request({
     contacts: contactsList
   },
   success: (res) => {
-    console.log('Í¬²½³É¹¦', res.data);
+    console.log('åŒæ­¥æˆåŠŸ', res.data);
   }
 });
 
-// ´ÓÔÆ¶Ë»Ö¸´Êý¾Ý
+// ä»Žäº‘ç«¯æ¢å¤æ•°æ®
 uni.request({
   url: 'http://localhost:3000/api/restore',
   method: 'GET',
@@ -165,7 +165,7 @@ uni.request({
   },
   success: (res) => {
     const { contacts, medicines, consultations, callRecords } = res.data.data;
-    // »Ö¸´±¾µØÊý¾Ý
+    // æ¢å¤æœ¬åœ°æ•°æ®
     uni.setStorageSync('contacts', contacts);
     uni.setStorageSync('medicineList', medicines);
     // ...
@@ -173,20 +173,20 @@ uni.request({
 });
 ```
 
-## ×¢ÒâÊÂÏî
+## æ³¨æ„äº‹é¡¹
 
-1. µ±Ç°°æ±¾Ê¹ÓÃÄÚ´æ´æ´¢£¬ÖØÆô·þÎñÆ÷ºóÊý¾Ý»á¶ªÊ§
-2. Éú²ú»·¾³½¨ÒéÊ¹ÓÃ MongoDB »òÆäËûÊý¾Ý¿â
-3. ÐèÒªÊµÏÖÕæÕýµÄJWTÈÏÖ¤»úÖÆ
-4. ÐèÒªÌí¼ÓÊý¾Ý¼ÓÃÜ¹¦ÄÜ
-5. ÐèÒªÌí¼ÓÇëÇóÆµÂÊÏÞÖÆ
+1. å½“å‰ç‰ˆæœ¬ä½¿ç”¨å†…å­˜å­˜å‚¨ï¼Œé‡å¯æœåŠ¡å™¨åŽæ•°æ®ä¼šä¸¢å¤±
+2. ç”Ÿäº§çŽ¯å¢ƒå»ºè®®ä½¿ç”¨ MongoDB æˆ–å…¶ä»–æ•°æ®åº“
+3. éœ€è¦å®žçŽ°çœŸæ­£çš„JWTè®¤è¯æœºåˆ¶
+4. éœ€è¦æ·»åŠ æ•°æ®åŠ å¯†åŠŸèƒ½
+5. éœ€è¦æ·»åŠ è¯·æ±‚é¢‘çŽ‡é™åˆ¶
 
-## ºóÐøÓÅ»¯
+## åŽç»­ä¼˜åŒ–
 
-- [ ] ¼¯³É MongoDB Êý¾Ý¿â
-- [ ] ÊµÏÖ JWT ÈÏÖ¤
-- [ ] Ìí¼ÓÊý¾Ý¼ÓÃÜ
-- [ ] Ìí¼ÓÇëÇóÈÕÖ¾
-- [ ] Ìí¼Ó´íÎó¼à¿Ø
-- [ ] Ìí¼ÓAPIÎÄµµ£¨Swagger£©
+- [ ] é›†æˆ MongoDB æ•°æ®åº“
+- [ ] å®žçŽ° JWT è®¤è¯
+- [ ] æ·»åŠ æ•°æ®åŠ å¯†
+- [ ] æ·»åŠ è¯·æ±‚æ—¥å¿—
+- [ ] æ·»åŠ é”™è¯¯ç›‘æŽ§
+- [ ] æ·»åŠ APIæ–‡æ¡£ï¼ˆSwaggerï¼‰
 

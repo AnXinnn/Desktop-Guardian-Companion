@@ -1,11 +1,11 @@
 /**
- * ÁªÏµÈË¸¨Öú¹¤¾ßÀà
- * ÓÃÓÚÁªÏµÈËµ¼Èë/µ¼³ö¡¢È¥ÖØ¡¢Ò»¼üĞŞ¸´µÈ¹¦ÄÜ
+ * è”ç³»äººè¾…åŠ©å·¥å…·ç±»
+ * ç”¨äºè”ç³»äººå¯¼å…¥/å¯¼å‡ºã€å»é‡ã€ä¸€é”®ä¿®å¤ç­‰åŠŸèƒ½
  */
 
 /**
- * ´ÓÏµÍ³Í¨Ñ¶Â¼µ¼ÈëÁªÏµÈË
- * @returns {Promise<Array>} µ¼ÈëµÄÁªÏµÈËÁĞ±í
+ * ä»ç³»ç»Ÿé€šè®¯å½•å¯¼å…¥è”ç³»äºº
+ * @returns {Promise<Array>} å¯¼å…¥çš„è”ç³»äººåˆ—è¡¨
  */
 export function importFromSystemContacts() {
     return new Promise((resolve, reject) => {
@@ -19,7 +19,7 @@ export function importFromSystemContacts() {
             const resolver = main.getContentResolver();
             const contacts = [];
 
-            // ²éÑ¯ÁªÏµÈË
+            // æŸ¥è¯¢è”ç³»äºº
             const cursor = resolver.query(
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 null,
@@ -33,34 +33,34 @@ export function importFromSystemContacts() {
                 const phoneIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
                 const photoIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI);
 
-                const processedPhones = new Set(); // ÓÃÓÚÈ¥ÖØ
+                const processedPhones = new Set(); // ç”¨äºå»é‡
 
                 while (cursor.moveToNext()) {
                     const name = cursor.getString(nameIndex) || '';
                     const phone = cursor.getString(phoneIndex) || '';
                     const photoUri = cursor.getString(photoIndex);
 
-                    // ÇåÀíÊÖ»úºÅ£¨ÒÆ³ı¿Õ¸ñ¡¢ºáÏßµÈ£©
+                    // æ¸…ç†æ‰‹æœºå·ï¼ˆç§»é™¤ç©ºæ ¼ã€æ¨ªçº¿ç­‰ï¼‰
                     const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
 
-                    // Ìø¹ıÎŞĞ§µÄÁªÏµÈË
+                    // è·³è¿‡æ— æ•ˆçš„è”ç³»äºº
                     if (!name || !cleanPhone || cleanPhone.length < 7) {
                         continue;
                     }
 
-                    // È¥ÖØ£ºÈç¹ûÍ¬Ò»¸öÊÖ»úºÅÒÑ¾­´¦Àí¹ı£¬Ìø¹ı
+                    // å»é‡ï¼šå¦‚æœåŒä¸€ä¸ªæ‰‹æœºå·å·²ç»å¤„ç†è¿‡ï¼Œè·³è¿‡
                     if (processedPhones.has(cleanPhone)) {
                         continue;
                     }
                     processedPhones.add(cleanPhone);
 
-                    // ¹¹½¨ÁªÏµÈË¶ÔÏó
+                    // æ„å»ºè”ç³»äººå¯¹è±¡
                     const contact = {
                         name: name.trim(),
-                        wxNote: name.trim(), // Ä¬ÈÏÊ¹ÓÃĞÕÃû×÷ÎªÎ¢ĞÅ±¸×¢
+                        wxNote: name.trim(), // é»˜è®¤ä½¿ç”¨å§“åä½œä¸ºå¾®ä¿¡å¤‡æ³¨
                         mobile: cleanPhone,
                         icon: photoUri || '/static/mgc/geren.png',
-                        group: 'other' // Ä¬ÈÏ·Ö×éÎª"ÆäËû"
+                        group: 'other' // é»˜è®¤åˆ†ç»„ä¸º"å…¶ä»–"
                     };
 
                     contacts.push(contact);
@@ -71,22 +71,22 @@ export function importFromSystemContacts() {
 
             resolve(contacts);
         } catch (e) {
-            console.error('µ¼ÈëÁªÏµÈËÊ§°Ü:', e);
+            console.error('å¯¼å…¥è”ç³»äººå¤±è´¥:', e);
             reject(e);
         }
         // #endif
 
         // #ifndef APP-PLUS
-        // H5»òÆäËûÆ½Ì¨£¬·µ»Ø¿ÕÊı×é
-        console.warn('µ±Ç°Æ½Ì¨²»Ö§³Öµ¼ÈëÏµÍ³ÁªÏµÈË');
+        // H5æˆ–å…¶ä»–å¹³å°ï¼Œè¿”å›ç©ºæ•°ç»„
+        console.warn('å½“å‰å¹³å°ä¸æ”¯æŒå¯¼å…¥ç³»ç»Ÿè”ç³»äºº');
         resolve([]);
         // #endif
     });
 }
 
 /**
- * µ¼³öÁªÏµÈËÎªJSONÎÄ¼ş
- * @param {Array} contacts ÁªÏµÈËÁĞ±í
+ * å¯¼å‡ºè”ç³»äººä¸ºJSONæ–‡ä»¶
+ * @param {Array} contacts è”ç³»äººåˆ—è¡¨
  * @returns {Promise}
  */
 export function exportContacts(contacts) {
@@ -96,7 +96,7 @@ export function exportContacts(contacts) {
             const dataBlob = new Blob([dataStr], { type: 'application/json' });
 
             // #ifdef APP-PLUS
-            // ÔÚAPPÖĞ±£´æÎÄ¼ş
+            // åœ¨APPä¸­ä¿å­˜æ–‡ä»¶
             const fileName = `contacts_backup_${Date.now()}.json`;
             const filePath = plus.io.convertLocalFileSystemURL(`_downloads/${fileName}`);
 
@@ -106,7 +106,7 @@ export function exportContacts(contacts) {
                         writer.write(dataBlob);
                         writer.onwriteend = () => {
                             uni.showToast({
-                                title: `ÒÑµ¼³öµ½ÏÂÔØÎÄ¼ş¼Ğ`,
+                                title: `å·²å¯¼å‡ºåˆ°ä¸‹è½½æ–‡ä»¶å¤¹`,
                                 icon: 'success'
                             });
                             resolve(filePath);
@@ -120,7 +120,7 @@ export function exportContacts(contacts) {
             // #endif
 
             // #ifdef H5
-            // H5»·¾³£¬ÏÂÔØÎÄ¼ş
+            // H5ç¯å¢ƒï¼Œä¸‹è½½æ–‡ä»¶
             const url = URL.createObjectURL(dataBlob);
             const link = document.createElement('a');
             link.href = url;
@@ -130,16 +130,16 @@ export function exportContacts(contacts) {
             resolve();
             // #endif
         } catch (e) {
-            console.error('µ¼³öÁªÏµÈËÊ§°Ü:', e);
+            console.error('å¯¼å‡ºè”ç³»äººå¤±è´¥:', e);
             reject(e);
         }
     });
 }
 
 /**
- * ´ÓJSONÎÄ¼şµ¼ÈëÁªÏµÈË
- * @param {String} filePath ÎÄ¼şÂ·¾¶
- * @returns {Promise<Array>} µ¼ÈëµÄÁªÏµÈËÁĞ±í
+ * ä»JSONæ–‡ä»¶å¯¼å…¥è”ç³»äºº
+ * @param {String} filePath æ–‡ä»¶è·¯å¾„
+ * @returns {Promise<Array>} å¯¼å…¥çš„è”ç³»äººåˆ—è¡¨
  */
 export function importContactsFromFile(filePath) {
     return new Promise((resolve, reject) => {
@@ -154,14 +154,14 @@ export function importContactsFromFile(filePath) {
                             if (Array.isArray(contacts)) {
                                 resolve(contacts);
                             } else {
-                                reject(new Error('ÎÄ¼ş¸ñÊ½´íÎó'));
+                                reject(new Error('æ–‡ä»¶æ ¼å¼é”™è¯¯'));
                             }
                         } catch (e) {
-                            reject(new Error('ÎÄ¼ş½âÎöÊ§°Ü'));
+                            reject(new Error('æ–‡ä»¶è§£æå¤±è´¥'));
                         }
                     };
                     reader.onerror = () => {
-                        reject(new Error('ÎÄ¼ş¶ÁÈ¡Ê§°Ü'));
+                        reject(new Error('æ–‡ä»¶è¯»å–å¤±è´¥'));
                     };
                     reader.readAsText(file);
                 });
@@ -172,15 +172,15 @@ export function importContactsFromFile(filePath) {
         // #endif
 
         // #ifndef APP-PLUS
-        reject(new Error('µ±Ç°Æ½Ì¨²»Ö§³ÖÎÄ¼şµ¼Èë'));
+        reject(new Error('å½“å‰å¹³å°ä¸æ”¯æŒæ–‡ä»¶å¯¼å…¥'));
         // #endif
     });
 }
 
 /**
- * ¼ì²â²¢ºÏ²¢ÖØ¸´ÁªÏµÈË
- * @param {Array} contacts ÁªÏµÈËÁĞ±í
- * @returns {Object} { merged: ºÏ²¢ºóµÄÁĞ±í, duplicates: ÖØ¸´ÏîĞÅÏ¢ }
+ * æ£€æµ‹å¹¶åˆå¹¶é‡å¤è”ç³»äºº
+ * @param {Array} contacts è”ç³»äººåˆ—è¡¨
+ * @returns {Object} { merged: åˆå¹¶åçš„åˆ—è¡¨, duplicates: é‡å¤é¡¹ä¿¡æ¯ }
  */
 export function detectAndMergeDuplicates(contacts) {
     const merged = [];
@@ -191,27 +191,27 @@ export function detectAndMergeDuplicates(contacts) {
         const mobile = contact.mobile ? contact.mobile.replace(/[\s\-\(\)]/g, '') : '';
 
         if (!mobile) {
-            // Ã»ÓĞÊÖ»úºÅµÄÁªÏµÈË£¬Ö±½ÓÌí¼Ó
+            // æ²¡æœ‰æ‰‹æœºå·çš„è”ç³»äººï¼Œç›´æ¥æ·»åŠ 
             merged.push(contact);
             return;
         }
 
-        // ¼ì²éÊÇ·ñÒÑ´æÔÚÏàÍ¬ÊÖ»úºÅ
+        // æ£€æŸ¥æ˜¯å¦å·²å­˜åœ¨ç›¸åŒæ‰‹æœºå·
         if (processed.has(mobile)) {
             const existingIndex = processed.get(mobile);
             const existing = merged[existingIndex];
 
-            // ¼ÇÂ¼ÖØ¸´ĞÅÏ¢
+            // è®°å½•é‡å¤ä¿¡æ¯
             duplicates.push({
                 original: existing,
                 duplicate: contact,
                 merged: mergeContactInfo(existing, contact)
             });
 
-            // ºÏ²¢ÁªÏµÈËĞÅÏ¢
+            // åˆå¹¶è”ç³»äººä¿¡æ¯
             merged[existingIndex] = mergeContactInfo(existing, contact);
         } else {
-            // ĞÂÁªÏµÈË£¬Ìí¼Óµ½ÁĞ±í
+            // æ–°è”ç³»äººï¼Œæ·»åŠ åˆ°åˆ—è¡¨
             merged.push(contact);
             processed.set(mobile, merged.length - 1);
         }
@@ -225,10 +225,10 @@ export function detectAndMergeDuplicates(contacts) {
 }
 
 /**
- * ºÏ²¢Á½¸öÁªÏµÈËĞÅÏ¢£¨±£Áô¸üÍêÕûµÄĞÅÏ¢£©
- * @param {Object} contact1 ÁªÏµÈË1
- * @param {Object} contact2 ÁªÏµÈË2
- * @returns {Object} ºÏ²¢ºóµÄÁªÏµÈË
+ * åˆå¹¶ä¸¤ä¸ªè”ç³»äººä¿¡æ¯ï¼ˆä¿ç•™æ›´å®Œæ•´çš„ä¿¡æ¯ï¼‰
+ * @param {Object} contact1 è”ç³»äºº1
+ * @param {Object} contact2 è”ç³»äºº2
+ * @returns {Object} åˆå¹¶åçš„è”ç³»äºº
  */
 function mergeContactInfo(contact1, contact2) {
     return {
@@ -241,25 +241,25 @@ function mergeContactInfo(contact1, contact2) {
 }
 
 /**
- * Ò»¼üĞŞ¸´ÁªÏµÈË
- * ¹¦ÄÜ°üÀ¨£º
- * 1. È¥ÖØºÏ²¢
- * 2. Í¬²½µ½ÔÆ¶Ë£¨Èç¹ûÒÑµÇÂ¼£©
- * 3. ÑéÖ¤ºÍĞŞ¸´Êı¾İ¸ñÊ½
- * @returns {Promise<Object>} ĞŞ¸´½á¹û
+ * ä¸€é”®ä¿®å¤è”ç³»äºº
+ * åŠŸèƒ½åŒ…æ‹¬ï¼š
+ * 1. å»é‡åˆå¹¶
+ * 2. åŒæ­¥åˆ°äº‘ç«¯ï¼ˆå¦‚æœå·²ç™»å½•ï¼‰
+ * 3. éªŒè¯å’Œä¿®å¤æ•°æ®æ ¼å¼
+ * @returns {Promise<Object>} ä¿®å¤ç»“æœ
  */
 export async function repairContacts() {
     try {
         let contacts = uni.getStorageSync('contacts') || [];
         const originalCount = contacts.length;
 
-        // 1. È¥ÖØºÏ²¢
+        // 1. å»é‡åˆå¹¶
         const duplicateResult = detectAndMergeDuplicates(contacts);
         contacts = duplicateResult.merged;
 
-        // 2. ÑéÖ¤ºÍĞŞ¸´Êı¾İ¸ñÊ½
+        // 2. éªŒè¯å’Œä¿®å¤æ•°æ®æ ¼å¼
         contacts = contacts.map(contact => {
-            // È·±£±ØÌî×Ö¶Î´æÔÚ
+            // ç¡®ä¿å¿…å¡«å­—æ®µå­˜åœ¨
             if (!contact.name && contact.wxNote) {
                 contact.name = contact.wxNote;
             }
@@ -267,17 +267,17 @@ export async function repairContacts() {
                 contact.wxNote = contact.name;
             }
 
-            // ÇåÀíÊÖ»úºÅ¸ñÊ½
+            // æ¸…ç†æ‰‹æœºå·æ ¼å¼
             if (contact.mobile) {
                 contact.mobile = contact.mobile.replace(/[\s\-\(\)]/g, '');
             }
 
-            // È·±£ÓĞÄ¬ÈÏÍ¼±ê
+            // ç¡®ä¿æœ‰é»˜è®¤å›¾æ ‡
             if (!contact.icon) {
                 contact.icon = '/static/mgc/geren.png';
             }
 
-            // È·±£ÓĞÄ¬ÈÏ·Ö×é
+            // ç¡®ä¿æœ‰é»˜è®¤åˆ†ç»„
             if (!contact.group) {
                 contact.group = 'other';
             }
@@ -285,19 +285,19 @@ export async function repairContacts() {
             return contact;
         });
 
-        // 3. ±£´æĞŞ¸´ºóµÄÁªÏµÈË
+        // 3. ä¿å­˜ä¿®å¤åçš„è”ç³»äºº
         uni.setStorageSync('contacts', contacts);
 
-        // 4. ³¢ÊÔÍ¬²½µ½ÔÆ¶Ë£¨Èç¹ûºó¶Ë·şÎñ¿ÉÓÃ£©
+        // 4. å°è¯•åŒæ­¥åˆ°äº‘ç«¯ï¼ˆå¦‚æœåç«¯æœåŠ¡å¯ç”¨ï¼‰
         try {
-            // ¶¯Ì¬µ¼ÈëAPI¹¤¾ßÀà
+            // åŠ¨æ€å¯¼å…¥APIå·¥å…·ç±»
             const apiModule = await import('@/utils/api.js');
             if (apiModule.default && apiModule.default.syncUtils) {
                 await apiModule.default.syncUtils.syncContacts(contacts);
             }
         } catch (e) {
-            // ÔÆ¶ËÍ¬²½ÊÇ¿ÉÑ¡µÄ£¬Ê§°Ü²»Ó°ÏìĞŞ¸´¹¦ÄÜ
-            console.log('ÔÆ¶ËÍ¬²½Ê§°Ü£¨¿ÉÑ¡£©:', e);
+            // äº‘ç«¯åŒæ­¥æ˜¯å¯é€‰çš„ï¼Œå¤±è´¥ä¸å½±å“ä¿®å¤åŠŸèƒ½
+            console.log('äº‘ç«¯åŒæ­¥å¤±è´¥ï¼ˆå¯é€‰ï¼‰:', e);
         }
 
         return {
@@ -305,35 +305,35 @@ export async function repairContacts() {
             originalCount,
             finalCount: contacts.length,
             mergedCount: duplicateResult.count,
-            message: `ĞŞ¸´Íê³É£ººÏ²¢ÁË${duplicateResult.count}¸öÖØ¸´ÁªÏµÈË£¬¹²${contacts.length}¸öÁªÏµÈË`
+            message: `ä¿®å¤å®Œæˆï¼šåˆå¹¶äº†${duplicateResult.count}ä¸ªé‡å¤è”ç³»äººï¼Œå…±${contacts.length}ä¸ªè”ç³»äºº`
         };
     } catch (e) {
-        console.error('Ò»¼üĞŞ¸´Ê§°Ü:', e);
+        console.error('ä¸€é”®ä¿®å¤å¤±è´¥:', e);
         return {
             success: false,
-            message: 'ĞŞ¸´Ê§°Ü£º' + (e.message || 'Î´Öª´íÎó')
+            message: 'ä¿®å¤å¤±è´¥ï¼š' + (e.message || 'æœªçŸ¥é”™è¯¯')
         };
     }
 }
 
 /**
- * ÑéÖ¤ÁªÏµÈËÊı¾İ¸ñÊ½
- * @param {Object} contact ÁªÏµÈË¶ÔÏó
+ * éªŒè¯è”ç³»äººæ•°æ®æ ¼å¼
+ * @param {Object} contact è”ç³»äººå¯¹è±¡
  * @returns {Object} { valid: Boolean, errors: Array }
  */
 export function validateContact(contact) {
     const errors = [];
 
     if (!contact.name && !contact.wxNote) {
-        errors.push('ĞÕÃû»òÎ¢ĞÅ±¸×¢ÖÁÉÙÌîĞ´Ò»¸ö');
+        errors.push('å§“åæˆ–å¾®ä¿¡å¤‡æ³¨è‡³å°‘å¡«å†™ä¸€ä¸ª');
     }
 
     if (!contact.mobile) {
-        errors.push('ÊÖ»úºÅ²»ÄÜÎª¿Õ');
+        errors.push('æ‰‹æœºå·ä¸èƒ½ä¸ºç©º');
     } else {
         const cleanPhone = contact.mobile.replace(/[\s\-\(\)]/g, '');
         if (!/^1\d{10}$/.test(cleanPhone)) {
-            errors.push('ÊÖ»úºÅ¸ñÊ½²»ÕıÈ·');
+            errors.push('æ‰‹æœºå·æ ¼å¼ä¸æ­£ç¡®');
         }
     }
 

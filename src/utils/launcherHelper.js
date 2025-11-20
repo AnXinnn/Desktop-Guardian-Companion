@@ -1,10 +1,10 @@
 /**
- * ×ÀÃæÆô¶¯Æ÷¸¨Öú¹¤¾ßÀà
- * ÓÃÓÚ´¦ÀíÄ¬ÈÏ×ÀÃæÉèÖÃ¡¢Home¼üÀ¹½ØµÈ¹¦ÄÜ
+ * æ¡Œé¢å¯åŠ¨å™¨è¾…åŠ©å·¥å…·ç±»
+ * ç”¨äºå¤„ç†é»˜è®¤æ¡Œé¢è®¾ç½®ã€Homeé”®æ‹¦æˆªç­‰åŠŸèƒ½
  */
 
 /**
- * ¼ì²éµ±Ç°Ó¦ÓÃÊÇ·ñÎªÄ¬ÈÏ×ÀÃæ
+ * æ£€æŸ¥å½“å‰åº”ç”¨æ˜¯å¦ä¸ºé»˜è®¤æ¡Œé¢
  * @returns {Promise<Boolean>}
  */
 export function isDefaultLauncher() {
@@ -14,36 +14,36 @@ export function isDefaultLauncher() {
       const main = plus.android.runtimeMainActivity();
       const PackageManager = plus.android.importClass('android.content.pm.PackageManager');
       const Intent = plus.android.importClass('android.content.Intent');
-      
+
       const pm = main.getPackageManager();
       const intent = new Intent(Intent.ACTION_MAIN);
       intent.addCategory(Intent.CATEGORY_HOME);
-      
+
       const resolveInfos = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
       const currentPackageName = main.getPackageName();
-      
-      // »ñÈ¡ÏµÍ³Ä¬ÈÏ×ÀÃæ
+
+      // è·å–ç³»ç»Ÿé»˜è®¤æ¡Œé¢
       const defaultLauncher = pm.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
-      
+
       if (defaultLauncher && defaultLauncher.activityInfo) {
         const defaultPackageName = defaultLauncher.activityInfo.packageName;
         resolve(defaultPackageName === currentPackageName);
       } else {
-        // Èç¹ûÃ»ÓĞÄ¬ÈÏ×ÀÃæ£¬¼ì²éÊÇ·ñÓĞ¶à¸ö×ÀÃæÓ¦ÓÃ
+        // å¦‚æœæ²¡æœ‰é»˜è®¤æ¡Œé¢ï¼Œæ£€æŸ¥æ˜¯å¦æœ‰å¤šä¸ªæ¡Œé¢åº”ç”¨
         if (resolveInfos && resolveInfos.size() > 1) {
-          // ÓĞ¶à¸ö×ÀÃæÓ¦ÓÃ£¬ĞèÒªÓÃ»§Ñ¡Ôñ
+          // æœ‰å¤šä¸ªæ¡Œé¢åº”ç”¨ï¼Œéœ€è¦ç”¨æˆ·é€‰æ‹©
           resolve(false);
         } else {
-          // Ö»ÓĞÒ»¸ö×ÀÃæÓ¦ÓÃ£¬¿ÉÄÜÊÇµ±Ç°Ó¦ÓÃ
+          // åªæœ‰ä¸€ä¸ªæ¡Œé¢åº”ç”¨ï¼Œå¯èƒ½æ˜¯å½“å‰åº”ç”¨
           resolve(true);
         }
       }
     } catch (e) {
-      console.error('¼ì²éÄ¬ÈÏ×ÀÃæÊ§°Ü:', e);
+      console.error('æ£€æŸ¥é»˜è®¤æ¡Œé¢å¤±è´¥:', e);
       resolve(false);
     }
     // #endif
-    
+
     // #ifndef APP-PLUS
     resolve(false);
     // #endif
@@ -51,7 +51,7 @@ export function isDefaultLauncher() {
 }
 
 /**
- * ´ò¿ªÏµÍ³×ÀÃæÑ¡ÔñÆ÷
+ * æ‰“å¼€ç³»ç»Ÿæ¡Œé¢é€‰æ‹©å™¨
  */
 export function openLauncherChooser() {
   // #ifdef APP-PLUS
@@ -59,33 +59,33 @@ export function openLauncherChooser() {
     const main = plus.android.runtimeMainActivity();
     const Intent = plus.android.importClass('android.content.Intent');
     const ComponentName = plus.android.importClass('android.content.ComponentName');
-    
+
     const intent = new Intent(Intent.ACTION_MAIN);
     intent.addCategory(Intent.CATEGORY_HOME);
-    
-    // ´´½¨Ñ¡ÔñÆ÷Intent
-    const chooserIntent = Intent.createChooser(intent, 'Ñ¡Ôñ×ÀÃæÓ¦ÓÃ');
-    
+
+    // åˆ›å»ºé€‰æ‹©å™¨Intent
+    const chooserIntent = Intent.createChooser(intent, 'é€‰æ‹©æ¡Œé¢åº”ç”¨');
+
     main.startActivity(chooserIntent);
   } catch (e) {
-    console.error('´ò¿ª×ÀÃæÑ¡ÔñÆ÷Ê§°Ü:', e);
+    console.error('æ‰“å¼€æ¡Œé¢é€‰æ‹©å™¨å¤±è´¥:', e);
     uni.showToast({
-      title: '´ò¿ª×ÀÃæÉèÖÃÊ§°Ü',
+      title: 'æ‰“å¼€æ¡Œé¢è®¾ç½®å¤±è´¥',
       icon: 'none'
     });
   }
   // #endif
-  
+
   // #ifndef APP-PLUS
   uni.showToast({
-    title: 'µ±Ç°Æ½Ì¨²»Ö§³Ö´Ë¹¦ÄÜ',
+    title: 'å½“å‰å¹³å°ä¸æ”¯æŒæ­¤åŠŸèƒ½',
     icon: 'none'
   });
   // #endif
 }
 
 /**
- * Ìø×ªµ½Ó¦ÓÃÉèÖÃÒ³Ãæ
+ * è·³è½¬åˆ°åº”ç”¨è®¾ç½®é¡µé¢
  */
 export function openAppSettings() {
   // #ifdef APP-PLUS
@@ -94,54 +94,54 @@ export function openAppSettings() {
     const Intent = plus.android.importClass('android.content.Intent');
     const Settings = plus.android.importClass('android.provider.Settings');
     const Uri = plus.android.importClass('android.net.Uri');
-    
+
     const intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
     const uri = Uri.fromParts('package', main.getPackageName(), null);
     intent.setData(uri);
-    
+
     main.startActivity(intent);
   } catch (e) {
-    console.error('´ò¿ªÓ¦ÓÃÉèÖÃÊ§°Ü:', e);
+    console.error('æ‰“å¼€åº”ç”¨è®¾ç½®å¤±è´¥:', e);
     uni.showToast({
-      title: '´ò¿ªÉèÖÃÊ§°Ü',
+      title: 'æ‰“å¼€è®¾ç½®å¤±è´¥',
       icon: 'none'
     });
   }
   // #endif
-  
+
   // #ifndef APP-PLUS
   uni.showToast({
-    title: 'µ±Ç°Æ½Ì¨²»Ö§³Ö´Ë¹¦ÄÜ',
+    title: 'å½“å‰å¹³å°ä¸æ”¯æŒæ­¤åŠŸèƒ½',
     icon: 'none'
   });
   // #endif
 }
 
 /**
- * ¼ì²éÊÇ·ñÓ¦¸ÃÏÔÊ¾×ÀÃæÑ¡ÔñÌáÊ¾
+ * æ£€æŸ¥æ˜¯å¦åº”è¯¥æ˜¾ç¤ºæ¡Œé¢é€‰æ‹©æç¤º
  * @returns {Boolean}
  */
 export function shouldShowLauncherTip() {
   const hasShownTip = uni.getStorageSync('hasShownLauncherTip');
   const isDefault = uni.getStorageSync('isDefaultLauncher');
-  
-  // Èç¹ûÒÑ¾­ÏÔÊ¾¹ıÌáÊ¾£¬»òÕßÒÑ¾­ÊÇÄ¬ÈÏ×ÀÃæ£¬Ôò²»ÏÔÊ¾
+
+  // å¦‚æœå·²ç»æ˜¾ç¤ºè¿‡æç¤ºï¼Œæˆ–è€…å·²ç»æ˜¯é»˜è®¤æ¡Œé¢ï¼Œåˆ™ä¸æ˜¾ç¤º
   if (hasShownTip || isDefault) {
     return false;
   }
-  
+
   return true;
 }
 
 /**
- * ±ê¼ÇÒÑÏÔÊ¾×ÀÃæÑ¡ÔñÌáÊ¾
+ * æ ‡è®°å·²æ˜¾ç¤ºæ¡Œé¢é€‰æ‹©æç¤º
  */
 export function markLauncherTipShown() {
   uni.setStorageSync('hasShownLauncherTip', true);
 }
 
 /**
- * ±£´æÄ¬ÈÏ×ÀÃæ×´Ì¬
+ * ä¿å­˜é»˜è®¤æ¡Œé¢çŠ¶æ€
  * @param {Boolean} isDefault 
  */
 export function saveDefaultLauncherStatus(isDefault) {

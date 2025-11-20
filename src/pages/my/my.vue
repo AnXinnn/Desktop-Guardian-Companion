@@ -145,12 +145,12 @@ import apiUtils, { getApiBaseUrl, setApiEnv } from '@/utils/api.js';
 	},
 	methods: {
 		loadUserInfo() {
-			const storedUsers = uni.getStorageSync("users")
+			const storedUsers = uni.getStorageSync("users");
 			if (storedUsers && typeof storedUsers === 'object') {
-				this.users = { ...this.users, ...storedUsers }
+				this.users = { ...this.users, ...storedUsers };
 				if (storedUsers.userCode) {
-					this.userCode = storedUsers.userCode
-			}
+					this.userCode = storedUsers.userCode;
+				}
 			} else {
 				// 重置用户信息
 				this.users = {
@@ -158,19 +158,19 @@ import apiUtils, { getApiBaseUrl, setApiEnv } from '@/utils/api.js';
 					name: "",
 					mobile: "",
 					userCode: ""
-				}
+				};
 			}
 		},
-			gologin() {
-				uni.navigateTo({
-					url: '/pages/login/login',
-				});
-			},
-			goCustomerService() {
-				uni.navigateTo({
-					url: '/pages/customer-service/customer-service'
-				});
-			},
+		gologin() {
+			uni.navigateTo({
+				url: '/pages/login/login',
+			});
+		},
+		goCustomerService() {
+			uni.navigateTo({
+				url: '/pages/customer-service/customer-service'
+			});
+		},
 		// 设置为默认桌面
 		async setAsDefaultLauncher() {
 			// #ifdef APP-PLUS
@@ -216,18 +216,24 @@ import apiUtils, { getApiBaseUrl, setApiEnv } from '@/utils/api.js';
 			});
 			// #endif
 		},
-			goBack() {
+		goBack() {
 			uni.redirectTo({
-					url: '/pages/index/index?page=2'
-				});
+				url: '/pages/index/index?page=2'
+			});
 		},
-		onToggle(key, e){
-			this.settings[key] = e.detail.value
-			uni.setStorageSync('deskSettings', this.settings)
+		onToggle(key, e) {
+			this.settings[key] = e.detail.value;
+			uni.setStorageSync('deskSettings', this.settings);
 		},
-		goForce(){ uni.navigateTo({ url: '/pages/desk/force' }) },
-		goLock(){ uni.navigateTo({ url: '/pages/desk/lock' }) },
-		goStable(){ uni.navigateTo({ url: '/pages/desk/stable' }) },
+		goForce() {
+			uni.navigateTo({ url: '/pages/desk/force' });
+		},
+		goLock() {
+			uni.navigateTo({ url: '/pages/desk/lock' });
+		},
+		goStable() {
+			uni.navigateTo({ url: '/pages/desk/stable' });
+		},
 		toggleHarass(e) {
 			this.harassProtection = e.detail.value;
 			uni.setStorageSync('harassProtection', this.harassProtection);
@@ -345,6 +351,7 @@ import apiUtils, { getApiBaseUrl, setApiEnv } from '@/utils/api.js';
 				}
 			});
 		}
+	}
 	}
 </script>
 

@@ -211,7 +211,7 @@ export default {
   methods: {
     goBack() {
       uni.redirectTo({
-        url: '/pages/index/index?page=1'
+        url: '/pages/index/index?page=2'
       });
     },
     loadContacts() {

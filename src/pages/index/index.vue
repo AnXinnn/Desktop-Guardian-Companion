@@ -163,7 +163,6 @@
     <view class="bottom-section">
       <view class="dock">
         <!-- 保留导航栏结构，用于真机测试时添加实体应用 -->
-        <!-- 当前不显示静态图片，等待真机测试时动态添加 -->
         <view class="dock-item" v-for="app in dockApps" :key="app.name" v-if="dockApps.length > 0">
           <view class="dock-icon-wrap">
             <image class="dock-icon" :src="app.icon" @error="handleImageError(app)" v-if="app.icon"></image>
@@ -334,48 +333,33 @@ export default {
         mobile: '',
         icon: ''
       },
-      originalContact: null, // 保存原始联系人信息，用于取消编辑时恢复
-      // 内置应用（项目自带的功能）
+      originalContact: null,
       builtInApps: [
         { name: '用药提醒', icon: '/static/mgc/yongyaotixing.png', type: 'medicine' },
         { name: '在线问诊', icon: '/static/mgc/zaixianwenzhen.png', type: 'consultation' },
         { name: '联系人', icon: '/static/mgc/lianxiren.png' },
         { name: '个人中心', icon: '/static/mgc/geren.png' }
       ],
-      // 已安装应用列表
       installedApps: [],
-      // 应用分类
       appCategories: ['全部'],
       currentAppCategory: '全部',
-      // 应用搜索
       appSearchKeyword: '',
-      // 是否过滤系统应用
       excludeSystemApps: false,
-      // 加载状态
       loadingApps: false,
-      appsPage2: [
-        // 预留位置，用于真机测试时添加实体应用
-      ],
-      dockApps: [
-        // 预留位置，用于真机测试时添加实体应用（电话、相机、微信等）
-        // 保留导航栏结构，但不显示静态图片
-      ]
+      appsPage2: [],
+      dockApps: []
     }
   },
   computed: {
-    // 显示的应用列表（根据分类和搜索过滤）
     displayedApps() {
       let apps = [];
       
-      // 如果有搜索关键词，使用搜索
       if (this.appSearchKeyword) {
         apps = searchApps(this.appSearchKeyword);
-        // 搜索时也应用系统应用过滤
         if (this.excludeSystemApps) {
           apps = apps.filter(app => !app.isSystemApp);
         }
       } else {
-        // 否则按分类过滤
         apps = getAppsByCategory(
           this.currentAppCategory === '全部' ? null : this.currentAppCategory,
           this.excludeSystemApps // 根据开关决定是否过滤系统应用
@@ -490,18 +474,20 @@ export default {
 
 		},
   onShow() {
-    // 只在页面显示时刷新联系人列表（从添加联系人页面返回时）
-    // 这样确保只有通过保存新联系人后才会显示新模块
     this.contacts = uni.getStorageSync('contacts') || [];
     
-    // 处理返回页面逻辑
-    const returnPage = uni.getStorageSync('returnToPage');
-    if (returnPage !== undefined) {
-      this.currentPage = returnPage;
-      uni.removeStorageSync('returnToPage');
+    const pages = getCurrentPages();
+    const currentPage = pages[pages.length - 1];
+    const hasPageParam = currentPage && currentPage.options && currentPage.options.page;
+    
+    if (!hasPageParam) {
+      const returnPage = uni.getStorageSync('returnToPage');
+      if (returnPage !== undefined) {
+        this.currentPage = returnPage;
+        uni.removeStorageSync('returnToPage');
+      }
     }
     
-    // 每次显示时重新检查默认桌面状态（用户可能从设置中更改了）
     this.checkDefaultLauncher();
   },
   // 拦截返回键（Home键拦截在manifest.json中配置）
@@ -561,8 +547,6 @@ export default {
             });
           });
       } else {
-        // 如果没有packageName，说明是预留位置，暂不处理
-        // uni.showToast({ title: app.name + '功能开发中', icon: 'none' });
       }
     },
     // 加载已安装应用列表
@@ -1011,8 +995,6 @@ export default {
           const gesture = new Gesture();
           gesture.addStroke(stroke);
           
-          // 注意：Gesture需要特定的权限和实现方式
-          // 这里作为备选方案提示用户
           uni.showToast({ 
             title: '请手动点击微信中的' + (callType === 'video' ? '视频' : '语音') + '按钮', 
             icon: 'none',

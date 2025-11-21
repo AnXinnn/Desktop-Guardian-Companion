@@ -6,7 +6,7 @@
 		},
 		{
 			"path": "pages/login/login",
-			"style": {
+			"style": {	
 				"navigationStyle": "custom"
 			}
 		},
@@ -71,10 +71,10 @@
 			"pages": [
 				{
 					"path": "add-contact/add-contact",
-					"style": {
+			"style": {
 						"navigationStyle": "custom"
 					}
-				}
+			}
 			]
 		}
 	],

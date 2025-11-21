@@ -21,7 +21,7 @@
 					</template>
 					<!-- 我的消息：头像在右 -->
 					<template v-else>
-						<view class="bubble-wrap">
+				<view class="bubble-wrap">
 							<view class="bubble bubble--self">{{ item.text }}</view>
 						</view>
 						<image class="avatar" src="/static/mgc/geren.png" />
@@ -67,8 +67,7 @@ export default {
 			});
 		},
 		showTime(index) {
-			// 简化：每条消息都显示时间，或根据时间差判断
-			return true; // 暂每条显示
+			return true;
 		},
 		send() {
 			const text = (this.value || '').trim();

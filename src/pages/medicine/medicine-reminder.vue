@@ -28,8 +28,8 @@
             <view class="medicine-time">下次提醒：{{ medicine.nextTime }}</view>
           </view>
           <view class="medicine-actions">
-            <image class="action-icon" src="/static/mgc/Information.png" @click="editMedicine(medicine, index)"></image>
-            <image class="action-icon" src="/static/mgc/Information.png" @click="deleteMedicine(index)"></image>
+            <image class="action-icon" src="/static/mgc/xiugai.png" @click="editMedicine(medicine, index)"></image>
+            <image class="action-icon" src="/static/mgc/shanchu.png" @click="deleteMedicine(index)"></image>
           </view>
         </view>
 
@@ -420,6 +420,8 @@ export default {
   min-height: 100vh;
   background: #f6f7f9;
   font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', '微软雅黑', Arial, sans-serif;
+  position: relative;
+  z-index: 1;
 }
 
 .medicine-page * {
@@ -573,7 +575,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
+  z-index: 999999;
 }
 
 .modal-content {
@@ -583,6 +585,8 @@ export default {
   max-height: 85vh;
   display: flex;
   flex-direction: column;
+  position: relative;
+  z-index: 999999;
 }
 
 .modal-header {
@@ -609,6 +613,8 @@ export default {
   flex: 1;
   padding: 32rpx;
   max-height: 60vh;
+  position: relative;
+  z-index: 1;
 }
 
 .form-item {
@@ -651,6 +657,8 @@ export default {
   align-items: center;
   font-size: 28rpx;
   color: #222;
+  position: relative;
+  z-index: 10;
 }
 
 .form-textarea {

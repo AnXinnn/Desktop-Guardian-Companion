@@ -198,7 +198,7 @@ export default {
   methods: {
     goBack() {
       uni.redirectTo({
-        url: '/pages/index/index?page=2'
+        url: '/pages/index/index?page=1'
       });
     },
     viewRecords() {

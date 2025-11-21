@@ -218,7 +218,7 @@ import apiUtils, { getApiBaseUrl, setApiEnv } from '@/utils/api.js';
 		},
 		goBack() {
 			uni.redirectTo({
-				url: '/pages/index/index?page=2'
+				url: '/pages/index/index?page=1'
 			});
 		},
 		onToggle(key, e) {

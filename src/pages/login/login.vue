@@ -6,7 +6,7 @@
 		</view>
 
 		<view class="hero">
-			<view class="title">登录伴伴守护桌面</view>
+			<view class="title">登录陪伴守护</view>
 			<view class="subtitle">守护长辈手机安全</view>
 		</view>
 
